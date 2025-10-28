@@ -1,0 +1,130 @@
+{% extends "base.html" %} 
+{% block content %}
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Departments</h3>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="index.html">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">Departments</li>
+          </ul>
+        </div>
+        <div class="col-auto text-right float-right ml-auto">
+          <a href="#" class="btn btn-outline-primary mr-2"
+            ><i class="fas fa-download"></i> Download</a
+          >
+          <a href="{% url "Departments:add" %}" class="btn btn-primary" 
+            ><i class="fas fa-plus"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card card-table">
+          <div class="card-body">
+            {% for message in messages %}
+            <p class="alert alert-danger">
+              {{ message }}
+            </p>
+            {% endfor %}
+            <div class="table-responsive">
+              <table class="table table-hover table-center mb-0 datatable">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th class="text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for department in departments %}
+                  <tr>
+                    <td>{{ department.department_id }}</td>
+                    <td>
+                      <h2>
+                        {{ department.department_name }}
+                      </h2>
+                    </td>
+                    <td class="text-right">
+                      <div class="actions">
+                        <a
+                          href="{% url "Departments:edit" department.id %}"
+                          class="btn btn-sm bg-success-light mr-2"
+                        >
+                          <i class="fas fa-pen"></i>
+                        </a>
+                        <a data-toggle="modal" data-target="#deleteModal" href="{% url "Departments:delete" department.id %}" class="btn btn-sm bg-danger">
+                          <i class="fas fa-trash"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+          
+            <!-- Delete Department Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content border-0">
+                  <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteModalLabel">
+                      <i class="fas fa-exclamation-triangle mr-2"></i> Confirm Delete
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                    <div class="modal-body">
+                      <div class="text-center py-3">
+                        <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
+                        <h5 class="mb-2">Are you sure you want to delete <strong class="dept-name"></strong>?</h5>
+                        <p class="text-muted small">
+                          This action cannot be undone. All records related to this department may be removed.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                      <button type="submit" class="btn btn-danger confirm-delete-btn">
+                        <i class="fas fa-trash mr-1"></i> Delete
+                      </button>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+            <script>
+              (function($){
+                $('#deleteModal').on('show.bs.modal', function (event) {
+                  var button = $(event.relatedTarget);
+                  var modal = $(this);
+                  var row = button.closest('tr');
+                  var id = row.find('td').first().text().trim();
+                  var name = row.find('td h2').text().trim() || row.find('td').eq(1).text().trim();
+                  modal.find('.dept-name').text(name || ('ID ' + id));
+                  modal.find('input[name="department_id"]').val(id);
+                  // Set a sensible action — adjust if your delete URL differs
+                  modal.find('#deleteForm').attr('action', '/departments/delete/' + id + '/');
+                });
+              })(jQuery);
+            </script>
+              <!--/Delete Department Modal-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Copyright © 2020 Dreamguys.</p>
+  </footer>
+</div>
+{% endblock %}

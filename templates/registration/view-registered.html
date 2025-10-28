@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block body %}
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Register Your Subjects</h3>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="holiday.html">Register</a>
+            </li>
+            <li class="breadcrumb-item active">Register</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <p>Submitted Subjects</p>
+
+      <p>{{ registration.id }}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

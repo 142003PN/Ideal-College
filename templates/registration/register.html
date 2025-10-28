@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% block body %}
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Register Your Subjects</h3>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="holiday.html">Register</a>
+            </li>
+            <li class="breadcrumb-item active">Register</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          {% for message in messages %}
+            <h4 class="alert alert-success">{{ message }}</h4>
+          {% endfor %}
+          <div class="card-body">
+            <form method='post' action="{% url "Registration:Register" %}" >
+              {% csrf_token %}
+              <div class="row">
+                <div class="col-12">
+                  <h5 class="form-title">
+                    <span>Select Courses</span>
+                  </h5>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    {{ form.student_id.label_tag }}
+                    {{ form.student_id }}
+                  </div>
+                </div>
+                <div class="col-12 col-sm-12">
+                  <div class="form-group">
+                    {{ form.subject.label_tag }}
+                    {{ form.subject }}
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    {{ form.academic_year.label_tag }}
+                    {{ form.academic_year }}
+                  </div>
+                </div>
+                <div class="col-12">
+                  <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

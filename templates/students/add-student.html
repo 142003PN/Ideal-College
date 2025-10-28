@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block  content %}
+<div class="page-wrapper">
+   <div class="content container-fluid">
+      <div class="page-header">
+         <div class="row align-items-center">
+            <div class="col">
+               <h3 class="page-title">Add Students</h3>
+               <ul class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url "Students:list" %}">Students</a></li>
+                  <li class="breadcrumb-item active">Add Students</li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-sm-12">
+            <div class="card">
+               <!--Messages-->
+               {% for message in messages %}
+               <div class="alert alert-success" role="alert">
+                  {{ message }}
+               </div>
+               {% endfor %}
+               <!--Messages-->
+               <div class="card-body">
+                  <form method="POST" enctype="multipart/form-data">
+                     {% csrf_token %}
+                     <div class="row">
+                        <div class="col-12">
+                           <h5 class="form-title"><span>Student Information</span></h5>
+                        </div>
+                        <div class="col-12">
+                           <div class="form-group">
+                              {{ student_form.username.label_tag }}
+                              {{ student_form.username }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ student_form.first_name.label_tag }}
+                              {{ student_form.first_name }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ student_form.last_name.label_tag }}
+                              {{ student_form.last_name }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ student_form.email.label_tag }}
+                              {{ student_form.email }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ student_form.NRC.label_tag }}
+                              {{ student_form.NRC }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ student_form.password.label_tag }}
+                              {{ student_form.password }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.program.label_tag }}
+                              {{ profile_form.program }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.year_of_study.label_tag }}
+                              {{ profile_form.year_of_study }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.date_of_birth.label_tag }}
+                              {{ profile_form.date_of_birth }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.gender.label_tag }} 
+                              {{ profile_form.gender }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.profile_picture.label_tag }}
+                              {{ profile_form.profile_picture }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.phone_number.label_tag }}
+                              {{ profile_form.phone_number }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.address.label_tag }}
+                              {{ profile_form.address }}
+                           </div>
+                        </div>
+                        
+
+                        <div class="col-12"> 
+                           <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock  %}

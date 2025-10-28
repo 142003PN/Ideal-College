@@ -1,0 +1,37 @@
+{% extends "base.html" %} {% block body%}
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Add Teachers</h3>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="teachers.html">Teachers</a>
+            </li>
+            <li class="breadcrumb-item active">Add Teachers</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" >
+              {% csrf_token %}
+              {{ teacher_form }}
+              {{ profile_form }}
+
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

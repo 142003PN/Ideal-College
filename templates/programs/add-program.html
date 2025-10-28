@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper">
+<div class="content container-fluid">
+    <div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+        {% if title %}
+        <h3 class="page-title">{{ title}}</h3>
+        {% else %}
+        <h3 class="page-title">Add Programme</h3>
+        {% endif %}
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+            <a href="Programs:programs">Programmes</a>
+            </li>
+            {% if title %}
+            <li class="breadcrumb-item active">{{ title }}</li>
+            {% else %}
+            <li class="breadcrumb-item active">Add Programme</li>
+            {% endif %}
+        </ul>
+        </div>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            {% for message in messages %}
+            <p class="alert alert-success">{{ message }}</p>
+            {% endfor %}
+        <div class="card-body">
+            <form method='POST'>
+                {% csrf_token %}
+            <div class="row">
+                <div class="col-12">
+                <h5 class="form-title">
+                    <span>Programme Info</span>
+                </h5>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        {{ form.program_title.label_tag}}
+                        {{ form.program_title }}
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        {{ form.department_id.label_tag}}
+                        {{ form.department_id }}
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">
+                        Submit
+                    </button>
+                </div>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+{% endblock  %}

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="page-wrapper">
+   <div class="content container-fluid">
+      <div class="page-header">
+         <div class="row align-items-center">
+            <div class="col">
+               <h3 class="page-title">Edit Students</h3>
+               <ul class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="students.html">Students</a></li>
+                  <li class="breadcrumb-item active">Edit Students</li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-sm-12">
+            <div class="card">
+               <div class="card-body">
+                  <form method="POST" enctype="multipart/form-data">
+                     {% csrf_token %}
+                     <div class="row">
+                        <div class="col-12">
+                           <h5 class="form-title"><span>Student profile</span></h5>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.class_id.label_tag }}
+                              {{ profile_form.class_id }}
+                           </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.phone_number.label_tag }}
+                              {{ profile_form.phone_number }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.religion.label_tag }}
+                              {{ profile_form.religion }}
+                           </div>
+                        </div> 
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">   
+                             {{profile_form.profile_picture.label_tag }}
+                              {{ profile_form.profile_picture }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">   
+                              {{ profile_form.date_of_birth.label_tag }}
+                              {{ profile_form.date_of_birth }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">   
+                              {{ profile_form.gender.label_tag }}
+                              {{ profile_form.gender }}
+                           </div>
+                        </div>
+
+                        <div class="col-12 col-sm-12">
+                           <div class="form-group">
+                              {{ profile_form.address.label_tag }}
+                              {{ profile_form.address }}
+                           </div>
+                        </div>
+                        <div class="col-12">
+                           <h5 class="form-title"><span>Parent profile</span></h5>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.parent_name.label_tag }}
+                              {{ profile_form.parent_name }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.parent_contact.label_tag }}
+                              {{ profile_form.parent_contact }}
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              {{ profile_form.relationship.label_tag }}
+                              {{ profile_form.relationship }}
+                           </div>
+                        </div>
+                        <div class="col-12">
+                           <div class="form-group">
+                              {{ profile_form.parent_address.label_tag }}
+                              {{ profile_form.parent_address }}
+                           </div>
+                        </div>
+
+                        <div class="col-12">
+                           <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock  %}

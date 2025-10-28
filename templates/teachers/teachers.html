@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block body%}
+      <div class="page-wrapper">
+        <div class="content container-fluid">
+          <div class="page-header">
+            <div class="row align-items-center">
+              <div class="col">
+                <h3 class="page-title">Teachers</h3>
+                <ul class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a href="index.html">Dashboard</a>
+                  </li>
+                  <li class="breadcrumb-item active">Teachers</li>
+                </ul>
+              </div>
+              <div class="col-auto text-right float-right ml-auto">
+                <a href="#" class="btn btn-outline-primary mr-2"
+                  ><i class="fas fa-download"></i> Download</a
+                >
+                <a href="add-teacher.html" class="btn btn-primary"
+                  ><i class="fas fa-plus"></i
+                ></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="card card-table">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table
+                      class="table table-hover table-center mb-0 datatable"
+                    >
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Gender</th> 
+                          <th>Department</th>                        
+                          <th>Mobile Number</th>
+                          <th class="text-right">View Details</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for teacher in teachers %}
+                        <tr>
+                           <td>{{teacher.id}}</td>
+                           <td>
+                              <h2 class="table-avatar">
+                                 <a href="{% url "Teachers:TeacherDetails" teacher.id %}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ teacher.teacher_profile.profile_picture.url }}" alt="User Image"></a>
+                                 <a href="{% url "Teachers:TeacherDetails" teacher.id %}">{{teacher.first_name}} {{teacher.last_name}}</a>
+                              </h2>
+                           </td>
+                           <td>{{teacher.email}}</td>
+                           <td>{{ teacher.teacher_profile.gender }}</td>
+                           <td>{{ teacher.teacher_profile.department }}</td>
+                           <td>{{ teacher.teacher_profile.phone_number }}</td>
+                           <td class="text-right">
+                              <div class="actions">
+                                 <a href="{% url "Teachers:TeacherDetails" teacher.id %}" class="btn btn-sm bg-success-light mr-2">
+                                 <i class="fas fa-book"></i>
+                                 </a>
+                              </div>
+                           </td>
+                        </tr>
+                        {% endfor %}
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer>
+          <p>Copyright © 2020 Dreamguys.</p>
+        </footer>
+      </div>
+    </div>
+{% endblock %}

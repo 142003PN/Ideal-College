@@ -1,0 +1,157 @@
+{% extends "base.html" %} {% block content%}
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <div class="page-header">
+      <div class="row">
+        <div class="col-sm-12">
+          <h3 class="page-title">Student Details</h3>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url "Students:list" %}">Student</a>
+            </li>
+            <li class="breadcrumb-item active">Student Details</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      {% if profile %}
+      <div class="card-body">
+        <div class="row">
+
+          <div class="col-md-12">
+            <div class="about-info">
+              <h4>About Me</h4>
+              <div class="media mt-3">
+                <img src="{{ profile.profile_picture.url }}" class="mr-3" alt="..." />
+                <div class="media-body">
+                  <ul>
+                    <li>
+                      <span class="title-span">Full Name : </span>
+                      <span class="info-span">{{ student.first_name}} {{ student.last_name}}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Department : </span>
+                      <span class="info-span">{{ profile.program}}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Mobile : </span>
+                      <span class="info-span">{{ profile.phone_number }}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Email : </span>
+                      <span class="info-span" >{{ student.email }}</span
+                      >
+                    </li>
+                    <li>
+                      <span class="title-span">Gender : </span>
+                      <span class="info-span">{{ profile.gender }}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">DOB : </span>
+                      <span class="info-span">{{ profile.date_of_birth }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="row mt-3">
+                    <ul>
+                    <li>
+                      <span class="title-span">Parent Name : </span>
+                      <span class="info-span">{{ profile.parent_name }}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Parent Contact : </span>
+                      <span class="info-span">{{ profile.parent_contact }}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Parent Contact : </span>
+                      <span class="info-span">{{ profile.parent_address }}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Relationship : </span>
+                      <span class="info-span">{{ profile.relationship }}</span>
+                    </li>
+                  </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+       
+        <!-- Button trigger modal -->
+        {% if request.user.role == 'ADMIN' %}
+        <div class="actions">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+              Delete Student
+            </button>
+            <a href="{% url "Students:edit" student.id %}" class="btn btn-primary">Edit Student</a>
+         {% else %}
+            <a href="{% url "Students:edit" student.id %}" class="btn btn-primary">Edit Student</a>
+        </div>
+        
+        {% endif %}
+
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-0">Are you sure you want to delete <strong>{{ student.first_name}} {{ student.last_name}}</strong>? This action cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a type="button" href="" class="btn btn-danger" id="confirmDelete">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End of Modal-->
+        <div class="row mt-2">
+          <div class="col-md-12">
+            <div class="skill-info">
+              <h4>Settings</h4>
+              <form>
+                <div class="row mt-3">
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label>Username</label>
+                      <input type="text" class="form-control" />
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label>Current Password</label>
+                      <input type="password" class="form-control" />
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label>New Password</label>
+                      <input type="password" class="form-control" />
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+        <h4>No profile</h4>
+      {% endif %}
+    </div>
+  </div>
+
+  <footer>
+    <p>Copyright © 2020 Dreamguys.</p>
+  </footer>
+</div>
+{% endblock %}
