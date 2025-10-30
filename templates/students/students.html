@@ -17,6 +17,20 @@
          </div>
       </div>
    </div>
+   {% for message in messages %}
+      {% if 'success' in message.tags %}
+      <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "{{ message|escapejs }} ",
+          confirmButtonText: "OK",
+        });
+      });
+    </script>
+      {% endif %}
+   {% endfor %}
    <div class="row">
       <div class="col-sm-12">
          <div class="card card-table">

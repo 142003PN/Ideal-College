@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block body%}
+{% extends "base.html" %} {% block content%}
 <div class="page-wrapper">
   <div class="content container-fluid">
     <div class="page-header">
@@ -14,14 +14,31 @@
         </div>
       </div>
     </div>
-
+    <!--messages-->
+    {% for message in messages %} {% if 'success' in message.tags %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "{{ message|escapejs }}",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "{% url "Staff:list" %}"; 
+        }
+      });
+    });
+    </script>
+    {% endif %} {% endfor %}
+    <!--end of messages-->
     <div class="row">
       <div class="col-sm-12">
         <div class="card">
           <div class="card-body">
             <form method="POST" enctype="multipart/form-data" >
               {% csrf_token %}
-              {{ teacher_form }}
+              {{ form }}
               {{ profile_form }}
 
               <div class="col-12">

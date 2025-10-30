@@ -79,17 +79,50 @@
         </div>
        
         <!-- Button trigger modal -->
-        {% if request.user.role == 'ADMIN' %}
         <div class="actions">
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-              Delete Student
-            </button>
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'Students:delete' student.id %}"
+            onclick="event.preventDefault();
+                      const url = this.href;
+                      Swal.fire({
+                          title: 'Are you sure?',
+                          text: 'You won\'t be able to revert this!',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonColor: '#3085d6',
+                          cancelButtonColor: '#d33',
+                          confirmButtonText: 'Yes, delete it!'
+                      }).then((result) => {
+                          if (result.isConfirmed) {
+                          fetch(url)
+                          .then(response => {
+                            if(response.ok) {
+                              Swal.fire(
+                                'Deleted!',
+                                'Your course has been deleted.',
+                                'success'
+                              ).then(() => {
+                                window.location.href = '{% url "Students:list" %}';
+                              });
+                            }
+                          }).catch(() => {
+                            Swal.fire('Error','Request failed.','error');
+                          });
+                          } else {
+                          Swal.fire(
+                            'Cancelled',
+                            'Your course is safe :)',
+                            'info'
+                          );
+                          }
+                      })"
+            >
+            Delete
+          </a>
             <a href="{% url "Students:edit" student.id %}" class="btn btn-primary">Edit Student</a>
-         {% else %}
+        
             <a href="{% url "Students:edit" student.id %}" class="btn btn-primary">Edit Student</a>
         </div>
         
-        {% endif %}
 
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
