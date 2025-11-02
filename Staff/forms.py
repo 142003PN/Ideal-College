@@ -4,21 +4,19 @@ from .models import Staff, StaffProfile
 class StaffForm(forms.ModelForm):
     class Meta:
         model = Staff
-        fields = ['first_name', 'last_name', 'NRC','email', 'password']
+        fields = ['first_name', 'last_name', 'NRC','email']
 
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'NRC': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'password':forms.PasswordInput(attrs={'class': 'form-control'}),
         }
         labels = {
             'first_name': 'First Name', 
             'last_name': 'Last Name',
             'NRC': 'NRC',
             'email': 'Email Address',
-            'password':'Password'
         }
 
 class ProfileForm(forms.ModelForm):
@@ -33,5 +31,5 @@ class ProfileForm(forms.ModelForm):
             'department':forms.Select(attrs={'class':'form-control'}),
             'employment_status':forms.Select(attrs={'class':'form-control'}),
             'phone_number':forms.TextInput(attrs={'class':'form-control'}),
-            'address':forms.Textarea(attrs={'class':'form-control'}),
+            'address':forms.Textarea(attrs={'class':'form-control', 'rows':3, 'cols':15}),
         }

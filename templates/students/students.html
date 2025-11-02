@@ -41,10 +41,10 @@
                         <tr>
                            <th>ID</th>
                            <th>Name</th>
-                           <th>Email</th>
+                           <th>Programme</th>
                            <th>NRC</th>
                            <th>Mobile Number</th>
-                           <th>Address</th>
+                           <th>Year of study</th>
                            <th class="text-right">Action</th>
                         </tr>
                      </thead>
@@ -58,10 +58,10 @@
                                  <a href="">{{student.first_name}} {{student.last_name}}</a>
                               </h2>
                            </td>
-                           <td>{{student.email}}</td>
                            <td>{{ student.profile.program }}</td>
                            <td>{{ student.NRC }}</td>
-                           <td>{{ student.profile.address }}</td>
+                           <td>{{student.profile.phone_number}}</td>
+                           <td>{{ student.profile.year_of_study }}</td>
                            <td class="text-right">
                               <div class="actions">
                                  <a href="{% url "Students:details" student.id  %}" class="btn btn-sm bg-success-light mr-2">

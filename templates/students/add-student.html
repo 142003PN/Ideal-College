@@ -19,99 +19,132 @@
             <div class="card">
                <!--Messages-->
                {% for message in messages %}
-               <div class="alert alert-success" role="alert">
-                  {{ message }}
-               </div>
+               {% if 'error' in message.tags %}
+               <script>
+                  document.addEventListener("DOMContentLoaded", function () {
+                  Swal.fire({
+                     icon: "error",
+                     title: "Error",
+                     text: "{{ message|escapejs }} ",
+                     confirmButtonText: "OK",
+                  });
+                  });
+               </script>
+               {% else %}
+               <script>
+                  document.addEventListener("DOMContentLoaded", function () {
+                  Swal.fire({
+                     icon: "success",
+                     title: "Success",
+                     text: "{{ message|escapejs }} ",
+                     confirmButtonText: "OK",
+                  });
+                  });
+               </script>
+               {% endif %}
                {% endfor %}
                <!--Messages-->
                <div class="card-body">
-                  <form method="POST" enctype="multipart/form-data">
+                  <form method="post" enctype="multipart/form-data">
                      {% csrf_token %}
                      <div class="row">
                         <div class="col-12">
                            <h5 class="form-title"><span>Student Information</span></h5>
                         </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              <label>First Name</label>
+                              <input type="text" name="first_name" class="form-control">
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              <label>Last Name</label>
+                              <input type="text" name="last_name" class="form-control">
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              <label>Student Id</label>
+                              <input type="text" name="student_id" class="form-control">
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              <label>Email</label>
+                              <input type="email" name="email" class="form-control" aur>
+                           </div>
+                        </div>
                         <div class="col-12">
+                           <h5 class="form-title"><span>Profile Information</span></h5>
+                        </div>
+                        <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              {{ student_form.username.label_tag }}
-                              {{ student_form.username }}
+                              <label>Gender</label>
+                              <select class="form-control" name="gender">
+                                 <option>Select Gender</option>
+                                 <option value="F">Female</option>
+                                 <option value="M">Male</option>
+                              </select>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              {{ student_form.first_name.label_tag }}
-                              {{ student_form.first_name }}
+                              <label>Date of Birth</label>
+                              <div>
+                                 <input type="date" name="date_of_birth" class="form-control">
+                              </div>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              {{ student_form.last_name.label_tag }}
-                              {{ student_form.last_name }}
+                              <label>NRC Number</label>
+                              <div>
+                                 <input type="text" name="NRC" class="form-control">
+                              </div>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              {{ student_form.email.label_tag }}
-                              {{ student_form.email }}
+                              <label id="programme">Programme</label>
+                              <select name="programme" id="programme" class="form-control">
+                                {% for programme in programmes %}
+                                 <option value="{{programme.id}}">{{programme.program_title}}</option>
+                                 {% endfor %}
+                              </select>
                            </div>
                         </div>
-                        <div class="col-12 col-sm-6">
-                           <div class="form-group">
-                              {{ student_form.NRC.label_tag }}
-                              {{ student_form.NRC }}
-                           </div>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                           <div class="form-group">
-                              {{ student_form.password.label_tag }}
-                              {{ student_form.password }}
-                           </div>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                           <div class="form-group">
-                              {{ profile_form.program.label_tag }}
-                              {{ profile_form.program }}
-                           </div>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                           <div class="form-group">
-                              {{ profile_form.year_of_study.label_tag }}
-                              {{ profile_form.year_of_study }}
-                           </div>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                           <div class="form-group">
-                              {{ profile_form.date_of_birth.label_tag }}
-                              {{ profile_form.date_of_birth }}
-                           </div>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                           <div class="form-group">
-                              {{ profile_form.gender.label_tag }} 
-                              {{ profile_form.gender }}
-                           </div>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                           <div class="form-group">
-                              {{ profile_form.profile_picture.label_tag }}
-                              {{ profile_form.profile_picture }}
-                           </div>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                           <div class="form-group">
-                              {{ profile_form.phone_number.label_tag }}
-                              {{ profile_form.phone_number }}
-                           </div>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                           <div class="form-group">
-                              {{ profile_form.address.label_tag }}
-                              {{ profile_form.address }}
-                           </div>
-                        </div>
-                        
 
-                        <div class="col-12"> 
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              <label>Year of Study</label>
+                              <select name="year_of_study" class="form-control" required>
+                                 <option value="">Select Year of Study</option>
+                                 {% for year in year_of_study %}
+                                    <option value="{{year.id}}">{{year.year_title}}</option>
+                                 {% endfor %}
+                              </select>
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              <label>Address</label>
+                              <textarea class="form-control" name="address" id="" cols="10" rows="3"></textarea>
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              <label>Mobile Number</label>
+                              <input type="tel" name="phone_number" class="form-control">
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              <label>Profile Picture</label>
+                              <input type="file" name="profile_picture" class="form-control">
+                           </div>
+                        </div>
+                        <div class="col-12">
                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                      </div>

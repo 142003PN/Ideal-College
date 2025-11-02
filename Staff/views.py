@@ -11,6 +11,8 @@ def staff_list(request):
     context={'staffs':staffs, 'profile':profile}
     return render(request, 'staff/staff-list.html', context)
 #add staff member
+from django.shortcuts import redirect
+
 def add_staff(request):
     if request.method == 'POST':
         form = StaffForm(request.POST)
@@ -27,14 +29,43 @@ def add_staff(request):
                 profile = profile_form.save(commit=False)
                 profile.staff_id = staff
                 profile_form.save()
-                messages.success(request, 'Student added successfully.')
+                messages.success(request, 'Staff added successfully.')
+                return redirect('staff_list')
         else:
-            pass
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = StaffForm()
         profile_form = ProfileForm()
     context = {
         'form':form,
         'profile_form':profile_form
+    }
+    return render(request, 'staff/add-staff.html', context)
+
+#
+def edit_staff(request, pk):
+    staff_id=Staff.objects.get(pk=pk)
+    profile=StaffProfile.objects.get(staff_id=staff_id)
+
+    title = 'Edit Staff'
+
+    if request.method == 'POST':
+        form = StaffForm(request.POST, instance=staff_id)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid() and profile_form.is_valid():
+            form.save(commit=False)
+            profile_form.save(commit=False)
+            
+            messages.success(request, 'Staff updated successfully.')
+        else:
+            return HttpResponse("Form is not valid")
+            
+    else:
+        form = StaffForm(instance=staff_id)
+        profile_form = ProfileForm(instance=profile)
+    context ={
+        'form':form,
+        'profile_form':profile_form,
+        'title':title
     }
     return render(request, 'staff/add-staff.html', context)

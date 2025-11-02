@@ -1,14 +1,15 @@
 {% extends "base.html" %}
-{% block body %}
+
+{% block  content %}
 <div class="page-wrapper">
    <div class="content container-fluid">
       <div class="page-header">
          <div class="row align-items-center">
             <div class="col">
-               <h3 class="page-title">Edit Students</h3>
+               <h3 class="page-title">Add Students</h3>
                <ul class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="students.html">Students</a></li>
-                  <li class="breadcrumb-item active">Edit Students</li>
+                  <li class="breadcrumb-item"><a href="{% url "Students:list" %}">Students</a></li>
+                  <li class="breadcrumb-item active">Add Students</li>
                </ul>
             </div>
          </div>
@@ -16,85 +17,107 @@
       <div class="row">
          <div class="col-sm-12">
             <div class="card">
+               <!--Messages-->
+               {% for message in messages %}
+               {% if 'error' in message.tags %}
+               <script>
+                  document.addEventListener("DOMContentLoaded", function () {
+                  Swal.fire({
+                     icon: "error",
+                     title: "Error",
+                     text: "{{ message|escapejs }} ",
+                     confirmButtonText: "OK",
+                  });
+                  });
+               </script>
+               {% else %}
+               <script>
+                  document.addEventListener("DOMContentLoaded", function () {
+                  Swal.fire({
+                     icon: "success",
+                     title: "Success",
+                     text: "{{ message|escapejs }} ",
+                     confirmButtonText: "OK",
+                  });
+                  });
+               </script>
+               {% endif %}
+               {% endfor %}
+               <!--Messages-->
                <div class="card-body">
-                  <form method="POST" enctype="multipart/form-data">
+                  <form method="post" enctype="multipart/form-data">
                      {% csrf_token %}
                      <div class="row">
                         <div class="col-12">
-                           <h5 class="form-title"><span>Student profile</span></h5>
+                           <h5 class="form-title"><span>Student Information</span></h5>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              {{ profile_form.class_id.label_tag }}
-                              {{ profile_form.class_id }}
-                           </div>
-                        </div>
-
-                        <div class="col-12 col-sm-6">
-                           <div class="form-group">
-                              {{ profile_form.phone_number.label_tag }}
-                              {{ profile_form.phone_number }}
+                              <label>First Name</label>
+                              <input type="text" value="{{student.first_name}}" name="first_name" class="form-control">
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              {{ profile_form.religion.label_tag }}
-                              {{ profile_form.religion }}
-                           </div>
-                        </div> 
-                        <div class="col-12 col-sm-6">
-                           <div class="form-group">   
-                             {{profile_form.profile_picture.label_tag }}
-                              {{ profile_form.profile_picture }}
+                              <label>Last Name</label>
+                              <input type="text" value="{{student.last_name}}" name="last_name" class="form-control">
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
-                           <div class="form-group">   
-                              {{ profile_form.date_of_birth.label_tag }}
-                              {{ profile_form.date_of_birth }}
-                           </div>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                           <div class="form-group">   
-                              {{ profile_form.gender.label_tag }}
-                              {{ profile_form.gender }}
-                           </div>
-                        </div>
-
-                        <div class="col-12 col-sm-12">
                            <div class="form-group">
-                              {{ profile_form.address.label_tag }}
-                              {{ profile_form.address }}
+                              <label>Email</label>
+                              <input type="email" value="{{student.email}}" name="email" class="form-control" aur>
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              <label>NRC Number</label>
+                                <input type="text" value="{{student.NRC}}" name="NRC" class="form-control">
                            </div>
                         </div>
                         <div class="col-12">
-                           <h5 class="form-title"><span>Parent profile</span></h5>
+                           <h5 class="form-title"><span>Profile Information</span></h5>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              {{ profile_form.parent_name.label_tag }}
-                              {{ profile_form.parent_name }}
+                              <label>Gender</label>
+                              <select class="form-control" name="gender">
+                                    <option value="">Select Gender</option>
+                                    <option value="M" {% if student.profile.gender == "M" %}selected{% endif %}>Male</option>
+                                    <option value="F" {% if student.profile.gender == "F" %}selected{% endif %}>Female</option>
+                              </select>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              {{ profile_form.parent_contact.label_tag }}
-                              {{ profile_form.parent_contact }}
+                              <label>Date of Birth</label>
+                                <input type="date" value="{{ student.profile.date_of_birth|date:'Y-m-d' }}" name="date_of_birth" class="form-control">
                            </div>
+                        </div>
+                        {% if request.user.role == 'ADMIN' %}
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                              <label id="programme">Programme</label>
+                              <select name="programme" id="programme" class="form-control">
+                                    <option value="">Select Programme</option>
+                                    <option value="{{student.profile.program.id}}">{{student.profile.program}}</option>
+                                 
+                              </select>
+                           </div>
+                        </div>
+                        {% endif %}
+                        <div class="col-12 col-sm-6">
+                            <div class="form-group">
+                                <label for="">Address</label>
+                                <textarea name="address" class="form-control" rows="3">{{student.profile.address}}</textarea>
+                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              {{ profile_form.relationship.label_tag }}
-                              {{ profile_form.relationship }}
+                              <label >Mobile Number</label>
+                              <input type="tel" value="{{student.profile.phone_number}}" name="phone_number" class="form-control">
                            </div>
                         </div>
-                        <div class="col-12">
-                           <div class="form-group">
-                              {{ profile_form.parent_address.label_tag }}
-                              {{ profile_form.parent_address }}
-                           </div>
-                        </div>
-
                         <div class="col-12">
                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>

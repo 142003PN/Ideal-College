@@ -5,12 +5,12 @@
           <div class="page-header">
             <div class="row">
               <div class="col-sm-12">
-                <h3 class="page-title">Teachers Details</h3>
+                <h3 class="page-title">Staff Details</h3>
                 <ul class="breadcrumb">
                   <li class="breadcrumb-item">
-                    <a href="teachers.html">Teachers</a>
+                    <a href="Staff.html">Staff</a>
                   </li>
-                  <li class="breadcrumb-item active">Teachers Details</li>
+                  <li class="breadcrumb-item active">Staff Details</li>
                 </ul>
               </div>
             </div>
@@ -23,33 +23,33 @@
                     <h4>About Me</h4>
                     <div class="media mt-3">
                       <a data-bs-toggle="modal" data-bs-target="#prifile_pic_Modal" >
-                        <img style='border-radius: 10px; cursor: pointer;' data-bs-toggle="modal" data-bs-target="#prifile_pic_Modal" src="{{ teacher.teacher_profile.profile_picture.url }}"  class="mr-3" alt="..." />
+                        <img style='border-radius: 10px; cursor: pointer;' data-bs-toggle="modal" data-bs-target="#prifile_pic_Modal" src="{{ staff.teacher_profile.profile_picture.url }}"  class="mr-3" alt="..." />
                       </a>
                       <div class="media-body">
                         <ul>
                           <li>
                             <span class="title-span">Full Name : </span>
-                            <span class="info-span">{{ teacher.first_name}} {{teacher.last_name}}</span>
+                            <span class="info-span">{{ staff.first_name}} {{staff.last_name}}</span>
                           </li>
                           <li>
                             <span class="title-span">Department : </span>
-                            <span class="info-span">{{ teacher.teacher_profile.department }}</span>
+                            <span class="info-span">{{ staff.staff_profile.department }}</span>
                           </li>
                           <li>
                             <span class="title-span">Mobile : </span>
-                            <span class="info-span">{{ teacher.teacher_profile.phone_number }}</span>
+                            <span class="info-span">{{ staff.staff_profile.phone_number }}</span>
                           </li>
                           <li>
                             <span class="title-span">Email : </span>
-                            <span class="info-span">{{ teacher.email }}</span>
+                            <span class="info-span">{{ staff.email }}</span>
                           </li>
                           <li>
                             <span class="title-span">Gender : </span>
-                            <span class="info-span">{{ teacher.teacher_profile.gender}}</span>
+                            <span class="info-span">{{ staff.staff_profile.gender}}</span>
                           </li>
                           <li>
                             <span class="title-span">DOB : </span>
-                            <span class="info-span">{{ teacher.teacher_profile.date_of_birth }}</span>
+                            <span class="info-span">{{ staff.staff_profile.date_of_birth }}</span>
                           </li>
                         </ul>
                       </div>
@@ -66,7 +66,7 @@
                     <div class="row mt-2">
                       <div class="col-md-12">
                         <h5>Permanent Address</h5>
-                        <p>{{ teacher.teacher_profile.address }}</p>
+                        <p>{{ staff.staff_profile.address }}</p>
                       </div>
                     </div>
                   </div>
@@ -104,9 +104,9 @@
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                       Delete Student
                     </button>
-                    <a href="{% url "Teachers:EditTeacher" teacher.id %}" class="btn btn-primary">Edit Teacher</a>
+                    <a href="{% url "Staff:Editstaff" staff.id %}" class="btn btn-primary">Edit staff</a>
                 {% else %}
-                    <a href="{% url "Teachers:EditTeacher" teacher.id %}" class="btn btn-primary">Edit Teacher</a>
+                    <a href="{% url "Staff:Editstaff" staff.id %}" class="btn btn-primary">Edit staff</a>
                 </div>
                 {% endif %}
               <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -117,11 +117,11 @@
                               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                           <div class="modal-body">
-                              <p class="mb-0">Are you sure you want to delete <strong>{{ teacher.first_name}} {{ teacher.last_name}}</strong>? This action cannot be undone.</p>
+                              <p class="mb-0">Are you sure you want to delete <strong>{{ staff.first_name}} {{ staff.last_name}}</strong>? This action cannot be undone.</p>
                           </div>
                           <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                              <a type="button" href="{% url "Teachers:Delete" teacher.id %}" class="btn btn-danger" id="confirmDelete">Delete</a>
+                              <a type="button" href="{% url "Staff:Delete" staff.id %}" class="btn btn-danger" id="confirmDelete">Delete</a>
                           </div>
                       </div>
                   </div>

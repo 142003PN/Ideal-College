@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from .models import Student, StudentProfile
-from .forms import StudentForm, StudentProfileForm
+from Courses.models import YearOfStudy
+from Programs.models import Programs
 from django.contrib import messages
 from django.http import *
 import os
-# Create your views here.
+
 
 #list students view
 def list_students(request):
@@ -17,52 +18,117 @@ def list_students(request):
     return render(request, 'Students/students.html', context)
 #add student view
 def add_student(request):
+    programmes=Programs.objects.all()
+    year_of_study = YearOfStudy.objects.all()
     if request.method == 'POST':
-        student_form = StudentForm(request.POST)
-        profile_form = StudentProfileForm(request.POST, request.FILES)
-        if student_form.is_valid() and profile_form.is_valid():
-            student = student_form.save(commit=False)
-            student.role = 'STUDENT'
-            password = student_form.cleaned_data.get('password')
-            student.set_password(password)
-            student.save()
-            if StudentProfile.objects.filter(student_id=student).exists():
-                messages.error(request, "Student profile already exists.")
-            else:
-                profile = profile_form.save(commit=False)
-                profile.student_id = student
-                profile_form.save()
-                messages.success(request, 'Student added successfully.')
-                return redirect('Students:list')
+        #Retrieve student data from form
+        first_name=request.POST.get('first_name')
+        last_name=request.POST.get('last_name')
+        student_id=request.POST.get('student_id')
+        email=request.POST.get('email')
+        NRC=request.POST.get('NRC')
+        #profile data
+        gender=request.POST.get('gender')
+        date_of_birth=request.POST.get('date_of_birth')
+        program_id=request.POST.get('programme')
+        program = Programs.objects.get(id=program_id)
+        address=request.POST.get('address')
+        phone_number=request.POST.get('phone_number')
+        profile_picture=request.FILES.get('profile_picture')
+        year_id=request.POST.get('year_of_study')
+        year_of_study = YearOfStudy.objects.get(id=year_id)
+        password="Pass123"
+        if Student.objects.filter(email=email).exists():
+            messages.error(request, "Student with this ID already exists.")
+            return redirect('Students:add') 
+        elif Student.objects.filter(NRC=NRC).exists():
+            messages.error(request, "Student with this NRC already exists.")
+            return redirect('Students:add')
+        elif Student.objects.filter(id=student_id).exists():
+            messages.error(request, "Student with this ID already exists.")
+            return redirect('Students:add')
         else:
-            messages.error(request, 'Failed')
+             #save student
+            student=Student.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                id=student_id,
+                email=email,
+                NRC=NRC,
+            )
+            student.set_password(password)
+            student.save();
+            #save profile
+            profile=StudentProfile.objects.create(
+                gender=gender,
+                date_of_birth=date_of_birth,
+                address=address,
+                program=program,
+                phone_number=phone_number,
+                profile_picture=profile_picture,
+                year_of_study=year_of_study,
+                student_id=student
+            )
+            profile.save();
+            messages.success(request, "Student Added Successfully")
     else:
-        student_form = StudentForm()
-        profile_form = StudentProfileForm()
-    
-    context = {
-        'student_form': student_form,
-        'profile_form': profile_form,
+        pass
+    context={
+        'programmes':programmes,
+        'year_of_study':year_of_study,
     }
     return render(request, 'Students/add-student.html', context)
 
 #edit student view
 def edit_student(request, pk):
-    studentt = Student.objects.get(pk=pk)
-    profiles = StudentProfile.objects.get(student_id=studentt)
+    student = Student.objects.get(pk=pk)
+    profile = StudentProfile.objects.get(student_id=student)
+    
     if request.method == 'POST':
-       student_form = StudentForm(request.POST, instance=studentt)
-       profile_form = StudentProfileForm(request.POST, request.FILES, instance=profiles)
-       if student_form.is_valid() and profile_form.is_valid():
-           student = student_form.save(commit=False)
-    else:
-        student_form = StudentForm(instance=studentt)
-        profile_form = StudentProfileForm(instance=profiles)
+        # Retrieve student data from form  
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        NRC = request.POST.get('NRC')
+        
+        # Retrieve profile data
+        gender = request.POST.get('gender')
+        date_of_birth = request.POST.get('date_of_birth')
+        address = request.POST.get('address')
+        phone_number = request.POST.get('phone_number')
+
+        if email != student.email and Student.objects.filter(email=email).exists():
+            messages.error(request, "Student with this email already exists.")
+            return redirect('Students:edit', pk=pk)
+        elif len(NRC) > 15:
+            messages.error(request, "NRC should have less than 15 characters")
+            return redirect('Students:edit', pk=pk)
+        elif not all(c.isdigit() or c == '/' for c in NRC):
+            messages.error(request, "NRC should only contain numbers and forward slashes /")
+            return redirect('Students:edit', pk=pk)
+        
+        # Update student
+        student.first_name = first_name
+        student.last_name = last_name
+        student.email = email
+        student.NRC = NRC
+        student.save()
+        
+        # Update profile
+        profile.gender = gender
+        profile.date_of_birth = date_of_birth
+        profile.address = address
+        profile.phone_number = phone_number
+        profile.save()
+        
+        messages.success(request, 'Student updated successfully')
+        return redirect('Students:details', student_id=pk)
+
     context = {
-        'student_form': student_form,
-        'profile_form': profile_form,
+        'student': student,
+        'profile': profile,
     }
-    return render(request, 'Students/add-student.html', context)
+    return render(request, 'Students/edit-student.html', context)
 
 #student details view
 def student_details(request, student_id):
@@ -92,3 +158,7 @@ def delete_student(request, pk):
         return redirect('Students:list')
     except student.DoesNotExist:
         return HttpResponse("Student does not exixt")
+    
+# Student dashboard view
+def student_dashboard(request):
+    return render(request, 'students/student-dashboard.html')

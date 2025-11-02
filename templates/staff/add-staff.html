@@ -4,12 +4,20 @@
     <div class="page-header">
       <div class="row align-items-center">
         <div class="col">
-          <h3 class="page-title">Add Teachers</h3>
+          {% if title %}
+          <h3 class="page-title">{{title}}</h3>
+          {% else %}
+          <h3 class="page-title">Add Staff</h3>
+          {% endif %}
           <ul class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="teachers.html">Teachers</a>
             </li>
+            {% if title %}
+            <li class="breadcrumb-item active">{{ title }}</li>
+            {% else %}
             <li class="breadcrumb-item active">Add Teachers</li>
+            {% endif %}
           </ul>
         </div>
       </div>
@@ -38,9 +46,73 @@
           <div class="card-body">
             <form method="POST" enctype="multipart/form-data" >
               {% csrf_token %}
-              {{ form }}
-              {{ profile_form }}
-
+              <div class="row">
+                <div class="col-12">
+                  <h5 class="form-title"><span>Staff Information</span></h5>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                      {{ form.first_name.label_tag }}
+                      {{ form.first_name }}
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                      {{ form.last_name.label_tag }}
+                      {{ form.last_name }}
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                      {{ form.NRC.label_tag }}
+                      {{ form.NRC }}
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                      {{ form.email.label_tag }}
+                      {{ form.email }}
+                  </div>
+                </div>
+                <div class="col-12">
+                  <h5 class="form-title"><span>Staff Profile</span></h5>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                      {{ profile_form.gender.label_tag }}
+                      {{ profile_form.gender }}
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                      {{ profile_form.phone_number.label_tag }}
+                      {{ profile_form.phone_number }}
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                      {{ profile_form.employment_status.label_tag }}
+                      {{ profile_form.employment_status }}
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                      {{ profile_form.department.label_tag }}
+                      {{ profile_form.department }}
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                      {{ profile_form.profile_picture.label_tag }}
+                      {{ profile_form.profile_picture }}
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                      {{ profile_form.address.label_tag }}
+                      {{ profile_form.address }}
+                  </div>
+                </div>
               <div class="col-12">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
