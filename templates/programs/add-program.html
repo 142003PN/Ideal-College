@@ -12,7 +12,7 @@
         {% endif %}
         <ul class="breadcrumb">
             <li class="breadcrumb-item">
-            <a href="Programs:programs">Programmes</a>
+            <a href="{% url "Programs:programs" %}">Programmes</a>
             </li>
             {% if title %}
             <li class="breadcrumb-item active">{{ title }}</li>
@@ -28,10 +28,34 @@
     <div class="col-sm-12">
         <div class="card">
             {% for message in messages %}
-            <p class="alert alert-success">{{ message }}</p>
+                {% if 'success' in message.tags %}
+                <script>
+                    // Show SweetAlert for success message
+                    document.addEventListener("DOMContentLoaded", function () {
+                        Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: "{{ message|escapejs }}",
+                        didClose: () => { window.location.href = "{% url 'Programs:programs' %}"; },
+                        confirmButtonText: "OK",
+                        });
+                    });
+                </script>
+                {% else %}
+                <script >
+                    document.addEventListener("DOMContentLoaded", function () {
+                        Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "{{ message|escapejs }} ",
+                        confirmButtonText: "OK",
+                        });
+                    });
+                </script>
+                {% endif %}
             {% endfor %}
         <div class="card-body">
-            <form method='POST'>
+            <form method='POST' id="program-form">
                 {% csrf_token %}
             <div class="row">
                 <div class="col-12">
@@ -58,6 +82,13 @@
                 </div>
             </div>
             </form>
+            {% for message in messages %}
+            {% if 'success' in message.tags %}
+            <script>
+            
+            </script>
+            {% endif %}
+            {% endfor %}
         </div>
         </div>
     </div>

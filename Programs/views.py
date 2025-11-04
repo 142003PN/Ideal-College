@@ -6,32 +6,42 @@ from Courses.models import Courses
 import datetime
 import xlwt
 import encodings
+from django.contrib import messages
 
 #add programme
 def add_programme(request):
     if request.method == 'POST':
         form = ProgramForm(request.POST)
-        if form.is_valid:
-            program = form.save(commit=False)
-            form.save()
-            return HttpResponse('Programme added Successfully')
+        if form.is_valid():
+            program_title = form.cleaned_data.get('program_title')
+            if program_title and Programs.objects.filter(program_title__iexact=program_title).exists():
+                messages.error(request, 'Programme already exists')
+            else:
+                form.save()
+                messages.success(request, 'Programme added successfully!')
         else:
-            return HttpResponse('Department already exist')
+            messages.error(request, 'Programme Already exists')
     else:
         form = ProgramForm()
-    return render(request, 'programs/add-program.html', {'form':form})
+    return render(request, 'programs/add-program.html', {'form':form, 'title':'Add Programme'})
+#Edit programme
 
 def edit_programme(request, pk):
     program = Programs.objects.get(pk = pk)
     title = "Edit Programme"
     if request.method == 'POST':
         form = ProgramForm(request.POST, instance=program)
-        if form.is_valid:
-            program = form.save(commit=False)
-            form.save()
-            return HttpResponse('Programme added Successfully')
+        if form.is_valid():
+            program_title = form.cleaned_data.get('program_title')
+            if program_title and Programs.objects.filter(program_title__iexact=program_title).exclude(pk=program.pk).exists():
+                messages.error(request, 'Programme with this title already exists')
+            else:
+                program = form.save(commit=False)
+                form.save()
+                messages.success(request, 'Programme updated successfully')
+                return HttpResponse('Programme added Successfully')
         else:
-            return HttpResponse('Department already exist')
+            return HttpResponse('Please correct the errors below')
     else:
         form = ProgramForm(instance=program)
     return render(request, 'programs/add-program.html', {'form':form, 'title':title})

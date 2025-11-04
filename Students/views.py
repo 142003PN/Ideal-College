@@ -9,17 +9,18 @@ import os
 
 #list students view
 def list_students(request):
-    students = Student.objects.filter(role="STUDENT")
+    students = Student.objects.filter(role="STUDENT").order_by('date_joined')
     profile = StudentProfile.objects.all()
     context = {
         'students': students,
         'profile': profile,
     }
     return render(request, 'Students/students.html', context)
+
 #add student view
 def add_student(request):
     programmes=Programs.objects.all()
-    year_of_study = YearOfStudy.objects.all()
+    years = YearOfStudy.objects.all()
     if request.method == 'POST':
         #Retrieve student data from form
         first_name=request.POST.get('first_name')
@@ -75,7 +76,7 @@ def add_student(request):
         pass
     context={
         'programmes':programmes,
-        'year_of_study':year_of_study,
+        'years':years,
     }
     return render(request, 'Students/add-student.html', context)
 

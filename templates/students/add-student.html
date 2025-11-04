@@ -120,7 +120,7 @@
                               <label>Year of Study</label>
                               <select name="year_of_study" class="form-control" required>
                                  <option value="">Select Year of Study</option>
-                                 {% for year in year_of_study %}
+                                 {% for year in years %}
                                     <option value="{{year.id}}">{{year.year_title}}</option>
                                  {% endfor %}
                               </select>
