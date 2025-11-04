@@ -9,9 +9,34 @@
 <div class="main-wrapper login-body">
    <div class="login-wrapper">
       <div class="container">
+         {% for message in messages %}
+         {% if 'error' in message.tags %}
+         <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+               icon: "error",
+               title: "Error",
+               text: "{{ message|escapejs }} ",
+               confirmButtonText: "OK",
+            });
+            });
+         </script>
+         {% else %}
+         <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+               icon: "success",
+               title: "Success",
+               text: "{{ message|escapejs }} ",
+               confirmButtonText: "OK",
+            });
+            });
+         </script>
+         {% endif %}
+         {% endfor %}
          <div class="loginbox">
             <div class="login-left">
-               <img class="img-fluid" src="assets/img/logo-white.png" alt="Logo">
+               <img class="img-fluid" src="{% static "img/logo.png" %}" alt="Logo">
             </div>
             <div class="login-right">
                <div class="login-right-wrap">
@@ -21,13 +46,13 @@
                      <div class="col-12">
                         <div class="form-group">
                           <label>Your Id</label>
-                          <input type="text" name="id" class="form-control" />
+                          <input type="text" name="id" class="form-control" autocomple="off" />
                         </div>
                       </div>
                      <div class="col-12">
                         <div class="form-group">
                           <label>Password</label>
-                          <input type="password" name="password" class="form-control" />
+                          <input type="password" name="password" class="form-control" autocomple="off" />
                         </div>
                       </div>
                      <button class="btn btn-primary btn-block" type="submit">Login</button>

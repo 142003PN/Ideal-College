@@ -6,8 +6,6 @@ from django.contrib import messages
 from django.http import *
 import os
 
-
-#list students view
 def list_students(request):
     students = Student.objects.filter(role="STUDENT").order_by('date_joined')
     profile = StudentProfile.objects.all()

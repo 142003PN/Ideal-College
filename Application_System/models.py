@@ -1,4 +1,4 @@
-"""from django.db import models
+from django.db import models
 from django.core.validators import FileExtensionValidator
 import datetime
 from django.core import validators
@@ -59,4 +59,3 @@ class Application_Status(models.Model):
         return f"Application {self.application.admission_id} - {self.status}"
     
 
-"""
