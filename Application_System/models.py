@@ -30,19 +30,20 @@ class General_Information(models.Model):
     ])
     gender = models.CharField(max_length=10, choices=GenderChoices.choices, null=True, blank=True)
     nationality = models.CharField(max_length=50)
-    address = models.TextField()
-    phone_number = models.CharField(max_length=15)
+    address = models.TextField(null=True, blank=True)
+    phone_number = models.CharField(max_length=15, null=True, blank=True)
     email = models.EmailField(unique=True)
     NRC = models.CharField(max_length=20, unique=True)
     marital_status = models.CharField(max_length=30, null=True, blank=True)
     city_of_residence = models.CharField(max_length=50, null=True, blank=True)
-    year_of_study = models.ForeignKey(YearOfStudy, on_delete=models.SET_NULL, null=True, blank=True)
+    year_of_study = models.ForeignKey(YearOfStudy, on_delete=models.SET_NULL, null=True, blank=True)#should added by default to first year
     program = models.ForeignKey(Programs, null=True, blank=True, on_delete=models.SET_NULL)
     deposit_slip = models.FileField(upload_to='slips/', validators=[FileExtensionValidator(['pdf', 'jpg', 'jpeg', 'png'])])
     date_of_application = models.DateField(auto_now_add=True)
     passport_photo = models.ImageField(upload_to='profile_picture', null=True, blank=True, validators=[FileExtensionValidator(['jpg', 'jpeg', 'png'])])
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+#next of Kin
 class Next_of_Kin(models.Model):
     addmission_id = models.OneToOneField(General_Information, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=30, null=True, blank=True)
@@ -51,6 +52,7 @@ class Next_of_Kin(models.Model):
 
     def __str__(self):
         return self.full_name
+#school certificate
 class School_Certificate(models.Model):
     class TypeChoices(models.TextChoices):
         ECONDARY = 'SECONDARY', 'Secondary_School_Certificate'
@@ -62,12 +64,12 @@ class School_Certificate(models.Model):
     certificate_type = models.CharField(max_length=30, choices=TypeChoices.choices)
     certificate_name = models.CharField(max_length=100, null=True, blank=True)
     institution_name = models.CharField(max_length=100, null=True, blank=True)
-    scan_copy = models.FileField(upload_to='certificates/', validators=[FileExtensionValidator(['pdf'])])
-    year_of_completion = models.PositiveIntegerField()
+    certificate = models.FileField(upload_to='certificates/', validators=[FileExtensionValidator(['pdf'])])
+    year_of_completion = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.certificate_type} - {self.institution_name} ({self.year_of_completion})"
-   
+#application status
 class Application_Status(models.Model):
     application = models.OneToOneField(General_Information, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=[
@@ -78,7 +80,7 @@ class Application_Status(models.Model):
     def __str__(self):
         return self.status
     
-    
+# Signal to create Student and StudentProfile upon application approval  
 @receiver(post_save, sender=Application_Status)
 def create_student_on_approval(sender, instance, created, **kwargs):
     # Only act when application status is approved
