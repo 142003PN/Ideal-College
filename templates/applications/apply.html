@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admission Application Form</title>
+  <link rel="stylesheet" href="{% static "css/apply.css" %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .form-group{
+      margin-bottom: 10px;
+    }
+    .form-group label{
+        font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  {% block content %}
+
+  <!--Sweet alert-->
+  {% for message in messages %}
+    {% if 'error' in message.tags %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "{{ message|escapejs }} ",
+          confirmButtonText: "OK",
+        });
+      });
+    </script>
+    {% else %}
+     <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "{{ message|escapejs }} ",
+          confirmButtonText: "OK",
+        });
+      });
+    </script>
+    {% endif %}
+    {% endfor %}
+  <div class="container w-100">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <!-- Item 1: General Information -->
+      <div class="accordion-item">
+        <div class="accordion-header" onclick=toggleAccordion(this)>
+          <span>1 - General information</span>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+              <div class="row">
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                      <label for="first_name">First Name <small class="text-danger">*</small></label>
+                      <input type="text" name="first_name" class="form-control" placeholder="Enter your first name", autocomplete="off">
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="last_name">Last Name <small class="text-danger">*</small></label>
+                    <input type="text" name="last_name" class="form-control" placeholder="Enter your last name" autocomplete="off">
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="date_of_birth">Date of Birth <small class="text-danger">*</small></label>
+                    <input type="date" name="date_of_birth" id="date_of_birth" class="form-control">
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="gender">Gender <small class="text-danger">*</small></label>
+                    <select class="form-select" id="gender" name="gender">
+                      <option value="">Select Gender</option>
+                      <option value="M">Male</option>
+                      <option value="F">Female</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="NRC">NRC <small class="text-danger">*</small></label>
+                    <input type="text" name="NRC" class="form-control" autocomplete="off" placeholder="1111/13/1">
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="phone_number">Phone Number <small class="text-danger">*</small></label>
+                    <input type="text" name="phone_number" class="form-input" autocomplete="off" placeholder="+260 97 123 4567">
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="NRC">Disability? <small class="text-danger">*</small></label>
+                    <select name="disability" class="form-select" id="disability">
+                      <option value="No">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="disability_desc">If yes Select Disability<small class="text-danger">*</small></label>
+                    <select name="disability_desc" class="form-select" id="disability_desc">
+                        <option value="">No disability</option>
+                        <option value="vision">Vision</option>
+                        <option value="hearing">Hearing</option>
+                        <option value="speech">Speech</option>
+                        <option value="mobility">mobility</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="email">Email <small class="text-danger">*</small></label>
+                    <input type="email" name="email" class="form-control" autocomplete="off" placeholder="hhasdh@email.com">
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="nationality">Nationality <small class="text-danger">*</small></label>
+                    <input type="text" name="nationality" class="form-input" autocomplete="off" placeholder="Zambian">
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="city_of_residence">City/District <small class="text-danger">*</small></label>
+                    <input type="text" name="city_of_residence" class="form-control" placeholder="Lusaka" required>
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="marital_status">Marital Status <small class="text-danger">*</small></label>
+                    <select id="marital_status" class="form-select" name="marital_status">
+                      <option value="">Select Marital Status</option>
+                      <option value="Single">Single</option>
+                      <option value="Married">Married</option>
+                      <option value="Divorced">Divorced</option>
+                      <option value="Widowed">Widowed</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="address">Address </label>
+                    <textarea name="address" id="address" cols="3" rows="3" class="form-control"></textarea>
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="passport_photo">Passport Photo <small class="text-danger">*</small></label>
+                    <input type="file" name="passport_photo" class="form-control">
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
+                    <label for="deposit_slip">Deposit <small class="text-danger">*</small></label>
+                    <input type="file" name="deposit_slip" class="form-control">
+                  </div>
+                </div>
+                <!--Hidden year of study-->
+                <select style="display: none;" name="year_of_study">
+                  <option value="{{ year.id }}" selected>{{ year.year_title }}</option>
+                </select>
+                <!--End of Hidden year-->
+          </div>
+        </div>
+      </div>
+      <!--Programme -->
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span>2 - Programme of Choice</span>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <table class="form-table">
+              <thead>
+                <tr>
+                  <th style="width: 40%;">Information</th>
+                  <th style="width: 60%;">Input fields</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2.1 -First Choice Programme </td>
+                  <td>
+                    <select class="form-select" name="program">
+                      <option>Select Choice</option>
+                      {% for program in programs %}
+                      <option value="{{ program.id }}">{{ program.program_title }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2.2 - Second Choice Programme </td>
+                  <td>
+                    <select class="form-select" name="program_2">
+                      <option>Select Choice</option>
+                      {% for program in programs %}
+                        <option value="{{ program.id }}">{{ program.program_title }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2.3 -Third Choice Programme </td>
+                  <td>
+                    <select class="form-select" name="program_3">
+                      <option>Select Choice</option>
+                      {% for program in programs %}
+                        <option value="{{ program.id }}">{{ program.program_title }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!--Item 2: School Certificate Examination Results-->
+      <div class="accordion-item">
+        <div class="accordion-header" onclick=toggleAccordion(this)>
+          <span>3 - School certificate examination results</span>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <div class="row">
+              <div class="col-5">
+                <div class="form-group">
+                  <label> Subject: </label>
+                    <select name="subject" id="subjectInput" class="form-control">
+                      <option value="addma">Additional Mathematics</option>
+                      <option value="science">Science</option>
+                      <option value="math">Maths</option>
+                      <option value="english">English</option>
+                      <option value="biology">Biology</option>
+                      <option value="chemistry">Chemistry</option>
+                      <option value="physics">Physics</option>
+                      <option value="civic">Civic Education</option>
+                      <option value="geography">Geography</option>
+                      <option value="history">History</option>
+                      <option value="design_and_tech">Design and Technology</option>
+                      <option value="Religious_Education">Religious Education</option>
+                      <option value="Commerce">Commerce</option>
+                      <option value="Food_Nutrion">Food and Nutrition</option>
+                    </select>
+                </div>
+              </div>
+              <div class="col-5">
+                <div class="form-group">
+                  <label>Grade: </label>
+                    <input type="number" id="gradeInput" min="0" max="100" class="form-control" />
+                </div>
+              </div>
+              <div class="col-2">
+                <div class="form-group mt-4">
+                  <button type="button" class="btn btn-primary" onclick="addSubject()">Add</button>
+                </div>
+              </div>
+            </div>
+            <table id="subjectTable" border="1" class="table">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Grade</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <script>
+              const subjects = [];
+
+              function addSubject() {
+                const subject = document
+                  .getElementById("subjectInput")
+                  .value.trim()
+                  .toLowerCase();
+                const grade = parseInt(document.getElementById("gradeInput").value);
+
+                if (!subject || isNaN(grade)) {
+                  alert("Please enter a valid subject and grade.");
+                  return;
+                }
+
+                // ✅ Prevent adding the same subject twice
+                const duplicate = subjects.some((item) => item.subject === subject);
+                if (duplicate) {
+                  alert("This subject has already been added!");
+                  return;
+                }
+
+                subjects.push({ subject, grade });
+                renderTable();
+                clearInputs();
+              }
+
+              function renderTable() {
+                const tbody = document.querySelector("#subjectTable tbody");
+                tbody.innerHTML = "";
+
+                subjects.forEach((item, index) => {
+                  const row = `
+                    <tr>
+                      <td>${capitalize(item.subject)}</td>
+                      <td>${item.grade}</td>
+                      <td>
+                        <button type="button" onclick="removeSubject(${index})">Remove</button>
+                      </td>
+
+                      <!-- Hidden inputs so Django receives the data -->
+                      <input type="hidden" name="subject" value="${item.subject}">
+                      <input type="hidden" name="grade" value="${item.grade}">
+                    </tr>
+                  `;
+                  tbody.innerHTML += row;
+                });
+              }
+
+              function removeSubject(index) {
+                subjects.splice(index, 1);
+                renderTable();
+              }
+
+              function clearInputs() {
+                document.getElementById("subjectInput").value = "science";
+                document.getElementById("gradeInput").value = "";
+              }
+
+              function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+              }
+            </script>
+
+          </div>
+        </div>
+      </div>
+      <!--Item 3: Education Background and Personal Documents-->
+      <div class="accordion-item">
+        <div class="accordion-header" onclick=toggleAccordion(this)>
+          <span>3 - Education background and Personal documents</span>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <div class="section-description">
+              In this section you will need to provide records of your previously followed education (secondary education and up). You can use then one record, please enter as many records as needed.
+            </div>
+
+            <table class="form-table">
+              <thead>
+                <tr>
+                  <th style="width: 40%;">Information</th>
+                  <th style="width: 60%;">Input fields</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>3.1 - Type of certificate</td>
+                  <td>
+                    <select class="form-select" name="certificate_type">
+                      <option>Secondary school certificate</option>
+                      <option>High school diploma</option>
+                      <option>Bachelor's degree</option>
+                      <option>Master's degree</option>
+                      <option>Other</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>1.3.2 - Name of institution</td>
+                  <td>
+                    <input type="text" class="form-input" name="institution_name" placeholder="">
+                    <div class="example-text">For example: Evelyn Hone</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2.3.3 - Name of certification or Document</td>
+                  <td>
+                    <input type="text" class="form-input" name="certificate_name" placeholder="">
+                    <div class="example-text">For example: Grade 12 or Diploma in Business Studies</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2.3.4 - Year of Completion</td>
+                  <td>
+                    <input type="number" class="form-input" name="completion_year" placeholder="">
+                    <div class="example-text">For example: Grade 12 or Diploma in Business Studies</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Scan of Certificate</td>
+                  <td>
+                    <div class="file-upload-wrapper">
+                      <input type="file" name="certificate" id="">
+                    </div>
+                    <div class="example-text">Upload the certificate, degree or diploma.<small class="text-danger">PDF only</small></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <a href="#" class="add-record-link" onclick="addEducationRecord(event)">Add another education record</a>
+            <script>
+              function addEducationRecord(event) {
+                event.preventDefault();
+                const table = event.target.previousElementSibling;
+                const newRecord = table.cloneNode(true);
+                
+                // Clear all input values in the clone
+                newRecord.querySelectorAll('input').forEach(input => input.value = '');
+                newRecord.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+                newRecord.querySelectorAll('.file-upload-wrapper span').forEach(span => span.textContent = 'No file chosen');
+                
+                // Add a remove button
+                const removeBtn = document.createElement('div');
+                removeBtn.innerHTML = '<a href="#" class="remove-record-link" onclick="removeEducationRecord(event)">Remove record</a>';
+                newRecord.appendChild(removeBtn);
+                
+                // Insert the new record before the "Add another" link
+                event.target.insertAdjacentElement('beforebegin', newRecord);
+              }
+
+              function removeEducationRecord(event) {
+                event.preventDefault();
+                event.target.closest('.form-table').remove();
+              }
+            </script>
+          </div>
+        </div>
+      </div>
+     <!-- Item 4: Next of Kin-->
+      <div class="accordion-item">
+        <div class="accordion-header" onclick=toggleAccordion(this)>
+          <span>4 - Next of Kin</span>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <div class="row">
+              <div class="col-12 col-sm-6">
+                <div class="form-group">
+                  <label for="full_name">Full Name <small class="text-danger">*</small></label>
+                  <input type="text" class="form-control" name="full_name" id="full_name" required>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="form-group">
+                  <label for="NK_email">Email </label>
+                  <input type="text" class="form-control" name="NK_email" id="NK_email" autocomplete="off">
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="form-group">
+                  <label for="phone_no">Phone Number <small class="text-danger">*</small></label>
+                  <input type="text" class="form-control" name="phone_no" id="phone_no" required>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="form-group">
+                  <label for="NK_address">Address <small class="text-danger">*</small></label>
+                  <textarea class="form-control" name="NK_address" id="NK_address" cols="30" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success">Submit Application</button>
+      </div>
+    </form>
+  </div>
+  {% endblock  %}
+  <script>
+    function toggleAccordion(header) {
+      const item = header.parentElement;
+      const isActive = item.classList.contains('active');
+
+      // Close all other accordion items
+      document.querySelectorAll('.accordion-item').forEach(el => {
+        el.classList.remove('active');
+      });
+      
+      // Toggle current item
+      if (!isActive) {
+        item.classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>

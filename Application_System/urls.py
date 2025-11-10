@@ -5,4 +5,5 @@ app_name = 'Application'
 
 urlpatterns = [
     path('apply/', views.apply, name='apply'),
+    path('recent/', views.recent_applications, name='recent'),
 ]

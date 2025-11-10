@@ -21,6 +21,8 @@ def apply(request):
         email = request.POST.get('email')
         NRC = request.POST.get('NRC')
         marital_status = request.POST.get('marital_status')
+        disability=request.POST.get('disability')
+        disability_desc=request.POST.get('disability_desc')
         city_of_residence = request.POST.get('city_of_residence')
         program_id = request.POST.get('program')
         year_id = request.POST.get('year_of_study')
@@ -28,11 +30,18 @@ def apply(request):
         program = Programs.objects.get(id=program_id)
         deposit_slip = request.FILES.get('deposit_slip')
         passport_photo = request.FILES.get('passport_photo')
+        #Subjects
+        subjects = request.POST.getlist('subject')
+        grades = request.POST.getlist('grade')
         #school certificate info
         certificate_type = request.POST.get('certificate_type')
         institution_name = request.POST.get('institution_name')
         completion_year = request.POST.get('completion_year')
         certificate = request.FILES.get('certificate')
+        #Next of kin info
+        full_name= request.POST.get('full_name')
+        NK_email= request.POST.get('NK_email')
+        phone_no = request.POST.get('phone_no')
         #validation
         if Student.objects.filter(email=email).exists() or General_Information.objects.filter(email=email).exists():
             messages.error(request, 'Email already exists!')
@@ -46,6 +55,8 @@ def apply(request):
                 last_name=last_name,
                 date_of_birth=date_of_birth,
                 gender=gender,
+                disability=disability,
+                disability_desc=disability_desc,
                 nationality=nationality,
                 address=address,
                 phone_number=phone_number,
@@ -58,6 +69,13 @@ def apply(request):
                 deposit_slip=deposit_slip,
                 passport_photo=passport_photo
             )
+            #save certificate results
+            for subject, grade in zip(subjects, grades):
+                subject = CertificateResults.objects.create(
+                    admission_id = addmission,
+                    subject_name=subject,
+                    grade = grade
+                )
             #save school certificate info
             school_cert = School_Certificate.objects.create(
                 addmission=addmission,
@@ -66,7 +84,25 @@ def apply(request):
                 year_of_completion=completion_year,
                 certificate=certificate
             )
+            #save next of kin info
+            next_of_kin = Next_of_Kin.objects.create(
+                addmission_id=addmission,
+                full_name=full_name,
+                email=NK_email,
+                phone_number=phone_no,
+            )
             addmission.save();
+            subject.save();
             school_cert.save();
+            next_of_kin.save();
             messages.success(request, 'Application Submmited Successfully!')
     return render(request, 'applications/apply.html', {'programs': programs, 'year': year})
+
+def recent_applications(request):
+    applications =General_Information.objects.all().order_by('-date_of_application')
+    applications =General_Information.objects.all().order_by('-date_of_application')
+
+    context={
+        'applications':applications
+    }
+    return render(request, 'applications/recent-applications.html', context)
