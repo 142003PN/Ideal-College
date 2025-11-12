@@ -137,7 +137,9 @@ ul, ol {
 	padding: 0px;
 	list-style: none;
 }
-
+label{
+	font-weight: 600;
+}
 /*-----------------
 	2. Table
 -----------------------*/

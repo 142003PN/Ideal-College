@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+import json
 from Programs.models import Programs
 
 # Create your models here.
@@ -20,4 +21,5 @@ class Courses(models.Model):
 
     def __str__(self):
         return self.course_code +'--'+ self.course_title
-    
+    def to_dict(self):
+        return {"year": self.year}

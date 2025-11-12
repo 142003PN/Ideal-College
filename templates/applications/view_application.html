@@ -1,0 +1,226 @@
+{% extends "base.html" %} {% block content%}
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <div class="page-header">
+      <div class="row">
+        <div class="col-sm-12">
+          <h3 class="page-title">Application Details</h3>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url "Application:recent" %}">Applications</a>
+            </li>
+            <li class="breadcrumb-item active">Application Details</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+
+          <div class="col-md-12">
+            <div class="about-info">
+              <h4>About Me</h4>
+              <div class="media mt-3">
+                <img src="{{ application.passport_photo.url }}" class="mr-3" alt="..." />
+                <style>
+                  .media img{
+                    width: 200px;
+                    height: 200px;
+                    object-fit: cover;
+                    aspect-ratio: 1/1;
+                  }
+                </style>
+                <div class="media-body">
+                  <ul>
+                    <li>
+                      <span class="title-span">Full Name : </span>
+                      <span class="info-span">{{ application.first_name}} {{ application.last_name}}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Program : </span>
+                      <span class="info-span">{{ application.program}}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Mobile : </span>
+                      <span class="info-span">{{ application.phone_number }}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Email : </span>
+                      <span class="info-span" >{{ application.email }}</span
+                      >
+                    </li>
+                    <li>
+                      <span class="title-span">Gender : </span>
+                      <span class="info-span">{{ application.gender }}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">DOB : </span>
+                      <span class="info-span">{{ application.date_of_birth }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <ul>
+                    <li>
+                      <span class="title-span">Year of Study : </span>
+                      <span class="info-span">{{ application.year_of_study }}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Address :     </span>
+                      <span class="info-span">{{ application.address }}</span>
+                    </li>
+                    <div class="col-12">
+                        <h5 class="form-title text-dark"><span style="color: #000; font-weight: 700; font-size: 1.5rem;">Next of Kin Information</span></h5>
+                    </div>
+                    {% if next_of_kin %}
+                    <li>
+                      <span class="title-span">Full Name: </span>
+                      <span class="info-span">{{ application.next_of_kin.full_name}}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Contact : </span>
+                      <span class="info-span">{{ application.next_of_kin.phone_number}}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Address : </span>
+                      <span class="info-span">{{ application.next_of_kin.NK_address }}</span>
+                    </li>
+                  </ul>
+                  {% else %}
+                  <p>No next of kin data</p>
+                  {% endif %}
+                  <div class="col-12">
+                        <h5 class="form-title text-dark"><span style="color: #000; font-weight: 700; font-size: 1.5rem;">Grade 12 Results</span></h5>
+                    </div>
+                  <div class="col-12 col-md-9 col-sm-6">
+                    <table class="table mb-3">
+                        <thead>
+                            <tr>
+                                <th scope="col">Subject</th>
+                                <th scope="col">Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {% if application.results %}
+                            {% for result in results %}
+                            <tr>
+                                <td>{{ result.subject_name }}</td>
+                                <td>{{ result.grade }}</td>
+                            </tr>
+                            {% endfor %}
+                          {% else %}
+                            <tr>
+                                <td colspan="2">No results available.</td>
+                            </tr>
+                          {% endif %}
+                        </tbody>
+                    </table>
+                    <!--School Cerficate-->
+                  {% if school_certificates %}
+                    <div class="col-12">
+                      <h5 class="form-title text-dark"><span style="color: #000; font-weight: 700; font-size: 1.5rem;">Certificate(s)</span></h5>
+                    </div>
+                    <div class="col-12">
+                      <table class="table mb-3">
+                        <thead>
+                          <tr>
+                            <th scope="col">Certificate Type</th>
+                            <th scope="col">Institution Name</th>
+                            <th scope="col">Year Obtained</th>
+                            <th scope="col">Certificate</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for school_certificate in school_certificates %}
+                          <tr>
+                            <td>{{ school_certificate.certificate_type }}</td>
+                            <td>{{ school_certificate.institution_name }}</td>
+                            <td>{{ school_certificate.year_of_completion }}</td>
+                            <td>
+                              {% if school_certificate.certificate %}
+                                <a href="{{ school_certificate.certificate.url }}" target="_blank">View Certificate</a>
+                              {% else %}
+                                N/A
+                              {% endif %}
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  {% else %}
+                    <p>No certificates available.</p>
+                  {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+       
+        <!-- Button trigger modal -->
+        <div class="actions">
+            <a class="btn btn-sm btn-outline-danger" href=""
+            onclick="event.preventDefault();
+                      const url = this.href;
+                      Swal.fire({
+                          title: 'Are you sure?',
+                          text: 'You won\'t be able to revert this!',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonColor: '#3085d6',
+                          cancelButtonColor: '#d33',
+                          confirmButtonText: 'Yes, delete it!'
+                      }).then((result) => {
+                          if (result.isConfirmed) {
+                          fetch(url)
+                          .then(response => {
+                            if(response.ok) {
+                              Swal.fire(
+                                'Deleted!',
+                                'Your course has been deleted.',
+                                'success'
+                              ).then(() => {
+                                window.location.href = '';
+                              });
+                            }
+                          }).catch(() => {
+                            Swal.fire('Error','Request failed.','error');
+                          });
+                          } else {
+                          Swal.fire(
+                            'Cancelled',
+                            'Your course is safe :)',
+                            'info'
+                          );
+                          }
+                      })"
+            >
+            Delete
+        </a>
+        </div>
+        
+
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-0">Are you sure you want to delete <strong>{{ application.first_name}} {{ application.last_name}}</strong>? This action cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a type="button" href="" class="btn btn-danger" id="confirmDelete">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End of Modal-->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

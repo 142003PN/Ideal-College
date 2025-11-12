@@ -41,13 +41,13 @@ class General_Information(models.Model):
     disability = models.CharField(max_length=5, default="No")
     disability_desc=models.CharField(max_length=15, null=True, blank=True)
     year_of_study = models.ForeignKey(YearOfStudy, on_delete=models.SET_NULL, null=True, blank=True)#should added by default to first year
-    program = models.ForeignKey(Programs, null=True, blank=True, on_delete=models.SET_NULL)
+    program = models.ForeignKey(Programs, null=True, blank=True, on_delete=models.SET_NULL, related_name='applications')
     deposit_slip = models.FileField(upload_to='slips/', validators=[FileExtensionValidator(['pdf', 'jpg', 'jpeg', 'png'])])
     date_of_application = models.DateField(auto_now_add=True)
-    passport_photo = models.ImageField(upload_to='profile_picture', null=True, blank=True, validators=[FileExtensionValidator(['jpg', 'jpeg', 'png'])])
+    passport_photo = models.ImageField(upload_to='profile_picture', default='fallback.png', validators=[FileExtensionValidator(['jpg', 'jpeg', 'png'])])
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-#next of Kin
+#---------------Next of Kin-----------------                    
 class Next_of_Kin(models.Model):
     addmission_id = models.OneToOneField(General_Information, on_delete=models.CASCADE, related_name='next_of_kin')
     full_name = models.CharField(max_length=30, null=True, blank=True)
@@ -56,7 +56,7 @@ class Next_of_Kin(models.Model):
     NK_address = models.TextField(null=True)
     def __str__(self):
         return self.full_name
-#Subjects
+#--------Subject Results--------------------
 class CertificateResults(models.Model):
     admission_id = models.ForeignKey(General_Information, on_delete=models.CASCADE, related_name='results')
     subject_name = models.CharField(max_length=10)
@@ -65,7 +65,7 @@ class CertificateResults(models.Model):
     def __str__(self):
         return self.subject_name
     
-#school certificate
+#---------------School Certificate-----------------
 class School_Certificate(models.Model):
     class TypeChoices(models.TextChoices):
         ECONDARY = 'SECONDARY', 'Secondary_School_Certificate'
@@ -82,7 +82,8 @@ class School_Certificate(models.Model):
 
     def __str__(self):
         return f"{self.certificate_type} - {self.institution_name} ({self.year_of_completion})"
-#application status
+    
+#---------------Application Status-----------------
 class Application_Status(models.Model):
     application = models.OneToOneField(General_Information, on_delete=models.CASCADE, related_name='status')
     status = models.CharField(max_length=20, choices=[
