@@ -60,19 +60,19 @@
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                       <label for="first_name">First Name <small class="text-danger">*</small></label>
-                      <input type="text" name="first_name" class="form-control" placeholder="Enter your first name", autocomplete="off">
+                      <input type="text" value="{{data.first_name|default:""}}" name="first_name" class="form-control" placeholder="Enter your first name", autocomplete="off">
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="last_name">Last Name <small class="text-danger">*</small></label>
-                    <input type="text" name="last_name" class="form-control" placeholder="Enter your last name" autocomplete="off">
+                    <input type="text" value="{{data.last_name|default:""}}" name="last_name" class="form-control" placeholder="Enter your last name" autocomplete="off">
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="date_of_birth">Date of Birth <small class="text-danger">*</small></label>
-                    <input type="date" name="date_of_birth" id="date_of_birth" class="form-control">
+                    <input type="date" value="{{data.date_of_birth|default:""}}" name="date_of_birth" id="date_of_birth" class="form-control">
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
@@ -80,90 +80,96 @@
                     <label for="gender">Gender <small class="text-danger">*</small></label>
                     <select class="form-select" id="gender" name="gender">
                       <option value="">Select Gender</option>
-                      <option value="M">Male</option>
-                      <option value="F">Female</option>
+                      <option value="M" {% if data.gender == 'M' %}selected{% endif %}>Male</option>
+                      <option value="F" {% if data.gender == 'F' %}selected{% endif %}>Female</option>
                     </select>
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="NRC">NRC <small class="text-danger">*</small></label>
-                    <input type="text" name="NRC" class="form-control" autocomplete="off" placeholder="1111/13/1">
+                    <input type="text" value="{{data.NRC|default:""}}" name="NRC" class="form-control" autocomplete="off" placeholder="1111/13/1">
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="phone_number">Phone Number <small class="text-danger">*</small></label>
-                    <input type="text" name="phone_number" class="form-input" autocomplete="off" placeholder="+260 97 123 4567">
+                    <input type="text" value="{{data.phone_number|default:""}}" name="phone_number" class="form-input" autocomplete="off" placeholder="+260 97 123 4567">
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="NRC">Disability? <small class="text-danger">*</small></label>
                     <select name="disability" class="form-select" id="disability">
-                      <option value="No">No</option>
-                      <option value="yes">Yes</option>
+                        <option value="No" {% if data.disability|default:''|lower == 'no' %}selected{% endif %}>No</option>
+                        <option value="Yes" {% if data.disability|default:''|lower == 'yes' %}selected{% endif %}>Yes</option>
                     </select>
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="disability_desc">If yes Select Disability<small class="text-danger">*</small></label>
-                    <select name="disability_desc" class="form-select" id="disability_desc">
-                        <option value="">No disability</option>
-                        <option value="vision">Vision</option>
-                        <option value="hearing">Hearing</option>
-                        <option value="speech">Speech</option>
-                        <option value="mobility">mobility</option>
-                    </select>
+                     <select name="disability_desc" class="form-select" id="disability_desc">
+                          <option value="" {% if not data.disability_desc %}selected{% endif %}>No disability</option>
+                          <option value="vision" {% if data.disability_desc == 'vision' %}selected{% endif %}>Vision</option>
+                          <option value="hearing" {% if data.disability_desc == 'hearing' %}selected{% endif %}>Hearing</option>
+                          <option value="speech" {% if data.disability_desc == 'speech' %}selected{% endif %}>Speech</option>
+                          <option value="mobility" {% if data.disability_desc == 'mobility' %}selected{% endif %}>Mobility</option>
+                      </select>
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="email">Email <small class="text-danger">*</small></label>
-                    <input type="email" name="email" class="form-control" autocomplete="off" placeholder="hhasdh@email.com">
+                    <input type="email" value="{{data.email|default:""}}" name="email" class="form-control" autocomplete="off" placeholder="hhasdh@email.com">
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="nationality">Nationality <small class="text-danger">*</small></label>
-                    <input type="text" name="nationality" class="form-input" autocomplete="off" placeholder="Zambian">
+                    <input type="text" value="{{data.nationality|default:""}}" name="nationality" class="form-input" autocomplete="off" placeholder="Zambian">
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="city_of_residence">City/District <small class="text-danger">*</small></label>
-                    <input type="text" name="city_of_residence" class="form-control" placeholder="Lusaka" required>
+                    <input type="text" value="{{data.city_of_residence|default:""}}" name="city_of_residence" class="form-control" placeholder="Lusaka" required>
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="marital_status">Marital Status <small class="text-danger">*</small></label>
                     <select id="marital_status" class="form-select" name="marital_status">
-                      <option value="">Select Marital Status</option>
-                      <option value="Single">Single</option>
-                      <option value="Married">Married</option>
-                      <option value="Divorced">Divorced</option>
-                      <option value="Widowed">Widowed</option>
+                        <option value="">Select Marital Status</option>
+                        <option value="Single" {% if data.marital_status == 'Single' %}selected{% endif %}>Single</option>
+                        <option value="Married" {% if data.marital_status == 'Married' %}selected{% endif %}>Married</option>
+                        <option value="Divorced" {% if data.marital_status == 'Divorced' %}selected{% endif %}>Divorced</option>
+                        <option value="Widowed" {% if data.marital_status == 'Widowed' %}selected{% endif %}>Widowed</option>
                     </select>
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="address">Address </label>
-                    <textarea name="address" id="address" cols="3" rows="3" class="form-control"></textarea>
+                    <textarea name="address" id="address" cols="3" rows="3" class="form-control">{{data.address|default:""}}</textarea>
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="passport_photo">Passport Photo <small class="text-danger">*</small></label>
                     <input type="file" name="passport_photo" class="form-control">
+                    {% if data.passport_photo %}
+                        <small class="text-muted">Current: {{ data.passport_photo }}</small>
+                    {% endif %}
                   </div>
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="deposit_slip">Deposit <small class="text-danger">*</small></label>
                     <input type="file" name="deposit_slip" class="form-control">
+                    {% if data.passport_photo %}
+                        <small class="text-muted">Current: {{ data.deposit_slip }}</small>
+                    {% endif %}
                   </div>
                 </div>
                 <!--Hidden year of study-->
@@ -195,7 +201,9 @@
                     <select class="form-select" name="program">
                       <option>Select Choice</option>
                       {% for program in programs %}
-                      <option value="{{ program.id }}">{{ program.program_title }}</option>
+                      <option value="{{program.id}}" {% if program.id == session.currentDocument.program %}selected{% endif %}>
+                        {{program.program_title}}
+                      </option>
                       {% endfor %}
                     </select>
                   </td>
@@ -206,7 +214,9 @@
                     <select class="form-select" name="program_2">
                       <option>Select Choice</option>
                       {% for program in programs %}
-                        <option value="{{ program.id }}">{{ program.program_title }}</option>
+                        <option value="{{program.id}}" {% if program.id == session.currentDocument.program %}selected{% endif %}>
+                          {{program.program_title}}
+                        </option>
                       {% endfor %}
                     </select>
                   </td>
@@ -217,7 +227,9 @@
                     <select class="form-select" name="program_3">
                       <option>Select Choice</option>
                       {% for program in programs %}
-                        <option value="{{ program.id }}">{{ program.program_title }}</option>
+                        <option value="{{program.id}}" {% if program.id == session.currentDocument.program %}selected{% endif %}>
+                          {{program.program_title}}
+                        </option>
                       {% endfor %}
                     </select>
                   </td>
@@ -238,7 +250,7 @@
               <div class="col-5">
                 <div class="form-group">
                   <label> Subject: </label>
-                    <select name="subject" id="subjectInput" class="form-control">
+                    <select name="subject" id="subjectInput" class="form-select">
                       <option value="addma">Additional Mathematics</option>
                       <option value="science">Science</option>
                       <option value="math">Maths</option>
@@ -259,7 +271,17 @@
               <div class="col-5">
                 <div class="form-group">
                   <label>Grade: </label>
-                    <input type="number" id="gradeInput" min="0" max="100" class="form-control" />
+                  <select id="gradeInput" class="form-select">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                  </select>
                 </div>
               </div>
               <div class="col-2">
@@ -379,21 +401,21 @@
                 <tr>
                   <td>1.3.2 - Name of institution</td>
                   <td>
-                    <input type="text" class="form-input" name="institution_name" placeholder="">
+                    <input type="text" value="{{data.institution_name|default:""}}" class="form-input" name="institution_name" placeholder="">
                     <div class="example-text">For example: Evelyn Hone</div>
                   </td>
                 </tr>
                 <tr>
                   <td>2.3.3 - Name of certification or Document</td>
                   <td>
-                    <input type="text" class="form-input" name="certificate_name" placeholder="">
+                    <input type="text" value="{{data.certificate_name|default:""}}" class="form-input" name="certificate_name" placeholder="">
                     <div class="example-text">For example: Grade 12 or Diploma in Business Studies</div>
                   </td>
                 </tr>
                 <tr>
                   <td>2.3.4 - Year of Completion</td>
                   <td>
-                    <input type="number" class="form-input" name="completion_year" placeholder="">
+                    <input type="number" value="{{data.completion_year|default:""}}" class="form-input" name="completion_year" placeholder="">
                     <div class="example-text">For example: Grade 12 or Diploma in Business Studies</div>
                   </td>
                 </tr>
@@ -401,7 +423,7 @@
                   <td>Scan of Certificate</td>
                   <td>
                     <div class="file-upload-wrapper">
-                      <input type="file" name="certificate" id="">
+                      <input type="file" value="{{data.certificate|default:""}}" name="certificate" id="">
                     </div>
                     <div class="example-text">Upload the certificate, degree or diploma.<small class="text-danger">PDF only</small></div>
                   </td>
@@ -448,25 +470,27 @@
               <div class="col-12 col-sm-6">
                 <div class="form-group">
                   <label for="full_name">Full Name <small class="text-danger">*</small></label>
-                  <input type="text" class="form-control" name="full_name" id="full_name" required>
+                  <input type="text" value="{{data.full_name|default:""}}" class="form-control" name="full_name" id="full_name" required>
                 </div>
               </div>
               <div class="col-12 col-sm-6">
                 <div class="form-group">
                   <label for="NK_email">Email </label>
-                  <input type="text" class="form-control" name="NK_email" id="NK_email" autocomplete="off">
+                  <input type="text" value="{{data.NK_email}}" class="form-control" name="NK_email" id="NK_email" autocomplete="off">
                 </div>
               </div>
               <div class="col-12 col-sm-6">
                 <div class="form-group">
                   <label for="phone_no">Phone Number <small class="text-danger">*</small></label>
-                  <input type="text" class="form-control" name="phone_no" id="phone_no" required>
+                  <input type="text" value="{{data.phone_no|default:""}}" class="form-control" name="phone_no" id="phone_no" required>
                 </div>
               </div>
               <div class="col-12 col-sm-6">
                 <div class="form-group">
                   <label for="NK_address">Address <small class="text-danger">*</small></label>
-                  <textarea class="form-control" name="NK_address" id="NK_address" cols="30" rows="3"></textarea>
+                  <textarea class="form-control" name="NK_address" id="NK_address" cols="30" rows="3">
+                    {{data.NK_address|default:""}}
+                  </textarea>
                 </div>
               </div>
             </div>

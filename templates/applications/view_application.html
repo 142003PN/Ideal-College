@@ -4,7 +4,7 @@
     <div class="page-header">
       <div class="row">
         <div class="col-sm-12">
-          <h3 class="page-title">Application Details</h3>
+          <h3 class="page-title">Applications</h3>
           <ul class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="{% url "Application:recent" %}">Applications</a>
@@ -160,7 +160,7 @@
        
         <!-- Button trigger modal -->
         <div class="actions">
-            <a class="btn btn-sm btn-outline-danger" href=""
+            <a class="btn btn-sm btn-outline-success" href="{% url "Application:accept" application.admission_id %}"
             onclick="event.preventDefault();
                       const url = this.href;
                       Swal.fire({
@@ -181,7 +181,7 @@
                                 'Your course has been deleted.',
                                 'success'
                               ).then(() => {
-                                window.location.href = '';
+                                window.location.href = '{% url "Application:recent" %}';
                               });
                             }
                           }).catch(() => {
@@ -196,7 +196,7 @@
                           }
                       })"
             >
-            Delete
+            Accept
         </a>
         </div>
         

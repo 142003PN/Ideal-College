@@ -93,7 +93,12 @@ class Application_Status(models.Model):
     ], default='PENDING')
     def __str__(self):
         return self.status
-    
+#signal to create Application_Status upon General_Information creation
+@receiver(post_save, sender=General_Information)
+def create_application_status(sender, instance, created, **kwargs):
+    if created:
+        Application_Status.objects.create(application=instance)
+
 # Signal to create Student and StudentProfile upon application approval  
 @receiver(post_save, sender=Application_Status)
 def create_student_on_approval(sender, instance, created, **kwargs):
@@ -120,7 +125,8 @@ def create_student_on_approval(sender, instance, created, **kwargs):
                 'phone_number': app.phone_number,
                 'program': app.program,
                 'year_of_study': app.year_of_study,
-                'gender': app.gender
+                'gender': app.gender,
+                'profile_picture': app.passport_photo,
             }
         )
     except Exception:

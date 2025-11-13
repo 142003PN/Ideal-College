@@ -357,7 +357,7 @@ button.bg-primary:hover {
 }
 .bg-success,
 .badge-success {
-	background-color: #7bb13c !important;
+	background-color: #399e30 !important;
 }
 a.bg-success:focus, 
 a.bg-success:hover, 
@@ -1506,7 +1506,7 @@ div.dataTables_wrapper div.dataTables_info {
     margin-bottom: 2px;
 }
 .menu-title {
-    color: #a3a3a3;
+    color: #e6e6ef;
     display: block;
     font-size: 14px;
     margin-bottom: 5px;
@@ -1821,12 +1821,12 @@ footer p {
     padding: 0;
 }
 .page-header .breadcrumb a {
-	color: #333;
+	color: #0f0f0f;
 }
 .page-title {
 	font-size: 28px;
 	font-weight: 600;
-    color: #333;
+    color: #000;
     margin-bottom: 5px;
 }
 

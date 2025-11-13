@@ -46,6 +46,12 @@ def add_student(request):
         elif Student.objects.filter(id=student_id).exists():
             messages.error(request, "Student with this ID already exists.")
             return redirect('Students:add')
+        elif len(NRC) > 15:
+            messages.error(request, "NRC should have less than 15 characters")
+            return redirect('Students:add')
+        elif not all(c.isdigit() or c == '/' for c in NRC):
+            messages.error(request, "NRC should only contain numbers and forward slashes /")
+            return redirect('Students:add')
         else:
              #save student
             student=Student.objects.create(
