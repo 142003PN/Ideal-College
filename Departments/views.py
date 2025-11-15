@@ -2,12 +2,15 @@ from django.shortcuts import render
 from .models import Department
 from .forms import DepartmentForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
-# List departments
+# ---------List departments------------
+@login_required(login_url='/users/login/')
 def departments(request):
     departments = Department.objects.all().order_by('-date_added')
     return render(request, 'departments/departments.html', {'departments':departments})
-#add department
+#-------------add department------------
+@login_required(login_url='/users/login/')
 def add_department(request):
     if request.method == 'POST':
         form = DepartmentForm(request.POST)
@@ -18,7 +21,9 @@ def add_department(request):
     else:
         form = DepartmentForm()
     return render(request, 'departments/add-department.html', {'form':form})
-#edit department
+
+#-----------edit department-------------
+@login_required(login_url='/users/login/')
 def edit_department(request, pk):
     department = Department.objects.get(id=pk)
     if request.method == 'POST':
@@ -29,7 +34,9 @@ def edit_department(request, pk):
     else:
         form = DepartmentForm(instance=department)
     return render(request, 'departments/edit-department.html', {'form':form})
-#delete department
+
+#-----------delete department-----------------
+@login_required(login_url='/users/login/')
 def delete_department(request, pk):
     department = Department.objects.get(id=pk)
     department.delete()

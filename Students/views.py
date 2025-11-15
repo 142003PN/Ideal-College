@@ -4,8 +4,11 @@ from Courses.models import YearOfStudy
 from Programs.models import Programs
 from django.contrib import messages
 from django.http import *
+from django.contrib.auth.decorators import login_required
 import os
 
+#---------List Students-----------
+@login_required(login_url='/users/login/')
 def list_students(request):
     students = Student.objects.filter(role="STUDENT").order_by('date_joined')
     profile = StudentProfile.objects.all()
@@ -15,7 +18,8 @@ def list_students(request):
     }
     return render(request, 'Students/students.html', context)
 
-#add student view
+#A----------Add student view---------------
+@login_required(login_url='/users/login/')
 def add_student(request):
     programmes=Programs.objects.all()
     years = YearOfStudy.objects.all()
@@ -84,7 +88,8 @@ def add_student(request):
     }
     return render(request, 'Students/add-student.html', context)
 
-#edit student view
+#-------------edit student view-------------------
+@login_required(login_url='/users/login/')
 def edit_student(request, pk):
     student = Student.objects.get(pk=pk)
     profile = StudentProfile.objects.get(student_id=student)
@@ -135,7 +140,8 @@ def edit_student(request, pk):
     }
     return render(request, 'Students/edit-student.html', context)
 
-#student details view
+#-------------student details view-----------------
+@login_required(login_url='/users/login/')
 def student_details(request, student_id):
     student = Student.objects.get(id=student_id)
     profile = student.profile
@@ -145,7 +151,8 @@ def student_details(request, student_id):
     }
     return render(request, 'Students/student-details.html', context)
 
-#delete student
+#----------delete student media----------------
+@login_required(login_url='/users/login/')
 def delete_student_media(student):
     try:
         profile = StudentProfile.objects.get(student_id=student)
@@ -154,7 +161,8 @@ def delete_student_media(student):
                 os.remove(profile.profile_picture.path)
     except:
         pass
-
+#----------Delete Student------------
+@login_required(login_url='/users/login/')
 def delete_student(request, pk):
     try:
         student = Student.objects.get(pk=pk)
@@ -165,5 +173,6 @@ def delete_student(request, pk):
         return HttpResponse("Student does not exixt")
     
 # Student dashboard view
+@login_required(login_url='/users/login/')
 def student_dashboard(request):
     return render(request, 'students/student-dashboard.html')

@@ -3,6 +3,7 @@ from .forms import CourseForm
 from django.http import HttpResponse
 from .models import Courses
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from io import BytesIO
 from openpyxl import Workbook
 import datetime
@@ -11,6 +12,7 @@ import xlwt
 import encodings
 
 #add course
+@login_required(login_url='/users/login/')
 def add_course(request):
     if request.method == 'POST':
         form = CourseForm(request.POST)
@@ -26,11 +28,13 @@ def add_course(request):
     return render(request, 'courses/add-course.html', {'form':form})
 
 #course list
+@login_required(login_url='/users/login/')
 def course_list(request):
     courses = Courses.objects.all()
     return render(request, 'courses/courses.html', {'courses':courses})
 
 #edit course
+@login_required(login_url='/users/login/')
 def edit_course(request, pk):
     title = "Edit Course"
     course_id = Courses.objects.get(pk=pk)
@@ -50,11 +54,13 @@ def edit_course(request, pk):
     }
     return render(request, 'courses/add-course.html', context)
 #delete course
+@login_required(login_url='/users/login/')
 def delete(request, pk):
     course_id = Courses.objects.get(pk=pk)
     course_id.delete()
     return redirect('Courses:courses')
 
+@login_required(login_url='/users/login/')
 def export_excel(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition']='attachment; filename=Courses'+ str(datetime.datetime.now())+'.xls'

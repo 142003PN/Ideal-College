@@ -6,6 +6,8 @@ from Courses.models import YearOfStudy
 from django.contrib import messages
 import os
 from django.core.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 def apply(request):
     programs = Programs.objects.all()
@@ -53,8 +55,6 @@ def apply(request):
             messages.error(request, "NRC should have less than 15 characters")
         elif not all(c.isdigit() or c == '/' for c in NRC):
             messages.error(request, "NRC should only contain numbers and forward slashes /")
-        elif not all(c.is_digit() or c == '+' for c in phone_number):
-            messages.error(request, "Phone number should only contain digits and plus sign +")
         # ensure all uploaded certificates are PDFs
         elif any(cert and not (getattr(cert, 'content_type', '') == 'application/pdf' or cert.name.lower().endswith('.pdf')) for cert in certificates):
             messages.error(request, 'All uploaded certificates must be PDF files.')
@@ -136,6 +136,7 @@ def apply(request):
             messages.success(request, 'Application Submmited Successfully!')
     return render(request, 'applications/apply.html', {'programs': programs, 'year': year, 'data': data})
 
+@login_required(login_url='/users/login/')
 def accept(request, pk):
     admission_id = General_Information.objects.get(pk=pk)
     app_status = Application_Status.objects.get(application=admission_id)
@@ -144,6 +145,9 @@ def accept(request, pk):
 
     messages.success(request, "Applicant accepted Successfully")
     return redirect("Application:recent")
+
+# --------------Recent Applications
+@login_required(login_url='/users/login/')
 def recent_applications(request):
     applications =General_Information.objects.all().order_by('-date_of_application')
     applications =General_Information.objects.all().order_by('-date_of_application')
@@ -152,17 +156,24 @@ def recent_applications(request):
         'applications':applications
     }
     return render(request, 'applications/recent-applications.html', context)
+
 #----------View Application Details----------------
+@login_required(login_url='/users/login/')
 def view_application(request, admission_id):
     application = General_Information.objects.get(admission_id=admission_id)
     results = CertificateResults.objects.filter(admission_id=application)
     school_certificates = School_Certificate.objects.filter(addmission=application)
-    next_of_kin = Next_of_Kin.objects.get(addmission_id=application)
-
-    context={
-        'application':application,
-        'results':results,
-        'school_certificates':school_certificates,
-        'next_of_kin':next_of_kin
-    }
+    if Application_Status.objects.get(application=application):
+        application_status = Application_Status.objects.get(application=application)
+        if Next_of_Kin.objects.filter(addmission_id=application).exists():
+            next_of_kin = Next_of_Kin.objects.get(addmission_id=application)
+        else:
+            next_of_kin = None
+        context={
+            'application':application,
+            'results':results,
+            'school_certificates':school_certificates,
+            'next_of_kin':next_of_kin,
+            'application_status':application_status,
+        }
     return render(request, 'applications/view_application.html', context)

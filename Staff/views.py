@@ -3,16 +3,18 @@ from .models import Staff, StaffProfile
 from .forms import StaffForm, ProfileForm
 from django.contrib import messages
 from django.http import *
-# Create your views here.
+from django.contrib.auth.decorators import login_required
+
+#------------Staff List-----------------
+@login_required(login_url='/users/login/')
 def staff_list(request):
     staffs=Staff.objects.filter(role="STAFF")
     profile = StaffProfile.objects.all()
 
     context={'staffs':staffs, 'profile':profile}
     return render(request, 'staff/staff-list.html', context)
-#add staff member
-from django.shortcuts import redirect
-
+#---------------add staff member-------------------------
+@login_required(login_url='/users/login/')
 def add_staff(request):
     if request.method == 'POST':
         form = StaffForm(request.POST)
@@ -42,7 +44,8 @@ def add_staff(request):
     }
     return render(request, 'staff/add-staff.html', context)
 
-#
+#------------Edit Staff ----------------
+@login_required(login_url='/users/login/')
 def edit_staff(request, pk):
     staff_id=Staff.objects.get(pk=pk)
     profile=StaffProfile.objects.get(staff_id=staff_id)

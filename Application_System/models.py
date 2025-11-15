@@ -51,7 +51,7 @@ class General_Information(models.Model):
 class Next_of_Kin(models.Model):
     addmission_id = models.OneToOneField(General_Information, on_delete=models.CASCADE, related_name='next_of_kin')
     full_name = models.CharField(max_length=30, null=True, blank=True)
-    email = models.EmailField(unique=True, null=True)
+    email = models.EmailField(null=True)
     phone_number = models.CharField(max_length=15, null=False)
     NK_address = models.TextField(null=True)
     def __str__(self):

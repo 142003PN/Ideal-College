@@ -7,8 +7,10 @@ import datetime
 import xlwt
 import encodings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
-#add programme
+#-------------add programme----------------
+@login_required(login_url='/users/login/')
 def add_programme(request):
     if request.method == 'POST':
         form = ProgramForm(request.POST)
@@ -24,8 +26,8 @@ def add_programme(request):
     else:
         form = ProgramForm()
     return render(request, 'programs/add-program.html', {'form':form, 'title':'Add Programme'})
-#Edit programme
-
+#----------------Edit programme----------------------
+@login_required(login_url='/users/login/')
 def edit_programme(request, pk):
     program = Programs.objects.get(pk = pk)
     title = "Edit Programme"
@@ -45,11 +47,13 @@ def edit_programme(request, pk):
     else:
         form = ProgramForm(instance=program)
     return render(request, 'programs/add-program.html', {'form':form, 'title':title})
-#List programmes
+#-----------------List programmes---------------
+@login_required(login_url='/users/login/')
 def programmes(request):
     programmes = Programs.objects.all().order_by('date_added')
     return render(request, 'programs/programs.html', {'programmes':programmes})
-#View Programme
+#-----------------View Programme------------------
+@login_required(login_url='/users/login/')
 def view_programme(request, pk):
     programme = Programs.objects.get(pk=pk)
     courses = Courses.objects.filter(program_id=programme)
@@ -58,13 +62,14 @@ def view_programme(request, pk):
         'courses':courses
     }
     return render(request, 'programs/view-program.html', context)
-#Delete Programme
+#--------------Delete Programme-------------------
 def delete_programme(request, pk):
     programme = Programs.objects.get(pk=pk)
     programme.delete()
     return redirect('Programs:programs')
 
-#export programmes to excel
+#---------export programmes to excel-------------
+@login_required(login_url='/users/login/')
 def export_excel(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition']='attachment; filename = Programmes'+str(datetime.datetime.now())+'.xls'

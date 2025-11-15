@@ -1,10 +1,14 @@
-{% extends "base.html" %} {% block body %}
+{% extends "base.html" %} {% block content %}
+{% load static %}
+<head>
+  <link rel="stylesheet" href="{% static "css/apply.css" %}">
+</head>
 <div class="page-wrapper">
   <div class="content container-fluid">
     <div class="page-header">
       <div class="row align-items-center">
         <div class="col">
-          <h3 class="page-title">Register Your Subjects</h3>
+          <h3 class="page-title">Register Your Courses</h3>
           <ul class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="holiday.html">Register</a>
@@ -22,32 +26,48 @@
             <h4 class="alert alert-success">{{ message }}</h4>
           {% endfor %}
           <div class="card-body">
-            <form method='post' action="{% url "Registration:Register" %}" >
+            <form method='post' action="" >
               {% csrf_token %}
               <div class="row">
                 <div class="col-12">
                   <h5 class="form-title">
+
                     <span>Select Courses</span>
                   </h5>
                 </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    {{ form.student_id.label_tag }}
-                    {{ form.student_id }}
+                <div class="col-12">
+                  {% for year in years %}
+                  <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                      <span>{{form.year_of_study}} {{year.year_title}}</span>
+                    </div>
+                    <div class="accordion-content">
+                      <div class="accordion-body">
+                        <table class="form-table">
+                          <thead>
+                            <tr>
+                              <th style="width: 10%;">Select</th>
+                              <th style="width: 20%;">Code</th>
+                              <th style="width: 40%;">Code Description</th>
+                              <th style="width: 20%;">Year</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for course in courses %}
+                            <tr>
+                              <td><input type="checkbox" name="courses" value="{{course.id}}"></td>
+                              <td>{{course.course_code}}</td>
+                              <td>{{course.course_title}}</td>
+                              <td>{{course.year_of_study}}</td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div class="col-12 col-sm-12">
-                  <div class="form-group">
-                    {{ form.subject.label_tag }}
-                    {{ form.subject }}
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6">
-                  <div class="form-group">
-                    {{ form.academic_year.label_tag }}
-                    {{ form.academic_year }}
-                  </div>
-                </div>
+                  {% endfor %}
+                </div
                 <div class="col-12">
                   <button class="btn btn-primary" type="submit">Submit</button>
                 </div>
@@ -59,4 +79,20 @@
     </div>
   </div>
 </div>
+<script>
+    function toggleAccordion(header) {
+      const item = header.parentElement;
+      const isActive = item.classList.contains('active');
+
+      // Close all other accordion items
+      document.querySelectorAll('.accordion-item').forEach(el => {
+        el.classList.remove('active');
+      });
+      
+      // Toggle current item
+      if (!isActive) {
+        item.classList.add('active');
+      }
+    }
+  </script>
 {% endblock %}
