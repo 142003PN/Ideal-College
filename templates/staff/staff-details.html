@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block body%}
+{% block content %}
       <div class="page-wrapper">
         <div class="content container-fluid">
           <div class="page-header">
@@ -8,7 +8,7 @@
                 <h3 class="page-title">Staff Details</h3>
                 <ul class="breadcrumb">
                   <li class="breadcrumb-item">
-                    <a href="Staff.html">Staff</a>
+                    <a href="{% url "Staff:list" %}">Staff</a>
                   </li>
                   <li class="breadcrumb-item active">Staff Details</li>
                 </ul>
@@ -23,7 +23,7 @@
                     <h4>About Me</h4>
                     <div class="media mt-3">
                       <a data-bs-toggle="modal" data-bs-target="#prifile_pic_Modal" >
-                        <img style='border-radius: 10px; cursor: pointer;' data-bs-toggle="modal" data-bs-target="#prifile_pic_Modal" src="{{ staff.teacher_profile.profile_picture.url }}"  class="mr-3" alt="..." />
+                        <img style='border-radius: 10px; cursor: pointer;' data-bs-toggle="modal" data-bs-target="#prifile_pic_Modal" src="{{ staff.staff_profile.profile_picture.url }}"  class="mr-3" alt="Profile_picture" />
                       </a>
                       <div class="media-body">
                         <ul>
@@ -102,11 +102,11 @@
                 {% if request.user.role == 'ADMIN'  %}
                 <div class="actions">
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                      Delete Student
+                      Delete Staff
                     </button>
-                    <a href="{% url "Staff:Editstaff" staff.id %}" class="btn btn-primary">Edit staff</a>
+                    <a href="{% url "Staff:edit" staff.id %}" class="btn btn-primary">Edit staff</a>
                 {% else %}
-                    <a href="{% url "Staff:Editstaff" staff.id %}" class="btn btn-primary">Edit staff</a>
+                    <a href="{% url "Staff:edit" staff.id %}" class="btn btn-primary">Edit staff</a>
                 </div>
                 {% endif %}
               <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -121,7 +121,7 @@
                           </div>
                           <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                              <a type="button" href="{% url "Staff:Delete" staff.id %}" class="btn btn-danger" id="confirmDelete">Delete</a>
+                              <a type="button" href="{% url "Staff:delete" staff.id %}" class="btn btn-danger" id="confirmDelete">Delete</a>
                           </div>
                       </div>
                   </div>

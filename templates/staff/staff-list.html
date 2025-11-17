@@ -49,8 +49,8 @@
                            <td>{{staff.id}}</td>
                            <td>
                               <h2 class="table-avatar">
-                                 <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ staff.staff_profile.profile_picture.url }}" alt="User Image"></a>
-                                 <a href="#">{{staff.first_name}} {{staff.last_name}}</a>
+                                 <a href="{% url "Staff:details" staff.id %}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ staff.staff_profile.profile_picture.url }}" alt="User Image"></a>
+                                 <a href="{% url "Staff:details" staff.id %}">{{staff.first_name}} {{staff.last_name}}</a>
                               </h2>
                            </td>
                            <td>{{staff.email}}</td>
@@ -59,7 +59,7 @@
                            <td>{{ staff.staff_profile.phone_number }}</td>
                            <td class="text-right">
                               <div class="actions">
-                                 <a href="#" class="btn btn-sm bg-success-light mr-2">
+                                 <a href="{% url "Staff:details" staff.id %}" class="btn btn-sm bg-success-light mr-2">
                                  <i class="fas fa-book"></i>
                                  </a>
                               </div>
