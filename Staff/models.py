@@ -31,7 +31,7 @@ class StaffProfile(models.Model):
     class Emp_Status(models.TextChoices):
         FullTime= 'FullTime', 'FullTime'
         PartTime = 'PartTime', 'PartTime'
-    staff_id = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='staff_profile')
+    staff_id = models.OneToOneField(Staff, on_delete=models.CASCADE, related_name='staff_profile')
     position = models.CharField(max_length=30, choices=Positions.choices, null=True)
     profile_picture = models.ImageField(upload_to='staff_profiles/', default='fallback.png', blank=True)
     gender = models.CharField(max_length=1, choices=GenderChoices.choices, null=True, blank=True)
