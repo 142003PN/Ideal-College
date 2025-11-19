@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Registration
 from Academics.models import SessionYear
 from Courses.models import Courses, YearOfStudy
@@ -11,40 +11,76 @@ from Academics.models import SessionYear
 #----------Register for Courses-------------
 @login_required(login_url='/users/login/')
 def register(request):
-    #Get the logged in user
+    # Get the logged in user
     sid = request.user
-    #get program for the logged in user
-    program=request.user.profile.program
-    #get program for the logged in user
+    # get program for the logged in user
+    program = request.user.profile.program
+    # get student profile for the logged in user
     student = StudentProfile.objects.get(student_id=sid)
-    #get courses related to the logged in users programme of study
+    # get courses related to the logged in user's programme of study
     years = YearOfStudy.objects.filter()
     courses = Courses.objects.filter(program_id=program)
-    session_year=SessionYear.objects.get(is_current_year=1)
-    if request.method =='POST':
-        student_id=request.user
-        year_of_study_id=request.POST.get('year_of_study')
-        year_of_study=YearOfStudy.objects.get(id=year_of_study_id)
-        selected_courses=request.POST.getlist('courses')
+    session_year = SessionYear.objects.get(is_current_year=1)
 
-        
-        reg=Registration.objects.create(
-            student_id=student_id,
+    # Prevent multiple registrations in the same session year
+    already_registered = Registration.objects.filter(student_id=sid, session_year=session_year).exists()
+    if already_registered and request.method == 'POST':
+        messages.warning(request, "You have already registered for the current session year.")
+    elif request.method == 'POST':
+        year_of_study_id = request.POST.get('year_of_study')
+        year_of_study = YearOfStudy.objects.get(id=year_of_study_id)
+        selected_courses = request.POST.getlist('courses')
+
+        reg = Registration.objects.create(
+            student_id=sid,
             year_of_study=year_of_study,
             session_year=session_year,
         )
         reg.courses.set(selected_courses)
-        reg.save();
-        messages.success(request, "Successfully submited awaiting Approval")
+        reg.save()
+        messages.success(request, "Successfully submitted awaiting Approval")
+        already_registered = True
 
-    context={
-        'courses':courses,
-        'years':years,
-        'student':student,
-        'program':program,
+    context = {
+        'courses': courses,
+        'years': years,
+        'student': student,
+        'program': program,
+        'already_registered': already_registered,
     }
     return render(request, 'registration/register.html', context)
-
+#----------------View Recent Registrations-----------------
 def recent_registrations(request):
-    registrations = Registration.objects.all()
+    registrations = Registration.objects.all().order_by('-registration_date')
     return render(request, 'registration/recently_registered.html', {'registrations': registrations})
+
+#------------------Approve Course Registration----------------------------
+def approve_registration(request, pk):
+    if request.user.role != 'STAFF' and request.user.role != 'ADMIN':
+        messages.error(request, "You do not have permission to approve registrations.")
+        return redirect('Registration:recent_registrations')
+    else:
+        try:
+            student = StudentProfile.objects.get(student_id=Registration.objects.get(id=pk).student_id)
+            registration = Registration.objects.get(id=pk)
+            registration.status = 'Approved'
+            student.year_of_study = registration.year_of_study
+            registration.save()
+            student.save()
+            messages.success(request, "Registration approved successfully.")
+            return redirect('Registration:recent')
+        except Registration.DoesNotExist:
+            messages.error(request, "Registration not found.")
+    return render(request, 'registration/recently_registered.html')
+
+#--------------------View Submitted Courses-------------
+def view_submitted_courses(request, pk):
+    if request.user.role=='ADMIN':
+        try:
+            registration = Registration.objects.get(id=pk)
+            courses = registration.courses.all()
+            return render(request, 'registration/view-registered.html', {'courses': courses, 'registration': registration})
+        except Registration.DoesNotExist:
+            messages.error(request, "Registration not found.")
+            return redirect('Registration:recent')
+    return render(request, 'registration/view-registered.html')
