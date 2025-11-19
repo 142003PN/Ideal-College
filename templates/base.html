@@ -9,8 +9,7 @@
    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.css">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
    <link rel="stylesheet" href="{% static "plugins/bootstrap/css/bootstrap.min.css" %}">
-   <link rel="stylesheet" href="{% static "plugins/fontawesome/css/fontawesome.min.css" %}">
-   <link rel="stylesheet" href="{% static "plugins/fontawesome/css/all.min.css" %}">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
    <link rel="stylesheet" href="{% static "css/style.css" %}">
    <!--Sweet Alert-->    
    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -132,49 +131,19 @@
               <li class="menu-title">
                 <span>Main Menu</span>
               </li>
-              <li class="submenu">
-                <a href="#"
-                    ><i class="fas fa-home"></i> <span> Dashboard</span>
-                  <span class="menu-arrow"></span
-                ></a>
-                <ul>
-                  <li><a href="index.html">Admin Dashboard</a></li>
-                  <li>
-                    <a href="teacher-dashboard.html">Teacher Dashboard</a>
-                  </li>
-                  <li>
-                    <a href="student-dashboard.html">Student Dashboard</a>
-                  </li>
-                </ul>
+              {% if request.user.is_authenticated %}
+              {% if request.user.role == 'ADMIN' %}
+              <li>
+                <a href="{% url "Registration:register" %}"><i class="fas fa-create"></i> <span>Dashboard</span></a>
               </li>
               <li class="submenu">
                 <a href="#"
-                  ><i class="fas fa-user-graduate"></i> <span> Applications</span>
+                  ><i class="fas fa-pen"></i> <span> Applications</span>
                   <span class="menu-arrow"></span
                 ></a>
                 <ul>
                   <li><a href=" {% url "Application:recent" %}">Recent Applications</a></li>
                   <li><a href="">Accepted Students</a></li>
-                </ul>
-              </li>
-              <li class="submenu">
-                <a href="#"
-                  ><i class="fas fa-user-graduate"></i> <span> Students</span>
-                  <span class="menu-arrow"></span
-                ></a>
-                <ul>
-                  <li><a href=" {% url "Students:list" %}">Student List</a></li>
-                  <li><a href="{% url "Students:add" %}">Student Add</a></li>
-                </ul>
-              </li>
-              <li class="submenu">
-                <a href="#"
-                  ><i class="fas fa-chalkboard-teacher"></i>
-                  <span> Staff</span> <span class="menu-arrow"></span
-                ></a>
-                <ul>
-                  <li><a href="{% url "Staff:list" %}">Staff List</a></li>
-                  <li><a href="{% url "Staff:add" %}">Add Staff</a></li>
                 </ul>
               </li>
               <li class="submenu">
@@ -189,18 +158,6 @@
               </li>
               <li class="submenu">
                 <a href="#"
-                  ><i class="fas fa-book-reader"></i> <span>Courses</span>
-                  <span class="menu-arrow"></span
-                ></a>
-                <ul>
-                  <li><a href="{% url "Courses:courses" %}">Course List</a></li>
-                  <li>
-                    <a href="{% url "Courses:add" %}" class="active">Add Course</a>
-                  </li>
-                </ul>
-              </li>
-              <li class="submenu">
-                <a href="#"
                   ><i class="fas fa-book-reader"></i> <span> Programmes</span>
                   <span class="menu-arrow"></span
                 ></a>
@@ -211,8 +168,57 @@
                   </li>
                 </ul>
               </li>
+              <li class="submenu">
+                <a href="#"
+                  ><i class="fas fa-chalkboard-teacher"></i>
+                  <span> Staff</span> <span class="menu-arrow"></span
+                ></a>
+                <ul>
+                  <li><a href="{% url "Staff:list" %}">Staff List</a></li>
+                  <li><a href="{% url "Staff:add" %}">Add Staff</a></li>
+                </ul>
+              </li>
+              <li class="submenu">
+                <a href="#"
+                  ><i class="fas fa-user-graduate"></i> <span> Students</span>
+                  <span class="menu-arrow"></span
+                ></a>
+                <ul>
+                  <li><a href=" {% url "Students:list" %}">Student List</a></li>
+                  <li><a href="{% url "Students:add" %}">Student Add</a></li>
+                </ul>
+              </li>
+              {% elif request.user.role == 'STAFF'  %}
               <li>
-                <a href="{% url "Registration:register" %}"><i class="fas fa-create"></i> <span>Register</span></a>
+                <a href="{% url "Registration:register" %}"><i class="fas fa-create"></i> <span>Staff Dashboard</span></a>
+              </li>
+              {% elif request.user.role == 'STUDENT' %}
+              <li>
+                <a href=""><i class="fas fa-dashboard"></i> <span>Student Dashboard</span></a>
+              </li>
+              <li>
+                <a href="{% url "Students:details" request.user.id %}"><i class="fas fa-user"></i><span>Profile</span></a>
+              </li>
+               <li>
+                <a href="{% url "Registration:register" %}"><i class="fas fa-plus"></i> <span>Course Registration</span></a>
+              </li>
+              {% endif %}
+              {% endif %}
+              <li class="submenu">
+                <a href="#"
+                  ><i class="fas fa-book-reader"></i> <span>Courses</span>
+                  <span class="menu-arrow"></span
+                ></a>
+                <ul>
+                  <li><a href="{% url "Courses:courses" %}">Course List</a></li>
+                  <li>
+                    <a href="{% url "Courses:add" %}" class="active">Add Course</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+              <li>
+                <a href="{% url "Registration:recent" %}"><i class="fas fa-clock"></i> <span>Recent Registered</span></a>
               </li>
               <li>
                 <a href="{% url "Users:logout" %}"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>

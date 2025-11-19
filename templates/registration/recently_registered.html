@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block body %}
+{% block content %}
 <div class="page-wrapper">
    <div class="content container-fluid">
       <div class="page-header">
          <div class="row align-items-center">
             <div class="col">
-               <h3 class="page-title">Subjects</h3>
+               <h3 class="page-title">Courses</h3>
                <ul class="breadcrumb">
                   <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
                   <li class="breadcrumb-item active">Recent Registered Subjects</li>
@@ -24,10 +24,9 @@
                      <table class="table table-hover table-center mb-0 datatable">
                         <thead>
                            <tr>
-                              <th>Date_Registered</th>
+                              <th>Student ID</th>
                               <th>Student Name</th>
-                              <th>Class </th>
-                              <th>Subjects</th>
+                              <th>Programme </th>
                               <th>Status</th>
                               <th class="text-right">Action</th>
                            </tr>
@@ -35,16 +34,9 @@
                         <tbody>
                         {% for registration in registrations %}
                         <tr>
-                           <td>{{ registration.registration_date }}</td>
+                           <td>{{ registration.student_id.id }}</td>
                            <td>{{ registration.student_id.first_name }} {{ registration.student_id.last_name }}</td>
-                           <td>{{ registration.student_id.profile.class_id }}</td>
-                           <td>
-                              <ul>
-                              {% for subject in registration.subject.all %}
-                                 <li>{{subject.subject_code}}</li>
-                              {% endfor %}
-                              </ul>
-                           </td>
+                           <td>{{ registration.student_id.profile.program }}</td>
                            <td>
                               {% if registration.status == 'Pending' %}
                               <span class="badge badge-pill bg-success text-white">Pending</span>
@@ -53,48 +45,17 @@
                               {% endif %}
                            </td>
                            <td class="text-right">
-                              <a href="" data-toggle="modal" data-target="#loginModal" class="btn btn-sm btn-primary mr-2">View</a>
-                              <a href="{% url "Registration:cancel_registration" registration.id %}" class="btn btn-sm btn-danger">Delete</a>  
+                              <a href="{% url "Registration:view_courses" registration.id %}" class="btn btn-sm btn-primary mr-2">View</a>
+                              <a href="" class="btn btn-sm btn-danger">Delete</a>  
+                           </td>
                         </tr>
                         {% endfor %}   
                         </tbody>
                      </table>
-
-                     <!--View Modal-->
-                     
-                  </div><div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-                     <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                        <div class="modal-header">
-                           <h5 class="modal-title" id="loginModalLabel">Submitted Courses</h5>
-                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                           </button>
-                        </div>
-                        <div class="modal-body">
-                            <ul>
-                           {% for registration in registrations %}
-                              {% for subject in registration.subject.all %}
-                                 <li>{{subject.subject_code}} -- {{ subject.subject_name }}</li>
-                              {% endfor %}
-                              </ul>
-                              <br>
-                           {% if registration.status == 'Approved' %}
-                           {% else %}
-                           <a class="btn btn-primary" href="{% url "Registration:approve" registration.id %}">Aprrove</a> 
-                           {% endif %}   
-                           {% endfor %}
-                        </div>
-                        </div>
-                     </div>
-                     </div>
-               </div>
+                  </div>
             </div>
          </div>
       </div>
    </div>
-   <footer>
-      <p>Copyright © 2025 Pro Technologies.</p>
-   </footer>
 </div>
 {% endblock %}
