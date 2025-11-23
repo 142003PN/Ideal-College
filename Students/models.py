@@ -36,4 +36,4 @@ class StudentProfile(models.Model):
     phone_number = models.CharField(max_length=15, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.student.first_name}'s Profile"
+        return f"{self.student_id.first_name}'s Profile"

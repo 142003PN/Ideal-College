@@ -11,7 +11,7 @@ class Registration(models.Model):
     class STATUS(models.TextChoices):
         Pending = 'Pending', 'Pending'
         Approved = 'Approved', 'Approved'
-    student_id=models.ForeignKey(Student, on_delete=models.CASCADE, limit_choices_to={'role': 'STUDENT'})
+    student_id=models.ForeignKey(Student, on_delete=models.CASCADE, related_name="registration", limit_choices_to={'role': 'STUDENT'})
     courses=models.ManyToManyField(Courses, related_name='registrations')
     status=models.CharField(max_length=10, choices=STATUS.choices, default='Pending')
     year_of_study=models.ForeignKey(YearOfStudy, on_delete=models.SET_NULL, blank=True, null=True)

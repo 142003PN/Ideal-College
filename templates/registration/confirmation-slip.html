@@ -1,0 +1,78 @@
+{% load static %}
+<style>
+    body{
+        font-family: Arial, sans-serif;
+        padding: 0 20px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+    }
+    h2, h3 {
+        font-weight: normal;
+    }
+    .heading h4{
+        font-weight: 500;
+    }
+    .heading h2{
+        font-size: 1.5rem;
+    }
+    .registered-courses h3{
+        font-size: 1.3rem;
+        margin-bottom: 0;
+    }
+    .logo {
+        text-align: center;
+    }
+    .heading {
+        text-align: center;
+        padding: 0;
+    }
+    .programme {
+        text-align: center;
+        text-transform: uppercase;
+    }
+    @bottom-left{
+        content: "Well";
+    }
+</style>
+{% block content %}
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="static/img/logo.png" width="100" height="100" alt="">
+        </div>
+        <div class="heading">
+            <h2>Ideal College of Health and Applied Sciences</h2>
+            <h4>Course Registration Confirmation Slip</h4>
+            <h5>Printed by {{registration.student_id.id}} on {{today}}</h5>
+        </div>
+        <h2 class="programme">{{registration.student_id.profile.program}}</h2>
+        <hr>
+    </div>
+    <div class="registered-courses">
+        <h3>Registered Courses-FT-{{registration.student_id.profile.program}} {{registration.year_of_study}}</h3>
+        <p>
+            <b>
+                This student has registered for the following courses for the year {{registration.session_year}}
+            </b>
+        </p>
+        <ul>
+            {% if registration.status == 'Pending' %}
+                <h2 style="color: red;"><strong>Status</strong>: Your Registered Courses are Pending Approval</h2>
+                {% else %}
+                {% for course in courses %}
+                <li><strong>{{course.course_code}}</strong> - {{course.course_title}} </li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+    <hr>
+    <div class="footer">
+        <h2>Financial Statement</h2>
+        <p>This Confirmation Slip is printed for <strong>{{registration.student_id.first_name}} {{registration.student_id.last_name}} ({{registration.student_id.id}})</strong> a <strong>Fulltime Student</strong></p>
+        <br>
+        <hr>
+    </div>
+    <p><b>PLEASE KEEP THIS DOCUMENT FOR FUTURE REFERENCE</b></p>
+</body>
+{% endblock%}
+

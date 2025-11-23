@@ -7,6 +7,7 @@ from django.contrib import messages
 import os
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
+from django.http import *
 
 # Create your views here.
 def apply(request):
@@ -49,15 +50,20 @@ def apply(request):
         #validation
         if Student.objects.filter(email=email).exists() or General_Information.objects.filter(email=email).exists():
             messages.error(request, 'Email already exists!')
+            return redirect('Application:apply')
         elif Student.objects.filter(NRC=NRC).exists() or General_Information.objects.filter(NRC=NRC).exists():
             messages.error(request, 'NRC already exists!')
+            return redirect('Application:apply')
         elif len(NRC) > 15:
             messages.error(request, "NRC should have less than 15 characters")
+            return redirect('Application:apply')
         elif not all(c.isdigit() or c == '/' for c in NRC):
             messages.error(request, "NRC should only contain numbers and forward slashes /")
+            return redirect('Application:apply')
         # ensure all uploaded certificates are PDFs
         elif any(cert and not (getattr(cert, 'content_type', '') == 'application/pdf' or cert.name.lower().endswith('.pdf')) for cert in certificates):
             messages.error(request, 'All uploaded certificates must be PDF files.')
+            return redirect('Application:apply')
         else:
             #save general info
             addmission = General_Information.objects.create(
@@ -138,42 +144,86 @@ def apply(request):
 
 @login_required(login_url='/users/login/')
 def accept(request, pk):
-    admission_id = General_Information.objects.get(pk=pk)
-    app_status = Application_Status.objects.get(application=admission_id)
-    app_status.status='APPROVED'
-    app_status.save()
+    if request.user.role == 'ADMIN':
+        admission_id = General_Information.objects.get(pk=pk)
+        app_status = Application_Status.objects.get(application=admission_id)
+        app_status.status='APPROVED'
+        app_status.save()
 
-    messages.success(request, "Applicant accepted Successfully")
+        messages.success(request, "Applicant accepted Successfully")
+    else:
+        messages.error(request, 'Insufficient Privelleges')
     return redirect("Application:recent")
 
 # --------------Recent Applications
 @login_required(login_url='/users/login/')
 def recent_applications(request):
-    applications =General_Information.objects.all().order_by('-date_of_application')
-    applications =General_Information.objects.all().order_by('-date_of_application')
+    if request.user.role == 'ADMIN':
+        applications =General_Information.objects.all().order_by('-date_of_application')
 
-    context={
-        'applications':applications
-    }
+        context={
+            'applications':applications
+        }
+    else:
+        return HttpResponse("<h1>Insufficent Roles</h1>")
     return render(request, 'applications/recent-applications.html', context)
 
 #----------View Application Details----------------
 @login_required(login_url='/users/login/')
 def view_application(request, admission_id):
-    application = General_Information.objects.get(admission_id=admission_id)
-    results = CertificateResults.objects.filter(admission_id=application)
-    school_certificates = School_Certificate.objects.filter(addmission=application)
-    if Application_Status.objects.get(application=application):
-        application_status = Application_Status.objects.get(application=application)
-        if Next_of_Kin.objects.filter(addmission_id=application).exists():
-            next_of_kin = Next_of_Kin.objects.get(addmission_id=application)
+    if request.user.role == 'ADMIN':
+        application = General_Information.objects.get(admission_id=admission_id)
+        results = CertificateResults.objects.filter(admission_id=application)
+        school_certificates = School_Certificate.objects.filter(addmission=application)
+        if Application_Status.objects.filter(application=application).exists():
+            application_status = Application_Status.objects.get(application=application)
+            if Next_of_Kin.objects.filter(addmission_id=application).exists():
+                next_of_kin = Next_of_Kin.objects.get(addmission_id=application)
+            else:
+                next_of_kin = None
+            context={
+                'application':application,
+                'results':results,
+                'school_certificates':school_certificates,
+                'next_of_kin':next_of_kin,
+                'application_status':application_status,
+            }
         else:
-            next_of_kin = None
-        context={
-            'application':application,
-            'results':results,
-            'school_certificates':school_certificates,
-            'next_of_kin':next_of_kin,
-            'application_status':application_status,
-        }
+            messages.error(request, 'Insufficient Privelleges')
     return render(request, 'applications/view_application.html', context)
+
+#-----delete certificate file, passport photo, deposit slip when application is deleted
+def delete_files(application):
+    # Delete deposit slip
+    if application.deposit_slip and os.path.isfile(application.deposit_slip.path):
+        os.remove(application.deposit_slip.path)
+    # Delete passport photo
+    if application.passport_photo and os.path.isfile(application.passport_photo.path):
+        os.remove(application.passport_photo.path)
+    # Delete school certificates
+    school_certificates = School_Certificate.objects.filter(addmission=application)
+    for cert in school_certificates:
+        if cert.certificate and os.path.isfile(cert.certificate.path):
+            os.remove(cert.certificate.path)
+#def reject application
+@login_required(login_url='/users/login/')
+def reject(request, pk):
+    admission_id = General_Information.objects.get(pk=pk)
+    app_status = Application_Status.objects.get(application=admission_id)
+    app_status.status='REJECTED'
+    app_status.save()
+
+    messages.success(request, "Applicant rejected Successfully")
+    return redirect("Application:recent")
+
+#---- delete application if status is rejected
+@login_required(login_url='/users/login/')
+def delete_application(request, pk):
+    admission_id = General_Information.objects.get(pk=pk)
+    app_status = Application_Status.objects.get(application=admission_id)
+    if app_status.status == 'REJECTED':
+        admission_id.delete()
+        messages.success(request, "Application deleted successfully.")
+    else:
+        messages.error(request, "Only rejected applications can be deleted.")
+    return redirect("Application:recent")

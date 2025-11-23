@@ -6,7 +6,13 @@ from Students.models import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from Academics.models import SessionYear
+import datetime
+from django.template.loader import get_template
+from django.http import *
+from xhtml2pdf import pisa
+
 # Create your views here.
+
 
 #----------Register for Courses-------------
 @login_required(login_url='/users/login/')
@@ -79,8 +85,36 @@ def view_submitted_courses(request, pk):
         try:
             registration = Registration.objects.get(id=pk)
             courses = registration.courses.all()
+
+
             return render(request, 'registration/view-registered.html', {'courses': courses, 'registration': registration})
         except Registration.DoesNotExist:
             messages.error(request, "Registration not found.")
             return redirect('Registration:recent')
     return render(request, 'registration/view-registered.html')
+
+def print_confirmation_slip(request, student_id):
+    if request.user.role == 'STUDENT':
+            #convert confirmation slip to pdf
+        student_id = request.user
+        registration = Registration.objects.get(student_id=student_id)
+        courses = registration.courses.all()
+        today = datetime.date.today()
+
+        template = get_template('registration/confirmation-slip.html')
+
+        context={'courses': courses, 'registration': registration,
+                        'today': today, 'student_id': student_id}
+        
+        html = template.render(context)
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Deposition']='filename="confirmation-slip.pdf"'
+
+        #create PDF
+        pisa_status=pisa.CreatePDF(html, dest=response)
+
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>' + html + '</pre>')
+        return response
+    return render(request, 'registration/confirmation-slip.html')

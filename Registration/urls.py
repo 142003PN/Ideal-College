@@ -7,4 +7,5 @@ urlpatterns = [
     path('recent_registered/', views.recent_registrations, name="recent"),
     path('approve/<str:pk>', views.approve_registration, name="approve"),
     path('view/<str:pk>', views.view_submitted_courses, name='view_courses'),
+    path('print/<str:student_id>', views.print_confirmation_slip, name='print_slip'),
 ]

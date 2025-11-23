@@ -40,3 +40,6 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
     USERNAME_FIELD = 'id'
     REQUIRED_FIELDS = ['first_name','last_name', 'NRC', 'email']
+
+    def __str__(self):
+        return self.first_name+" "+self.last_name+" "+self.email

@@ -20,7 +20,7 @@
 17. Inbox
 18. Error
 19. Profile
-20. Teacher Dashboard
+20. Staff Dashboard
 21. Student Dashboard
 22. Responsive
 
@@ -344,7 +344,7 @@ table.table td h2 span {
 	background-color: #fff5d9 !important;
 }
 .pro-bg-primary, .badge-primary {
-	background-color: #fdbb38 !important;
+	background-color: #0B1F3A !important;
 }
 .bg-light {
     background-color: #ebebff!important;
@@ -436,8 +436,8 @@ button.bg-danger:hover {
     color: #757575 !important;
 }
 .btn-primary {
-	background-color: #FFBC53;
-	border: 1px solid #FFBC53;
+	background-color: #0B1F3A;
+	border: 1px solid #0B1F3A;
 }
 .btn-primary:hover,
 .btn-primary:focus,
@@ -1130,7 +1130,7 @@ div.dataTables_wrapper div.dataTables_info {
 	margin-bottom: 1.875rem;
 }
 .section-header .section-title {
-	color: #333;
+	color: #0B1F3A;
 }
 .line {
 	background-color: #18aefa;
@@ -1628,7 +1628,7 @@ footer p {
 	position: relative;
 }
 .sidebar-menu li a {
-	color: #6f6f6f;
+	color: #0d284b;
 	display: block;
 	font-size: 16px;
 	height: auto;
@@ -1814,14 +1814,14 @@ footer p {
 }
 .page-header .breadcrumb {
     background-color: transparent;
-    color: #6c757d;
+    color: #0B1F3A;
     font-size: 1rem;
     font-weight: 500;
     margin-bottom: 0;
     padding: 0;
 }
 .page-header .breadcrumb a {
-	color: #0f0f0f;
+	color: #0B1F3A;
 }
 .page-title {
 	font-size: 28px;
@@ -2683,7 +2683,7 @@ table.table-inbox tbody tr.checked {
 }
 
 /*-----------------
-	20. Teacher Dashboard
+	20. Staff Dashboard
 -----------------------*/
 
 .bg-five {

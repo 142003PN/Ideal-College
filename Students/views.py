@@ -10,12 +10,15 @@ import os
 #---------List Students-----------
 @login_required(login_url='/users/login/')
 def list_students(request):
-    students = Student.objects.filter(role="STUDENT").order_by('date_joined')
-    profile = StudentProfile.objects.all()
+    if request.user.role == 'ADMIN':
+        students = Student.objects.filter(role="STUDENT").order_by('date_joined')
+        profile = StudentProfile.objects.all()
+    else:
+        return HttpResponse("<h1>Insufficient Privelledges")
     context = {
-        'students': students,
-        'profile': profile,
-    }
+            'students': students,
+            'profile': profile,
+        }
     return render(request, 'Students/students.html', context)
 
 #A----------Add student view---------------
@@ -152,7 +155,6 @@ def student_details(request, student_id):
     return render(request, 'Students/student-details.html', context)
 
 #----------delete student media----------------
-@login_required(login_url='/users/login/')
 def delete_student_media(student):
     try:
         profile = StudentProfile.objects.get(student_id=student)
@@ -164,13 +166,16 @@ def delete_student_media(student):
 #----------Delete Student------------
 @login_required(login_url='/users/login/')
 def delete_student(request, pk):
-    try:
-        student = Student.objects.get(pk=pk)
-        delete_student_media(student)
-        student.delete()
-        return redirect('Students:list')
-    except student.DoesNotExist:
-        return HttpResponse("Student does not exixt")
+    if request.user.role == 'ADMIN':
+        try:
+            student = Student.objects.get(pk=pk)
+            delete_student_media(student)
+            student.delete()
+            return redirect('Students:list')
+        except student.DoesNotExist:
+            return HttpResponse("Student does not exixt")
+    else:
+        return HttpResponse("<h1>Insufficient Privelleges </h1>")
     
 # Student dashboard view
 @login_required(login_url='/users/login/')
