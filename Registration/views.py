@@ -96,8 +96,9 @@ def view_submitted_courses(request, pk):
 def print_confirmation_slip(request, student_id):
     if request.user.role == 'STUDENT':
             #convert confirmation slip to pdf
+        session_year = SessionYear.objects.get(is_current_year=1)
         student_id = request.user
-        registration = Registration.objects.get(student_id=student_id)
+        registration = Registration.objects.get(student_id=student_id, session_year=session_year)
         courses = registration.courses.all()
         today = datetime.date.today()
 

@@ -27,11 +27,15 @@
                 <div class="media-body">
                   <ul>
                     <li>
+                      <span class="title-span">Student Id : </span>
+                      <span class="info-span">{{ student.id}}</span>
+                    </li>
+                    <li>
                       <span class="title-span">Full Name : </span>
                       <span class="info-span">{{ student.first_name}} {{ student.last_name}}</span>
                     </li>
                     <li>
-                      <span class="title-span">Department : </span>
+                      <span class="title-span">Programme : </span>
                       <span class="info-span">{{ profile.program}}</span>
                     </li>
                     <li>
@@ -80,13 +84,15 @@
        
         <!-- Button trigger modal -->
         <div class="actions">
+          {% if request.user.role == 'ADMIN' %}
             <a><button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                 Delete Student
               </button>
             </a>
             <a href="{% url "Students:edit" student.id %}" class="btn btn-primary">Edit Student</a>
-        
-            <a href="{% url "Students:edit" student.id %}" class="btn btn-primary">Edit Student</a>
+         {% else %}
+            <a href="{% url "Students:edit" student.id %}" class="btn btn-primary">Edit Details</a>
+          {% endif %}
         </div>
         
 
@@ -114,9 +120,4 @@
       {% endif %}
     </div>
   </div>
-
-  <footer>
-    <p>Copyright © 2020 Dreamguys.</p>
-  </footer>
-</div>
 {% endblock %}
