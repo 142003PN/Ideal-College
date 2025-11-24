@@ -158,7 +158,7 @@
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="passport_photo">Passport Photo <small class="text-danger">*</small></label>
-                    <input type="file" name="passport_photo" class="form-control">
+                    <input type="file" name="passport_photo" class="form-control" allowed="image/*">
                     {% if data.passport_photo %}
                         <small class="text-muted">Current: {{ data.passport_photo }}</small>
                     {% endif %}
