@@ -47,12 +47,14 @@ def staff_details(request, pk):
 @login_required(login_url='/users/login/')
 def add_staff(request):
     departments=Department.objects.all()
+    default_password='Pass123'
     if request.method == 'POST':
         first_name=request.POST.get('first_name')
         last_name=request.POST.get('last_name')
         NRC=request.POST.get('NRC')
         email=request.POST.get('email')
         #profile data
+        position=request.POST.get('position')
         gender=request.POST.get('gender')
         department_id=request.POST.get('department_id')
         profile_picture=request.FILES.get('profile_picture')
@@ -80,9 +82,11 @@ def add_staff(request):
                 NRC=NRC,
                 email=email,
             )
+            staff.set_password(default_password)
             staff.save();
 
             staff_profile=StaffProfile.objects.create(
+                position=position,
                 staff_id=staff,
                 department_id=department_id,
                 profile_picture=profile_picture,
@@ -153,3 +157,6 @@ def delete_staff(request, pk):
         return redirect('Staff:list')
     else:
         return HttpResponse("<h1>You have no Privellege to delete A staff Member")
+
+def dashboard(request):
+    return render(request, 'staff/dashboard.html')
