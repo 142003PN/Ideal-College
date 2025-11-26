@@ -16,6 +16,37 @@
         </div>
       </div>
     </div>
+    <!--messages-->
+    {% for message in messages %} 
+      {% if 'success' in message.tags %}
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "{{ message|escapejs }}",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = ""; 
+          }
+        });
+      });
+      </script>
+      {% else %}
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "{{ message|escapejs }}",
+          confirmButtonText: "OK",
+        });
+      });
+      </script>
+      {% endif %} 
+    {% endfor %}
+    <!--end of messages-->
     <div class="card">
       <div class="card-body">
         <div class="row">

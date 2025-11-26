@@ -149,8 +149,8 @@ def accept(request, pk):
         app_status = Application_Status.objects.get(application=admission_id)
         app_status.status='APPROVED'
         app_status.save()
-
         messages.success(request, "Applicant accepted Successfully")
+        return redirect('Application:recent')
     else:
         messages.error(request, 'Insufficient Privelleges')
     return redirect("Application:recent")

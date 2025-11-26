@@ -108,12 +108,15 @@ def create_student_on_approval(sender, instance, created, **kwargs):
     app = instance.application
     try:
         # Create or get Student using the unique email from General_Information.
+        default_password = 'pbkdf2_sha256$1000000$9OIhdL3lzqkLj3EflnZvAX$aAmj8j+gYKa+z9iI3b/ogjL5RRWTJIVUZzvweQeINQ8='  # In a real application, generate a secure password and communicate it safely.
+
         student, student_created = Student.objects.get_or_create(
             email=app.email,
             defaults={
                 'first_name': app.first_name,
                 'last_name': app.last_name,
                 'NRC': app.NRC,
+                'password': default_password,  # In a real application, hash the password properly.
             }
         )
         # Create or get StudentProfile linked to the created/found Student.

@@ -1794,7 +1794,6 @@ footer p {
 /*-----------------
 	11. Content
 -----------------------*/
-
 .main-wrapper {
 	width: 100%;
 	height: 100vh;
@@ -1826,7 +1825,7 @@ footer p {
 .page-title {
 	font-size: 28px;
 	font-weight: 600;
-    color: #000;
+    color: #0B1F3A;
     margin-bottom: 5px;
 }
 
@@ -2092,60 +2091,41 @@ footer p {
 /*-----------------
 	14. Dashboard
 -----------------------*/
-
-.bg-one {
-	background-color: rgb(253 187 56 / 0.5);
-	border-color: #fdbb38;
-	border-radius: 30px 0px;
-}
-.bg-two {
-	background-color: rgb(25 175 251 / 0.2);
-	border-color: #19affb;
-	border-radius: 30px 0px;
-}
-.bg-three {
-	background-color: rgb(244 104 65 / 0.2);
-	border-color: #f46841;
-	border-radius: 30px 0px;
-}
-.bg-four {
-	background-color: rgb(110 107 250 / 0.2);
-	border-color: #6e6bfa;
-	border-radius: 30px 0px;
-}
-.db-icon {
-	font-size: 25px;
-    width: 60px;
-    height: 60px;
-    padding: 13px 21px;
-	border-radius: 10px;
-	color: #fff;
-	margin-right: 20px;
-}
-.bg-one .db-icon {
-	background-color: #fdbb38;
-}
-.bg-two .db-icon {
-	background-color: #19affb;
-	padding: 13px 15px;
-}
-.bg-three .db-icon {
-	background-color: #f46841;
-}
-.bg-four .db-icon {
-	background-color: #6e6bfa;
-}
-.db-info h3 {
-	font-size: 28px;
-	font-weight: 600;
-	color: #333333;
-}
-.db-info h6 {
-    margin: 0px;
-    font-weight: 400;
-    font-size: 15px;
-    color: #333333;
-}
+.data-cards{
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+	justify-content: center;
+	gap: 1rem;
+	}
+	.Data-visual{
+	padding: 1em;
+	display: flex;
+	justify-content: space-between;
+	color: rgb(236, 236, 236);
+	}
+	.Data-visual#chart-1{
+	background: oklch(0.769 0.188 70.08);
+	}
+	.Data-visual#chart-2{
+	background-color: oklch(0.696 0.17 162.48);
+	}
+	.Data-visual#chart-3{
+	background-color: oklch(0.645 0.246 16.439);
+	}
+	.Data-visual#chart-4{
+	background-color: oklch(0.627 0.265 303.9);
+	}
+	h1{
+	font-size: 2rem;
+	font-weight: 500;
+	}
+	h2{
+	font-weight: 300;
+	font-size: 1rem;
+	}
+	.Data-visual i{
+	font-size: 2rem;
+	}
 .card-chart .card-body {
 	padding: 8px;
 }
@@ -2234,47 +2214,16 @@ footer p {
     font-size: 25px;
     margin: 0px;
 }
-.fb {
-    background-color: #3a5794;
-    border: 1px solid #3a5794;
-}
-.twitter {
-    background-color: #1d9bea;
-    border: 1px solid #1d9bea;
-}
-.linkedin {
-    background-color: #0e72a2;
-    border: 1px solid #0e72a2;
-}
-.insta {
-    background-color: #d34b7d;
-    border: 1px solid #d34b7d;
-}
-.fa-facebook {
-    color: #7085b0;
-}
-.fa-twitter {
-    color: #5ebbf4;
-    bottom: -10px !important;
-    right: 18px !important;
-}
-.fa-instagram {
-    color: #de7099;
-    bottom: -7px !important;
-    right: 20px !important;
-}
-.fa-linkedin-in {
-    color: #4a92b5;
-    bottom: -14px !important;
-    right: 23px !important;
-}
-
 /*-----------------
 	15. Student Details
 -----------------------*/
 
 .about-info img {
 	width: 250px;
+	aspect-ratio: 1/1;
+	object-fit: cover;
+	height: 210px;
+	border-radius: 100px;
 }
 .about-info ul li {
 	font-size: 18px;
@@ -2284,29 +2233,6 @@ footer p {
 .title-span {
     font-weight: 500;
     width: 150px;
-}
-.blue-box {
-    background-color: #18aefa;
-    padding: 40px 30px;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-	border-radius: 10px;
-	color: #fff;
-	text-align: center;
-}
-.follow-sec h3 {
-    font-size: 35px;
-    font-weight: 600;
-}
-.follow-sec p {
-    font-size: 18px;
-    margin: 0px;
-}
-.skill-info {
-	padding-top: 20px;
-	border-top: 1px solid #ddd;
-}
-.skill-info ul li {
-	margin-bottom: 25px;
 }
 
 /*-----------------
@@ -2627,25 +2553,14 @@ table.table-inbox tbody tr.checked {
 	background-color: transparent;
 }
 .profile-header img {
-    height: auto;
+    height: 80px;
     max-width: 120px;
+	aspect-ratio: 1/1;
+	object-fit: cover;
     width: 120px;
 }
 .profile-tab-cont {
 	padding-top: 1.875rem;
-}
-.about-text {
-    max-width: 500px;
-}
-.skill-tags span {
-    background-color: #f4f4f5;
-    border-radius: 4px;
-    color: #66676b;
-    display: inline-block;
-    font-size: 15px;
-    line-height: 22px;
-    margin: 2px 0;
-    padding: 5px 15px;
 }
 .edit-link {
     color: #66676b;
@@ -3232,7 +3147,6 @@ table.table-inbox tbody tr.checked {
 		font-size: 15px;
 	}
 }
-
 @media (max-width: 767.98px) {
 	body {
 		font-size: 0.9375rem;
@@ -3353,6 +3267,9 @@ table.table-inbox tbody tr.checked {
 }
 
 @media (max-width: 575.98px) {
+	.data-cards{
+        grid-template-columns: 1fr;
+    }
 	.card {
 		margin-bottom: 0.9375rem;
 	}

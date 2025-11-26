@@ -97,6 +97,9 @@
               <span class="user-img">
                 {% if request.user.role == 'STUDENT' %}
                 <img class="rounded-circle" src="{{ request.user.profile.profile_picture.url }}" width="31" alt="{{ request.user.first_name}} {{request.user.last_name}}">
+                {% elif request.user.role == 'STAFF' %}
+                <img class="rounded-circle" src="{{ request.user.staff_profile.profile_picture.url }}" width="31" alt="{{ request.user.first_name}} {{request.user.last_name}}">
+                
                 {% else %}
                 <img class="rounded-circle" src="{% static "img/logo.png" %}" width="31" alt="{{ request.user.first_name}} {{request.user.last_name}}"
               /></span>
@@ -107,6 +110,8 @@
                 <div class="avatar avatar-sm">
                   {% if request.user.role == 'STUDENT' %}
                   <img src="{{ request.user.profile.profile_picture.url }}" alt="User Image" class="avatar-img rounded-circle"/>
+                  {% elif request.user.role == 'STAFF' %}
+                  <img src="{{ request.user.staff_profile.profile_picture.url }}" alt="User Image" class="avatar-img rounded-circle"/>
                   {% else %}
                   <img src=""{% static "img/logo.png" %}"" alt="User Image" class="avatar-img rounded-circle"/>
                   {% endif %}
@@ -117,9 +122,12 @@
                 </div>
               </div>
               {% if request.user %}
-              <a class="dropdown-item" href="{% url "Students:details" request.user.id %}">My Profile</a>
-              <a class="dropdown-item" href="inbox.html">Inbox</a>
-              <a class="dropdown-item" href="{% url "Users:logout" %}">Logout</a>
+                {% if request.user.role == 'STAFF' %}
+                <a class="dropdown-item" href="{% url "Staff:details" request.user.id %}">My Profile</a>
+                {% elif request.user.role == 'Student' %}
+                <a class="dropdown-item" href="{% url "Students:details" request.user.id %}">My Profile</a>
+                {% endif %}
+                <a class="dropdown-item" href="{% url "Users:logout" %}">Logout</a>
               {% endif %}
               
             </div>
@@ -137,7 +145,7 @@
               {% if request.user.is_authenticated %}
               {% if request.user.role == 'ADMIN' %}
               <li>
-                <a href="{% url "Registration:register" %}"><i class="fas fa-dashboard"></i> <span>Dashboard</span></a>
+                <a href="{% url "Admin:dashboard" %}"><i class="fas fa-dashboard"></i> <span>Dashboard</span></a>
               </li>
               <li class="submenu">
                 <a href="#"
@@ -187,22 +195,29 @@
                   <span class="menu-arrow"></span
                 ></a>
                 <ul>
-                  <li><a href=" {% url "Students:list" %}">Student List</a></li>
+                  <li><a href=" {% url "Students:list" %}">Students</a></li>
                   <li><a href="{% url "Students:add" %}">Student Add</a></li>
                 </ul>
               </li>
+              <li>
+                <a href="{% url "Results:fetch-student" %}"><i class="fas fa-file-alt"></i> <span>Add Results</span></a>
+              </li>
+              {% elif request.user.profle.position == 'Lecturer' %}
+              <li>
+                <a href="{% url "Registration:register" %}"><i class="fas fa-plus"></i> <span>Course Registration</span></a>
+              </li>
               {% elif request.user.role == 'STAFF'  %}
               <li>
-                <a href="{% url "Registration:register" %}"><i class="fas fa-create"></i> <span>Staff Dashboard</span></a>
+                <a href="{% url "Staff:dashboard" %}"><i class="fas fa-dashboard"></i> <span>Staff Dashboard</span></a>
               </li>
               {% elif request.user.role == 'STUDENT' %}
               <li>
-                <a href=""><i class="fas fa-dashboard"></i> <span>Student Dashboard</span></a>
+                <a href="{% url "Students:dashboard" %}"><i class="fas fa-dashboard"></i> <span>Student Dashboard</span></a>
               </li>
               <li>
                 <a href="{% url "Students:details" request.user.id %}"><i class="fas fa-user"></i><span>Profile</span></a>
               </li>
-               <li>
+              <li>
                 <a href="{% url "Registration:register" %}"><i class="fas fa-plus"></i> <span>Course Registration</span></a>
               </li>
                <li>
@@ -216,7 +231,7 @@
                   <span class="menu-arrow"></span
                 ></a>
                 <ul>
-                  <li><a href="{% url "Courses:courses" %}">Course List</a></li>
+                  <li><a href="{% url "Courses:courses" %}">Courses</a></li>
                   <li>
                     <a href="{% url "Courses:add" %}" class="active">Add Course</a>
                   </li>

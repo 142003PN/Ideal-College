@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+<title>{% block title %}Fetch{% endblock title %}Ftech</title>
+{% block content %}
+<div class="page-wrapper">
+<div class="content container-fluid">
+    <div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+        <h3 class="page-title">Add Fees</h3>
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="fees.html">Fees</a></li>
+            <li class="breadcrumb-item active">Add Fees</li>
+        </ul>
+        </div>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+        <div class="card-body">
+            {% for message in messages %}
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    Swal.fire({
+                    icon: "warning",
+                    title: "Warning",
+                    text: "{{ message|escapejs }} ",
+                    confirmButtonText: "OK",
+                    });
+                });
+            </script>
+            {% endfor %}
+            <form method='post'>
+                <div class="row">
+                    {% csrf_token %}
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Student Id</label>
+                            <input type="number" name="student_id" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+{% endblock %}

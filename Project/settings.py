@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'Registration',
     'Academics',
     'xhtml2pdf',
+    'Results',
 ]
 
 MIDDLEWARE = [

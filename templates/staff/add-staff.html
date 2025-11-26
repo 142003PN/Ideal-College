@@ -118,6 +118,17 @@
                 </div>
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
+                    <label for="position">Position</label>
+                    <select name="position" class="form-select" id="emp_status">
+                      <option value="Accountant">Accountant</option>
+                      <option value="HOD">HOD</option>
+                      <option value="Lecturer">Lecturer</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-12 col-sm-6">
+                  <div class="form-group">
                     <label for="department">Department</label>
                     <select name="department_id" id="department" class="form-select">
                     {% for department in departments %}

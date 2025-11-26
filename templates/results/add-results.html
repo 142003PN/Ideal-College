@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+<title>{% block title %}Add Results{% endblock title %}Ftech</title>
+{% block content %}
+<div class="page-wrapper">
+<div class="content container-fluid">
+    <div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+        <h3 class="page-title">Add Results</h3>
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="fees.html">Results</a></li>
+            <li class="breadcrumb-item active">Add Results</li>
+        </ul>
+        </div>
+    </div>
+    </div>
+    {% for message in messages %}
+    {% if 'success' in message.tags %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "{{ message|escapejs }} ",
+          confirmButtonText: "OK",
+        });
+      });
+    </script>
+    {% endif %}
+    {% endfor %}
+    <div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+        <div class="card-body">
+            <form method='post'>
+                <div class="row">
+                    {% csrf_token %}
+                    <div class="col-12 col-sm-5">
+                        <div class="form-group">
+                            <label>Course</label>
+                            <select name="course" class='form-select' id="CourseInput">
+                                {% for result in results %}
+                                    <option value="{{ result.course.id }}">{{ result.course }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-5">
+                        <div class="form-group">
+                            <label>Marks Obtained</label>
+                            <input type="number" id="MarkInput" name="marks" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col col-sm-2 mb-6">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary" onclick="addSubject()">Add</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <table id="coursTable" border="1" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Subject</th>
+                                <th scope="col">Grade</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <script>
+                    const subjects = [];
+
+                    function addSubject() {
+                        const subject = document
+                        .getElementById("CourseInput")
+                        .value.trim()
+                        .toLowerCase();
+                        const grade = parseInt(document.getElementById("MarkInput").value);
+
+                        if (!subject || isNaN(grade)) {
+                        alert("Please enter a valid subject and grade.");
+                        return;
+                        }
+
+                        // ✅ Prevent adding the same subject twice
+                        const duplicate = subjects.some((item) => item.subject === subject);
+                        if (duplicate) {
+                        alert("This subject has already been added!");
+                        return;
+                        }
+
+                        subjects.push({ subject, grade });
+                        renderTable();
+                        clearInputs();
+                    }
+
+                    function renderTable() {
+                        const tbody = document.querySelector("#coursTable tbody");
+                        tbody.innerHTML = "";
+
+                        subjects.forEach((item, index) => {
+                        const row = `
+                            <tr>
+                            <td>${capitalize(item.subject)}</td>
+                            <td>${item.grade}</td>
+                            <td>
+                                <button style="border-radius: 50%"; type="button" class="bg-danger"  onclick="removeSubject(${index})"><i class="fas fa-times"></i></button>
+                            </td>
+
+                            <!-- Hidden inputs so Django receives the data -->
+                            <input type="hidden" name="subject" value="${item.subject}">
+                            <input type="hidden" name="grade" value="${item.grade}">
+                            </tr>
+                        `;
+                        tbody.innerHTML += row;
+                        });
+                    }
+
+                    function removeSubject(index) {
+                        subjects.splice(index, 1);
+                        renderTable();
+                    }
+
+
+                    function capitalize(str) {
+                        return str.charAt(0).toUpperCase() + str.slice(1);
+                    }
+                    </script>
+                </div>
+                <div class="col col-sm-6 mt-3">
+                    <button type="submit" class="btn btn-success">Add Results</button>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+{% endblock %}

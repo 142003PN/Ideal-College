@@ -68,7 +68,7 @@
                   {% for year in years %}
                   <div class="accordion-item">
                   <div class="accordion-header" onclick="toggleAccordion(this)">
-                    <span><input type="checkbox" name="year_of_study" value="{{year.id}}"> {{year.year_title}}     {{student.program }}</span>
+                    <span><input type="radio" name="year_of_study" value="{{year.id}}"> {{year.year_title}}     {{student.program }}</span>
                   </div>
                   <div class="accordion-content">
                     <div class="accordion-body">

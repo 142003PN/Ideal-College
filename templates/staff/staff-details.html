@@ -60,6 +60,10 @@
                       <div class="media-body">
                         <ul>
                           <li>
+                            <span class="title-span">Staff Id : </span>
+                            <span class="info-span">{{ staff.id}}</span>
+                          </li>
+                          <li>
                             <span class="title-span">Full Name : </span>
                             <span class="info-span">{{ staff.first_name}} {{staff.last_name}}</span>
                           </li>
@@ -80,8 +84,12 @@
                             <span class="info-span">{{ staff.staff_profile.gender}}</span>
                           </li>
                           <li>
-                            <span class="title-span">DOB : </span>
-                            <span class="info-span">{{ staff.staff_profile.date_of_birth }}</span>
+                            <span class="title-span">Position : </span>
+                            <span class="info-span">{{ staff.staff_profile.position }}</span>
+                          </li>
+                          <li>
+                            <span class="title-span">Status : </span>
+                            <span class="info-span">{{ staff.staff_profile.employment_status }}</span>
                           </li>
                         </ul>
                       </div>
