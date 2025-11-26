@@ -146,6 +146,21 @@ def edit_student(request, pk):
 #-------------student details view-----------------
 @login_required(login_url='/users/login/')
 def student_details(request, student_id):
+    #-------Update Profile Picture-----------
+    try:
+        student = Student.objects.get(pk=student_id)
+        student_profile = StudentProfile.objects.get(student_id=student)
+        profile_picture = request.FILES.get('profile_picture')
+        if profile_picture:
+            if student_profile.profile_picture and hasattr(student_profile.profile_picture, 'path'):
+                if os.path.isfile(student_profile.profile_picture.path):
+                    os.remove(student_profile.profile_picture.path)
+            student_profile.profile_picture = profile_picture
+            student_profile.save()
+            messages.success(request, 'Profile picture updated successfully.')
+    except StudentProfile.DoesNotExist:
+        pass
+    #------------End of profile pic update-------
     student = Student.objects.get(id=student_id)
     profile = student.profile
     context = {
