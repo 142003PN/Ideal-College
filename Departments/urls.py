@@ -8,4 +8,5 @@ urlpatterns = [
     path('add/', views.add_department, name='add'),
     path('delete/<uuid:pk>/', views.delete_department, name='delete'),
     path('edit/<uuid:pk>/', views.edit_department, name='edit'),
+    path('dashboard/', views.dashboard, name='dashboard'),
 ]
