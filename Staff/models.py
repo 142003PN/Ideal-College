@@ -40,6 +40,7 @@ class StaffProfile(models.Model):
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     address = models.TextField()
     date_added = models.DateTimeField(auto_now_add=True)
+    added_by=models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.staff_id

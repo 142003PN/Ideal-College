@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import ProgramForm
 from .models import Programs
+from Users.models import CustomUser
 from django.http import HttpResponse
 from Courses.models import Courses
 import datetime
@@ -12,19 +13,26 @@ from django.contrib.auth.decorators import login_required
 #-------------add programme----------------
 @login_required(login_url='/users/login/')
 def add_programme(request):
-    if request.method == 'POST':
-        form = ProgramForm(request.POST)
-        if form.is_valid():
-            program_title = form.cleaned_data.get('program_title')
-            if program_title and Programs.objects.filter(program_title__iexact=program_title).exists():
-                messages.error(request, 'Programme already exists')
+    if request.user.role == 'ADMIN' or request.user.staff_profile.position=='HOD':
+        user=request.user.id
+        added_by=CustomUser.objects.get(id=user)
+        if request.method == 'POST':
+            form = ProgramForm(request.POST)
+            if form.is_valid():
+                program_title = form.cleaned_data.get('program_title')
+                if program_title and Programs.objects.filter(program_title__iexact=program_title).exists():
+                    messages.error(request, 'Programme already exists')
+                else:
+                    program=form.save(commit=False)
+                    program.added_by=added_by
+                    form.save()
+                    messages.success(request, 'Programme added successfully!')
             else:
-                form.save()
-                messages.success(request, 'Programme added successfully!')
+                messages.error(request, 'Programme Already exists')
         else:
-            messages.error(request, 'Programme Already exists')
+            form = ProgramForm()
     else:
-        form = ProgramForm()
+        return HttpResponse('<h1>Insufficient</h1>')
     return render(request, 'programs/add-program.html', {'form':form, 'title':'Add Programme'})
 #----------------Edit programme----------------------
 @login_required(login_url='/users/login/')

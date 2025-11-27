@@ -10,21 +10,28 @@ import datetime
 import openpyxl
 import xlwt
 import encodings
+from Users.models import CustomUser
 
 #add course
 @login_required(login_url='/users/login/')
 def add_course(request):
-    if request.method == 'POST':
-        form = CourseForm(request.POST)
-        if form.is_valid():
-            course = form.save(commit=False)
-            course.save()
-            messages.success(request, 'Course added successfully')
-            return redirect('Courses:courses')
+    if request.user.role !='STUDENT':
+        user=request.user.id
+        added_by=CustomUser.objects.get(id=user)
+        if request.method == 'POST': 
+            form = CourseForm(request.POST)
+            if form.is_valid():
+                course = form.save(commit=False)
+                course.added_by=added_by
+                course.save()
+                messages.success(request, 'Course added successfully')
+                return redirect('Courses:courses')
+            else:
+                messages.error(request, 'The Course Code already exists')   
         else:
-            messages.error(request, 'The Course Code already exists')   
+            form = CourseForm()
     else:
-        form = CourseForm()
+        return HttpResponse("<h1>Insufficient Roles</h1>")
     return render(request, 'courses/add-course.html', {'form':form})
 
 #course list

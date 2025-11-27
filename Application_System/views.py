@@ -148,6 +148,7 @@ def accept(request, pk):
         admission_id = General_Information.objects.get(pk=pk)
         app_status = Application_Status.objects.get(application=admission_id)
         app_status.status='APPROVED'
+        app_status.accepted_by= request.user.id
         app_status.save()
         messages.success(request, "Applicant accepted Successfully")
         return redirect('Application:recent')

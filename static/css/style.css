@@ -189,13 +189,13 @@ table.table td h2.table-avatar {
 	white-space: nowrap;
 }
 table.table td h2 a {
-	color: #333;
+	color: #0B1F3A;
 }
 table.table td h2 a:hover {
 	color: #FFBC53;
 }
 table.table td h2 span {
-	color: #888;
+	color: #0B1F3A;
 	display: block;
 	font-size: 12px;
 	margin-top: 3px;
@@ -258,7 +258,7 @@ table.table td h2 span {
 }
 .table tbody td{
 	font-weight: 200;
-	color: #464343;
+	color: #0B1F3A;
 }
 /*-----------------
 	3. Helper Class

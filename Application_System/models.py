@@ -8,6 +8,7 @@ from Programs.models import Programs
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import logging
+from Users.models import CustomUser
 
 logger = logging.getLogger(__name__)
 # Create your models here.
@@ -91,6 +92,7 @@ class Application_Status(models.Model):
         ('APPROVED', 'Approved'),
         ('REJECTED', 'Rejected'),
     ], default='PENDING')
+    accepted_by=models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
     def __str__(self):
         return self.status
 #signal to create Application_Status upon General_Information creation
