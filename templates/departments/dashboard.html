@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Department Dashboard{% endblock %}
+{% block  content %}
+      <div class="page-wrapper">
+        <div class="content container-fluid">
+          <div class="page-header">
+            <div class="row">
+              <div class="col-sm-12">
+                <h3 class="page-title">{{ request.user.first_name }} {{ request.user.last_name }} {{department}}</h3>
+                <ul class="breadcrumb">
+                  <li class="breadcrumb-item active">{{request.user.staff_profile.department}} Department</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!--Data Cards-->
+          <div class="data-cards mt-0 mb-3">
+              <div class="Data-visual" id="chart-1">
+                <div class="data-text">
+                  <h1>342</h1>
+                  <h2>Students</h2>
+                </div>
+                <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+              </div>
+              <div class="Data-visual" id="chart-2">
+                  <div class="data-text">
+                    <h1>{{ staff_count}}</h1>
+                    <h2>Staff Members</h2>
+                  </div>
+                  <i class="fa fa-user-circle" aria-hidden="true"></i>
+              </div>
+              <div class="Data-visual" id="chart-3">
+                  <div class="data-text">
+                    <h1>{{ program_count }}</h1>
+                    <h2>Programmes</h2>
+                  </div>
+                  <i class="fa fa-users" aria-hidden="true"></i>
+              </div>
+              <div class="Data-visual" id="chart-4">
+                  <div class="data-text">
+                    <h1>60</h1>
+                    <h2>Courses</h2>
+                  </div>
+                  <i class="fa fa-users" aria-hidden="true"></i>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 d-flex">
+              <div class="card flex-fill">
+                <div class="card-header">
+                  <h5 class="card-title">Programmes </h5>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover table-center">
+                      <thead class="thead-light">
+                        <tr>
+                          <th>Programme Title</th>
+                          <th>Department</th>
+                          <th>View</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for program in programs %}
+                        <tr>
+                          <td class="text-nowrap">
+                            <div>{{program.program_title}}</div>
+                          </td>
+                          <td >
+                            <div>{{program.department_id}}</div>
+                          </td>
+                          <td>
+                            <a href="{% url "Programs:view" program.id %}" class="btn btn-primary btn-sm">View</a>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 d-flex">
+              <div class="card flex-fill">
+                <div class="card-header">
+                  <h5 class="card-title">Staff Members</h5>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover table-center">
+                      <thead class="thead-light">
+                        <tr>
+                          <th>Staff Name</th>
+                          <th>Position</th>
+                          <th>View</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for staff in staff_members %}
+                          <tr>
+                            <td class="text-nowrap">
+                              <div>{{staff.staff_id.first_name}} {{staff.staff_id.last_name}}</div>
+                            </td>
+                            <td >
+                              <div>{{staff.position}}</div>
+                            </td>
+                            <td>
+                              <a href="{% url "Staff:details" staff.staff_id.id %}" class="btn btn-primary btn-sm">View Details</a>
+                            </td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+{% endblock  %}

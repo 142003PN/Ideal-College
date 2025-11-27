@@ -202,14 +202,46 @@
               <li>
                 <a href="{% url "Results:fetch-student" %}"><i class="fas fa-file-alt"></i> <span>Add Results</span></a>
               </li>
-              {% elif request.user.profle.position == 'Lecturer' %}
-              <li>
-                <a href="{% url "Registration:register" %}"><i class="fas fa-plus"></i> <span>Course Registration</span></a>
-              </li>
               {% elif request.user.role == 'STAFF'  %}
               <li>
                 <a href="{% url "Staff:dashboard" %}"><i class="fas fa-dashboard"></i> <span>Staff Dashboard</span></a>
               </li>
+              <li>
+                <a href="{% url "Staff:details" request.user.id %}"><i class="fas fa-user"></i><span>Profile</span></a>
+              </li>
+                {% if request.user.staff_profile.position == "Lecturer" %}
+                  <li>
+                      <a href="">
+                          <i class="fas fa-plus"></i> <span>Course Administration</span>
+                      </a>
+                  </li>
+                  <li class="submenu">
+                    <a href="#">
+                      <i class="fas fa-book-reader"></i> <span> Programmes</span>
+                      <span class="menu-arrow"></span>
+                    </a>
+                    <ul>
+                      <li><a href="{% url "Programs:programs" %}">Programmes</a></li>
+                      <li>
+                        <a href="{% url "Programs:add" %}" class="active">Add Programe</a>
+                      </li>
+                    </ul>
+                  </li>
+                {% elif request.user.staff_profile.position == "HOD" %}
+                  <li class="submenu">
+                    <a href="#">
+                      <i class="fas fa-book-reader"></i> <span> Programmes</span>
+                      <span class="menu-arrow"></span>
+                    </a>
+                    <ul>
+                      <li><a href="{% url "Programs:programs" %}">Programmes</a></li>
+                      <li>
+                        <a href="{% url "Programs:add" %}" class="active">Add Programe</a>
+                      </li>
+                    </ul>
+                  </li>
+                {% else %}
+                {% endif %}
               {% elif request.user.role == 'STUDENT' %}
               <li>
                 <a href="{% url "Students:dashboard" %}"><i class="fas fa-dashboard"></i> <span>Student Dashboard</span></a>
@@ -233,7 +265,7 @@
                 <ul>
                   <li><a href="{% url "Courses:courses" %}">Courses</a></li>
                   <li>
-                    <a href="{% url "Courses:add" %}" class="active">Add Course</a>
+                    <a href="{% url "Courses:add" %}">Add Course</a>
                   </li>
                 </ul>
               </li>
