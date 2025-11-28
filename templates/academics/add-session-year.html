@@ -1,16 +1,16 @@
 {% extends "base.html" %}
-{% block body %}
+{% block content %}
 <div class="page-wrapper">
 <div class="content container-fluid">
     <div class="page-header">
     <div class="row align-items-center">
         <div class="col">
-        <h3 class="page-title">Add Academic Year</h3>
+        <h3 class="page-title">Add Session Year</h3>
         <ul class="breadcrumb">
             <li class="breadcrumb-item">
-            <a href="event.html">Academics</a>
+            <a href="{% url "Academics:session-year" %}">Session year</a>
             </li>
-            <li class="breadcrumb-item active">Add Academic Year</li>
+            <li class="breadcrumb-item active">Add Session Year</li>
         </ul>
         </div>
     </div>
@@ -20,7 +20,29 @@
     <div class="col-sm-12">
         <div class="card">
             {% for message in messages %}
-            <p class="alert alert-success">{{ message }}</p>
+                {% if 'success' in message.tags %}
+                    <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: "{{ message|escapejs }} ",
+                        confirmButtonText: "OK",
+                        });
+                    });
+                    </script>
+                    {% elif 'warning' in message.tags%}
+                    <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        Swal.fire({
+                        icon: "warning",
+                        title: "Warning",
+                        text: "{{ message|escapejs }} ",
+                        confirmButtonText: "OK",
+                        });
+                    });
+                    </script>
+                {% endif %}
             {% endfor %}
         <div class="card-body">
             <form method='POST'>
@@ -34,7 +56,7 @@
                 <div class="col-12 col-sm-6">
                     <div class="form-group">
                         {{ form.name.label_tag}}
-                        {{ form.name }}
+                        {{ form.year_title }}
                     </div>
                 </div>
                 <div class="col-12 ">

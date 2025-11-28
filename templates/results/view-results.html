@@ -13,13 +13,24 @@
         </div>
       </div>
     </div>
+    <style>
+      td{
+        font-size: 0.9rem;
+        font-color: #0B1F3A;
+      }
+      tr th{
+        font-color: #0B1F3A;
+      }
+    </style>
     <div class="row">
       <div class="col-sm-12">
         <div class="card card-table">
           <div class="card-body">
             <div class="table-responsive">
               {% for year in years %}
-              <p>{{year.session_year}}</p>
+              <div class="text mt-1">
+                <h5 style="font-weight: 500;">Year: {{year.session_year}}</h5>
+              </div>
               <table class="table table-hover table-center">
                 <thead class="thead-light">
                   <tr>
@@ -32,7 +43,7 @@
                   {% for result in results %}
                     {% if result.session_year == year.session_year %}
                     <tr>
-                      <td class="text-nowrap">
+                      <td>
                         <div>{{result.course}} </div>
                       </td>
                       <td >
