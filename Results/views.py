@@ -32,7 +32,7 @@ def fetch_student(request):
 def add_results(request):
     student_id=request.session.get('student_id')
     session_year=SessionYear.objects.get(is_current_year=1)
-    results=Results.objects.filter(student_id=student_id, session_year=session_year)
+    results=Results.objects.filter(student_id=student_id, session_year=session_year).exclude(mark__isnull=False)
     
     if results:
         if request.method == 'POST':
@@ -55,9 +55,14 @@ def add_results(request):
     return render(request, 'results/add-results.html', context)   
  
 @login_required(login_url='/users/login/')
-def view_results(request):
-    student_id=request.user
-    session_year=SessionYear.objects.get(is_current_year=1)
-    results=Results.objects.filter(student_id=student_id, session_year=session_year)
+def view_results(request, student_id):
+    #student_id=request.user
+    #result_id=Results.objects.get(student_id=student_id)
+    years=Registration.objects.filter(student_id=student_id)
+    results=Results.objects.filter(student_id=student_id)
 
-    return render('results/view-results.html')
+    context={
+        'results':results,
+        'years':years,
+    }
+    return render(request, 'results/view-results.html', context)

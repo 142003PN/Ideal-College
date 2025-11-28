@@ -8,18 +8,46 @@
         <div class="col">
           <h3 class="page-title">Grades</h3>
           <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-            <li class="breadcrumb-item active">Courses</li>
+            <li class="breadcrumb-item active">Results</li>
           </ul>
         </div>
       </div>
     </div>
-
     <div class="row">
       <div class="col-sm-12">
         <div class="card card-table">
           <div class="card-body">
-            <h1>Hello</h1>
+            <div class="table-responsive">
+              {% for year in years %}
+              <p>{{year.session_year}}</p>
+              <table class="table table-hover table-center">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Code</th>
+                    <th>Course Title</th>
+                    <th>Grade</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for result in results %}
+                    {% if result.session_year == year.session_year %}
+                    <tr>
+                      <td class="text-nowrap">
+                        <div>{{result.course}} </div>
+                      </td>
+                      <td >
+                        <div>{{result.course.course_title}}</div>
+                      </td>
+                      <td>
+                        {{result.grade}}
+                      </td>
+                    </tr>
+                    {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+              {% endfor %}
+            </div>
           </div>
         </div>
       </div>
