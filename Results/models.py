@@ -13,7 +13,7 @@ class Results(models.Model):
     student_id=models.ForeignKey(Student, on_delete=models.CASCADE)
     course=models.ForeignKey(Courses, on_delete=models.CASCADE)
     session_year=models.ForeignKey(SessionYear, on_delete=models.SET_NULL, null=True, blank=True)
-    mark=models.IntegerField(null=True, blank=True)
+    mark=models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     grade=models.CharField(max_length=5, null=True, blank=True)
     date_recorded=models.DateTimeField(auto_now_add=True)
 
@@ -25,6 +25,8 @@ class Results(models.Model):
             self.grade = 'B'
         elif mark >= 60:
             self.grade = 'C'
+        elif mark==0:
+            self.grade = None
         else:
             self.grade = 'F'
         super().save(*args, **kwargs)

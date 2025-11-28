@@ -32,7 +32,7 @@ def fetch_student(request):
 def add_results(request):
     student_id=request.session.get('student_id')
     session_year=SessionYear.objects.get(is_current_year=1)
-    results=Results.objects.filter(student_id=student_id, session_year=session_year).exclude(mark__isnull=False)
+    results=Results.objects.filter(student_id=student_id, session_year=session_year).exclude(grade__isnull=False)
     
     if results:
         if request.method == 'POST':
