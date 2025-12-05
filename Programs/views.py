@@ -37,6 +37,8 @@ def add_programme(request):
 #----------------Edit programme----------------------
 @login_required(login_url='/users/login/')
 def edit_programme(request, pk):
+    if request.method != 'ADMIN':
+        messages.error(request, 'Only an admin can edit a program')
     program = Programs.objects.get(pk = pk)
     title = "Edit Programme"
     if request.method == 'POST':

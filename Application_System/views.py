@@ -144,11 +144,13 @@ def apply(request):
 
 @login_required(login_url='/users/login/')
 def accept(request, pk):
+    user_id=request.user.id
+    accepted_by=CustomUser.objects.get(id=user_id)
     if request.user.role == 'ADMIN':
         admission_id = General_Information.objects.get(pk=pk)
         app_status = Application_Status.objects.get(application=admission_id)
         app_status.status='APPROVED'
-        app_status.accepted_by= request.user.id
+        app_status.accepted_by= accepted_by
         app_status.save()
         messages.success(request, "Applicant accepted Successfully")
         return redirect('Application:recent')

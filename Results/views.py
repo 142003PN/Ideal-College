@@ -55,6 +55,12 @@ def add_results(request):
     return render(request, 'results/add-results.html', context)   
  
 @login_required(login_url='/users/login/')
+def edit_results(request):
+    student_id=request.session.get('student_id')
+    session_year=SessionYear.objects.get(is_current_year=1)
+    results=Results.objects.filter(student_id=student_id, session_year=session_year).exclude(grade__isnull=False)
+
+@login_required(login_url='/users/login/')
 def view_results(request, student_id):
     #student_id=request.user
     #result_id=Results.objects.get(student_id=student_id)

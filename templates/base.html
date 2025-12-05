@@ -175,6 +175,9 @@
                   <li><a href="">Accepted Students</a></li>
                 </ul>
               </li>
+              <li>
+                <a href="{% url "Registration:recent" %}"><i class="fas fa-clock"></i> <span>Recent Registered</span></a>
+              </li>
               <li class="submenu">
                 <a href="#"
                   ><i class="fas fa-building"></i> <span> Departments</span>
@@ -258,6 +261,9 @@
                       </li>
                     </ul>
                   </li>
+                  <li>
+                    <a href="{% url "Registration:recent" %}"><i class="fas fa-clock"></i> <span>Recent Registered</span></a>
+                  </li>
                 {% else %}
                 {% endif %}
               {% elif request.user.role == 'STUDENT' %}
@@ -291,9 +297,6 @@
                 </ul>
               </li>
               <li>
-              <li>
-                <a href="{% url "Registration:recent" %}"><i class="fas fa-clock"></i> <span>Recent Registered</span></a>
-              </li>
               <li>
                 <a href="{% url "Users:logout" %}"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
               </li>

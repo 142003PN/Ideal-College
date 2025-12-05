@@ -63,9 +63,12 @@ def edit_course(request, pk):
 #delete course
 @login_required(login_url='/users/login/')
 def delete(request, pk):
-    course_id = Courses.objects.get(pk=pk)
-    course_id.delete()
-    return redirect('Courses:courses')
+    if request.user.role == 'ADMIN':
+        course_id = Courses.objects.get(pk=pk)
+        course_id.delete()
+        return redirect('Courses:courses')
+    else:
+        return HttpResponse("<h1>You cannot delete a course<\h1>")
 
 @login_required(login_url='/users/login/')
 def export_excel(request):

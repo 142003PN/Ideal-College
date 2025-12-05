@@ -10,6 +10,7 @@ import datetime
 from django.template.loader import get_template
 from django.http import *
 from xhtml2pdf import pisa
+import os
 
 # Create your views here.
 
@@ -94,16 +95,13 @@ def view_submitted_courses(request, pk):
     return render(request, 'registration/view-registered.html')
 
 def print_confirmation_slip(request, student_id):
-    if request.user.role == 'STUDENT':
-            #convert confirmation slip to pdf
+        #convert confirmation slip to pdf
         session_year = SessionYear.objects.get(is_current_year=1)
         student_id = request.user
         registration = Registration.objects.get(student_id=student_id, session_year=session_year)
         courses = registration.courses.all()
         today = datetime.date.today()
-
         template = get_template('registration/confirmation-slip.html')
-
         context={'courses': courses, 'registration': registration,
                         'today': today, 'student_id': student_id}
         
@@ -118,4 +116,27 @@ def print_confirmation_slip(request, student_id):
         if pisa_status.err:
             return HttpResponse('We had some errors <pre>' + html + '</pre>')
         return response
-    return render(request, 'registration/confirmation-slip.html')
+
+#----------------Delete Registration-----------------
+def delete_qrcode_media(registration):
+    try:
+        if registration.qr_code and hasattr(registration.qr_code, 'path'):
+            if os.path.isfile(registration.qr_code.path):
+                os.remove(registration.qr_code.path)
+    except (AttributeError, OSError):
+        pass
+#deregister
+def delete_registration(request, pk):
+    if request.user.role != 'ADMIN':
+        messages.error(request, "You do not have permission to delete registrations.")
+        return redirect('Registration:recent_registrations')
+    
+    try:
+        registration = Registration.objects.get(id=pk)
+        delete_qrcode_media(registration)
+        registration.delete()
+        messages.success(request, "Registration deleted successfully.")
+        return redirect('Registration:recent')
+    except Registration.DoesNotExist:
+        messages.error(request, "Registration not found.")
+        return redirect('Registration:recent_registrations')

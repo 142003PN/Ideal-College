@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from datetime import datetime
+from django.conf import settings
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, NRC, password, **extra_fields):
         if not email:
@@ -43,3 +44,15 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.first_name+" "+self.last_name+" "+self.email
+    
+
+class PasswordResetRequest(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    token = models.CharField(max_length=64, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        # Token is valid for 1 hour
+        return (datetime.now() - self.created_at).total_seconds() < 3600
+
+    

@@ -15,6 +15,7 @@ class Results(models.Model):
     session_year=models.ForeignKey(SessionYear, on_delete=models.SET_NULL, null=True, blank=True)
     mark=models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     grade=models.CharField(max_length=5, null=True, blank=True)
+    qr_code=models.ImageField(upload_to='results/qr_codes/', null=True, blank=True)
     date_recorded=models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs ):
