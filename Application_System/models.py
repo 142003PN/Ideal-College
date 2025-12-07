@@ -30,6 +30,7 @@ class General_Information(models.Model):
         )
     ])
     NRC = models.CharField(max_length=20, unique=True)
+    NRC_scan = models.FileField(upload_to='nrc_scans/', validators=[FileExtensionValidator(['pdf'])], null=True, blank=True)
     marital_status = models.CharField(max_length=30, null=True, blank=True)
     gender = models.CharField(max_length=10, choices=GenderChoices.choices, null=True, blank=True)
     nationality = models.CharField(max_length=50)
@@ -48,6 +49,7 @@ class General_Information(models.Model):
     passport_photo = models.ImageField(upload_to='profile_picture', default='fallback.png', validators=[FileExtensionValidator(['jpg', 'jpeg', 'png'])])
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+    
 #---------------Next of Kin-----------------                    
 class Next_of_Kin(models.Model):
     addmission_id = models.OneToOneField(General_Information, on_delete=models.CASCADE, related_name='next_of_kin')
@@ -57,6 +59,7 @@ class Next_of_Kin(models.Model):
     NK_address = models.TextField(null=True)
     def __str__(self):
         return self.full_name
+    
 #--------Subject Results--------------------
 class CertificateResults(models.Model):
     admission_id = models.ForeignKey(General_Information, on_delete=models.CASCADE, related_name='results')

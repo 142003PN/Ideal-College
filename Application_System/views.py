@@ -25,6 +25,7 @@ def apply(request):
         phone_number = request.POST.get('phone_number')
         email = request.POST.get('email')
         NRC = request.POST.get('NRC')
+        NRC_scan = request.FILES.get('NRC_scan')
         marital_status = request.POST.get('marital_status')
         disability=request.POST.get('disability')
         disability_desc=request.POST.get('disability_desc')
@@ -78,6 +79,7 @@ def apply(request):
                 phone_number=phone_number,
                 email=email,
                 NRC=NRC,
+                NRC_scan=NRC_scan,
                 marital_status=marital_status,
                 city_of_residence=city_of_residence,
                 program=program,
