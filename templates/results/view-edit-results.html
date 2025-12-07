@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+<title>{% block title %}Edit Results{% endblock title %}</title>
+{% block content %}
+<div class="page-wrapper">
+<div class="content container-fluid">
+    <div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+        <h3 class="page-title">Edit Results</h3>
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url "Admin:dashboard" %}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Edit Results</li>
+        </ul>
+        </div>
+    </div>
+    </div>
+    {% for message in messages %}
+    {% if 'success' in message.tags %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "{{ message|escapejs }} ",
+          confirmButtonText: "OK",
+        });
+      });
+    </script>
+    {% endif %}
+    {% endfor %}
+    <div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+        <div class="card-body">
+            <form method='post'>
+                <div class="col-12 mt-3">
+                    <table class="table table-hover table-centered mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th class="text-center">Code</th>
+                                <th>Grade</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                            <tr>
+                                <td>{{result.course}}</td>
+                                <td>{{result.grade}}</td>
+                                <td><a class="btn btn-primary btn-sm" href="{% url "Results:edit-result" result.result_id %}" >Edit</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            </form>
+
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+{% endblock %}

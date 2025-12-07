@@ -52,44 +52,6 @@
               <i class="far fa-bell"></i>
               <span class="badge badge-pill">3</span>
             </a>
-            <div class="dropdown-menu notifications">
-              <div class="topnav-dropdown-header">
-                <span class="notification-title">Notifications</span>
-                <a href="javascript:void(0)" class="clear-noti"> Clear All </a>
-              </div>
-              <div class="noti-content">
-                <ul class="notification-list">
-                  <li class="notification-message">
-                    <a href="#">
-                      <div class="media">
-                        <span class="avatar avatar-sm">
-                          <img
-                            class="avatar-img rounded-circle"
-                            alt="User Image"
-                            src="assets/img/profiles/avatar-11.jpg"
-                          />
-                        </span>
-                        <div class="media-body">
-                          <p class="noti-details">
-                            <span class="noti-title"
-                              >International Software Inc</span
-                            >
-                            has sent you a invoice in the amount of
-                            <span class="noti-title">$218</span>
-                          </p>
-                          <p class="noti-time">
-                            <span class="notification-time">6 mins ago</span>
-                          </p>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div class="topnav-dropdown-footer">
-                <a href="#">View all Notifications</a>
-              </div>
-            </div>
           </li>
 
           <li class="nav-item dropdown has-arrow">
@@ -175,6 +137,18 @@
                   <li><a href="">Accepted Students</a></li>
                 </ul>
               </li>
+              <li class="submenu">
+                <a href="#"
+                  ><i class="fas fa-book-reader"></i> <span>Courses</span>
+                  <span class="menu-arrow"></span
+                ></a>
+                <ul>
+                  <li><a href="{% url "Courses:courses" %}">Courses</a></li>
+                  <li>
+                    <a href="{% url "Courses:add" %}">Add Course</a>
+                  </li>
+                </ul>
+              </li>
               <li>
                 <a href="{% url "Registration:recent" %}"><i class="fas fa-clock"></i> <span>Recent Registered</span></a>
               </li>
@@ -221,7 +195,15 @@
                 </ul>
               </li>
               <li>
-                <a href="{% url "Results:fetch-student" %}"><i class="fas fa-file-alt"></i> <span>Add Results</span></a>
+              <li class="submenu">
+                <a href="#"
+                  ><i class="fas fa-chart-bar"></i> <span> Results</span>
+                  <span class="menu-arrow"></span
+                ></a>
+                <ul>
+                  <li><a href="{% url "Results:fetch-student-edit" %}"><i class="fas fa-file-edit"></i> <span>Edit Results</span></a></li>
+                  <li><a href="{% url "Results:fetch-student" %}"><i class="fas fa-file-alt"></i> <span>Add Results</span></a></li>
+                </ul>
               </li>
               {% elif request.user.role == 'STAFF'  %}
               <li>
@@ -284,18 +266,6 @@
                 </li>
               {% endif %}
               {% endif %}
-              <li class="submenu">
-                <a href="#"
-                  ><i class="fas fa-book-reader"></i> <span>Courses</span>
-                  <span class="menu-arrow"></span
-                ></a>
-                <ul>
-                  <li><a href="{% url "Courses:courses" %}">Courses</a></li>
-                  <li>
-                    <a href="{% url "Courses:add" %}">Add Course</a>
-                  </li>
-                </ul>
-              </li>
               <li>
               <li>
                 <a href="{% url "Users:logout" %}"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
