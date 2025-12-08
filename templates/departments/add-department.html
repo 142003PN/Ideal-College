@@ -9,7 +9,7 @@
                 <h3 class="page-title">Add Department</h3>
                 <ul class="breadcrumb">
                   <li class="breadcrumb-item">
-                    <a href="departments.html">Department</a>
+                    <a href="{% url "Departments:departments" %}">Department</a>
                   </li>
                   <li class="breadcrumb-item active">Add Department</li>
                 </ul>
@@ -22,14 +22,18 @@
               <div class="card">
                 <div class="card-body">
                   {% for message in messages %}
-                    {% if 'error' in message.tags %}
+                    {% if 'success' in message.tags %}
                       <script>
                         document.addEventListener("DOMContentLoaded", function () {
                           Swal.fire({
-                            icon: "error",
-                            title: "Error",
-                            text: "{{ message|escapejs }} ",
-                            confirmButtonText: "OK",
+                          icon: "success",
+                          title: "Success",
+                          text: "{{ message|escapejs }}",
+                          confirmButtonText: "OK",
+                          }).then((result) => {
+                          if (result.isConfirmed) {
+                            window.location.href = "{% url 'Departments:departments' %}"; 
+                          }
                           });
                         });
                       </script>
@@ -37,8 +41,8 @@
                       <script>
                         document.addEventListener("DOMContentLoaded", function () {
                           Swal.fire({
-                            icon: "success",
-                            title: "Success",
+                            icon: "error",
+                            title: "Error",
                             text: "{{ message|escapejs }} ",
                             confirmButtonText: "OK",
                           });

@@ -29,11 +29,6 @@
       <div class="col-sm-12">
         <div class="card w-75">
           <div class="card-body">
-            {% for message in messages %}
-            <p class="alert alert-danger">
-              {{ message }}
-            </p>
-            {% endfor %}
             <div class="table-responsive">
               <table class="table table-hover table-center w-100">
                 <thead>
@@ -55,9 +50,45 @@
                           class="btn btn-sm bg-success-light mr-2"
                         >
                           <i class="fas fa-pen"></i>
-                        </a>
-                        <a data-toggle="modal" data-target="#deleteModal" href="{% url "Departments:delete" department.id %}" class="btn btn-sm bg-danger">
-                          <i class="fas fa-trash"></i>
+                        <a
+                          class="btn btn-sm btn-outline-danger"
+                          href="{% url 'Departments:delete' department.id %}"
+                          onclick="event.preventDefault();
+                                    const url = this.href;
+                                    Swal.fire({
+                                       title: 'Are you sure?',
+                                       text: 'You won\'t be able to revert this!',
+                                       icon: 'warning',
+                                       showCancelButton: true,
+                                       confirmButtonColor: '#3085d6',
+                                       cancelButtonColor: '#d33',
+                                       confirmButtonText: 'Yes, delete it!'
+                                    }).then((result) => {
+                                       if (result.isConfirmed) {
+                                        fetch(url)
+                                        .then(response => {
+                                          if(response.ok) {
+                                           Swal.fire(
+                                             'Deleted!',
+                                             'Department has been deleted.',
+                                             'success'
+                                           ).then(() => {
+                                             window.location.reload();
+                                           });
+                                          }
+                                        }).catch(() => {
+                                          Swal.fire('Error','Request failed.','error');
+                                        });
+                                       } else {
+                                        Swal.fire(
+                                          'Cancelled',
+                                          'Your course is safe :)',
+                                          'info'
+                                        );
+                                       }
+                                    })"
+                        >
+                          Delete
                         </a>
                       </div>
                     </td>

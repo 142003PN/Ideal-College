@@ -31,7 +31,7 @@ def add_department(request):
                 newdept = form.save(commit=False)
                 newdept.added_by=added_by
                 form.save()
-                messages.info(request, "Department added")
+                messages.success(request, "Department added")
         else:
             form = DepartmentForm()
     else:
@@ -63,7 +63,8 @@ def delete_department(request, pk):
     if request.user.role=='ADMIN':
         department = Department.objects.get(id=pk)
         department.delete()
-        messages.info(request, "Department deleted")
+        messages.success(request, "Department deleted")
+        return redirect('Departments:departments')
     else:
         HttpResponse('<h1>Insufficient Privelleges</h1>')
     return render(request, 'departments/departments.html', {'departments':department})
