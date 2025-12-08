@@ -22,6 +22,10 @@ def add_department(request):
         if request.method == 'POST':
             form = DepartmentForm(request.POST)
             user=request.user.id
+            department_name=request.POST.get('department_name')
+            if Department.objects.filter(department_name=department_name).exists():
+                messages.error(request, "Department with this name already exists.")
+                return redirect('Departments:add')
             added_by=CustomUser.objects.get(id=user)
             if form.is_valid():
                 newdept = form.save(commit=False)
