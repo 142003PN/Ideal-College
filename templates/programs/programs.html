@@ -49,13 +49,10 @@
                         {{ programme.department_id }}
                       </h2>
                     </td>
-                    <td class="text-right">
+                    <td class="text-center">
                       <div class="actions">
-                        <a
-                          href="{% url "Programs:view" programme.id %}"
-                          class="btn btn-sm bg-success-light mr-2 text-center"
-                        >
-                          <i class="fas fa-book"></i>
+                        <a href="{% url "Programs:view" programme.id %}" class="btn btn-primary btn-sm mr-2">
+                          View
                         </a>
                       </div>
                     </td>

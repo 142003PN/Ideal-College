@@ -37,8 +37,9 @@ def add_programme(request):
 #----------------Edit programme----------------------
 @login_required(login_url='/users/login/')
 def edit_programme(request, pk):
-    if request.method != 'ADMIN':
+    if request.user.role != 'ADMIN':
         messages.error(request, 'Only an admin can edit a program')
+        return redirect('Programs:programs')
     program = Programs.objects.get(pk = pk)
     title = "Edit Programme"
     if request.method == 'POST':
@@ -51,7 +52,6 @@ def edit_programme(request, pk):
                 program = form.save(commit=False)
                 form.save()
                 messages.success(request, 'Programme updated successfully')
-                return HttpResponse('Programme added Successfully')
         else:
             return HttpResponse('Please correct the errors below')
     else:

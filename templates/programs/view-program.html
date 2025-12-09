@@ -13,7 +13,11 @@
         </div>
         {% if request.user.role == 'ADMIN' %}
         <div class="col-auto text-right float-right ml-auto">
-          <a data-toggle="modal" data-target="#deleteModal" href="#" class="btn btn-outline-danger mr-2"
+          <a class="btn  bg-success-light btn-sm " href="{% url "Programs:edit" programme.id %}">
+            <i class="fas fa-pen"></i>Edit
+          </a>
+
+          <a data-toggle="modal" data-target="#deleteModal" href="#" class="btn btn-outline-danger btn-sm mr-2"
             ><i class="fas fa-trash"></i> Delete</a >
         </div>
         {% endif %}

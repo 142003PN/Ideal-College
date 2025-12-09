@@ -19,7 +19,7 @@ def list_students(request):
             'students': students,
             'profile': profile,
         }
-    return render(request, 'Students/students.html', context)
+    return render(request, 'students/students.html', context)
 
 #A----------Add student view---------------
 @login_required(login_url='/users/login/')
@@ -89,7 +89,7 @@ def add_student(request):
         'programmes':programmes,
         'years':years,
     }
-    return render(request, 'Students/add-student.html', context)
+    return render(request, 'students/add-student.html', context)
 
 #-------------edit student view-------------------
 @login_required(login_url='/users/login/')
@@ -141,7 +141,7 @@ def edit_student(request, pk):
         'student': student,
         'profile': profile,
     }
-    return render(request, 'Students/edit-student.html', context)
+    return render(request, 'students/edit-student.html', context)
 
 #-------------student details view-----------------
 @login_required(login_url='/users/login/')
@@ -167,7 +167,7 @@ def student_details(request, student_id):
         'student': student,
         'profile': profile,
     }
-    return render(request, 'Students/student-details.html', context)
+    return render(request, 'students/student-details.html', context)
 
 #----------delete student media----------------
 def delete_student_media(student):
