@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-wrapper">
+<div class="content container-fluid">
+    <div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+        <h3 class="page-title">Add Year of Study</h3>
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+            <a href="{% url "Academics:years-of-study" %}">Years of study</a>
+            </li>
+            <li class="breadcrumb-item active">Add Year</li>
+        </ul>
+        </div>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            {% for message in messages %}
+                {% if 'success' in message.tags %}
+                <script>
+                    // Show SweetAlert for success message
+                    document.addEventListener("DOMContentLoaded", function () {
+                        Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: "{{ message|escapejs }}",
+                        didClose: () => { window.location.href = "{% url 'Academics:session-year' %}"; },
+                        confirmButtonText: "OK",
+                        });
+                    });
+                </script>
+                {% else %}
+                <script >
+                    document.addEventListener("DOMContentLoaded", function () {
+                        Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "{{ message|escapejs }} ",
+                        confirmButtonText: "OK",
+                        });
+                    });
+                </script>
+                {% endif %}
+            {% endfor %}
+        <div class="card-body">
+            <form method='POST'>
+                {% csrf_token %}
+            <div class="row">
+                <div class="col-12">
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        {{ form.name.label_tag}}
+                        {{ form.year_title }}
+                    </div>
+                </div>
+                <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                    Submit
+                </button>
+                </div>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+{% endblock  %}

@@ -1,26 +1,25 @@
 {% extends "base.html" %} 
-<title>{% block title %}Session Years{% endblock %}</title>
+<title>{% block title %}Years of Study{% endblock %}</title>
 {% block content %}
 <div class="page-wrapper">
   <div class="content container-fluid">
     <div class="page-header">
       <div class="row align-items-center">
         <div class="col">
-          <h3 class="page-title">Session Years</h3>
+          <h3 class="page-title">Year of Study</h3>
           <ul class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="{% url "Admin:dashboard" %}">Dashboard</a>
             </li>
-            <li class="breadcrumb-item active">session-years</li>
+            <li class="breadcrumb-item active">years-of-study</li>
           </ul>
         </div>
         <div class="col-auto text-right float-right ml-auto">
-            <a href="{% url "Academics:add-session-year" %}" class="btn btn-info"
+            <a href="{% url "Academics:add-yos" %}" class="btn btn-info"
                 >Add Year
             </a>
         </div>
       </div>
-    </div>
     </div>
     <div class="row">
       <div class="col-sm-12">
@@ -30,25 +29,19 @@
               <table class="table table-hover table-center">
                 <thead class="thead-light">
                   <tr>
-                    <th>Code</th>
-                    <th>Course Title</th>
-                    <th>View</th>
+                    <th class="text-nowrap">Year Title</th>
+                    <th class="text-left">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for year in years %}
-                    <tr>
-                      <td>
-                        <div>{{year.year_title}} </div>
-                      </td>
-                      <td >
-                        <div>{{year.is_current_year}}</div>
-                      </td>
-                      <td>
-                        <a href="{% url "Academics:edit-year" year.id %}" class="btn btn-primary btn-sm">Edit</a>
-                      </td>
-                    </tr>
-                  {% endfor %}
+                {% for year in years %}
+                  <tr>
+                    <td class="text-nowrap">{{year.year_title}}</td>
+                    <td class="text-left">
+                      <div><a href="#" class="btn btn-primary btn-sm">Edit</a></div>
+                    </td>
+                  </tr>
+                {% endfor %}
                 </tbody>
               </table>
             </div>
