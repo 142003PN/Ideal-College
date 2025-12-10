@@ -25,30 +25,32 @@
       <div class="col-sm-12">
         <div class="card">
           {% for message in messages %}
-            {% if 'success' in message.tags %}
-            <script>
-              document.addEventListener("DOMContentLoaded", function () {
-                Swal.fire({
-                  icon: "success",
-                  title: "Success",
-                  text: "{{ message|escapejs }} ",
-                  confirmButtonText: "OK",
-                });
-              });
-            </script>
-            {% elif 'warning' in message.tags%}
-            <script>
-              document.addEventListener("DOMContentLoaded", function () {
-                Swal.fire({
-                  icon: "warning",
-                  title: "Warning",
-                  text: "{{ message|escapejs }} ",
-                  confirmButtonText: "OK",
-                });
-              });
-            </script>
-            {% endif %}
-          {% endfor %}
+                {% if 'success' in message.tags %}
+                <script>
+                    // Show SweetAlert for success message
+                    document.addEventListener("DOMContentLoaded", function () {
+                        Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: "{{ message|escapejs }}",
+                        didClose: () => { window.location.href = "{% url 'Registration:register' %}"; },
+                        confirmButtonText: "OK",
+                        });
+                    });
+                </script>
+                {% else %}
+                <script >
+                    document.addEventListener("DOMContentLoaded", function () {
+                        Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "{{ message|escapejs }} ",
+                        confirmButtonText: "OK",
+                        });
+                    });
+                </script>
+                {% endif %}
+            {% endfor %}
           <div class="card-body">
             <form method='post' action="" >
               {% csrf_token %}
@@ -68,7 +70,7 @@
                   {% for year in years %}
                   <div class="accordion-item">
                   <div class="accordion-header" onclick="toggleAccordion(this)">
-                    <span><input type="radio" name="year_of_study" value="{{year.id}}"> {{year.year_title}}     {{student.program }}</span>
+                    <span><input type="radio" name="year_of_study" value="{{year.id}}" required> {{year.year_title}}     {{student.program }}</span>
                   </div>
                   <div class="accordion-content">
                     <div class="accordion-body">

@@ -22,3 +22,30 @@ def print_confirmation_slip(request, student_id):
         if pisa_status.err:
             return HttpResponse('We had some errors <pre>' + html + '</pre>')
         return response
+
+<div class="table-responsive">
+              <table class="table table-hover table-center">
+                <thead class="thead-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th class="text-center">Marks</th>
+                    <th class="text-center">Percentage</th>
+                    <th class="text-right">Year</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-nowrap">
+                      <div>PRE2209</div>
+                    </td>
+                    <td class="text-nowrap">John Smith</td>
+                    <td class="text-center">1185</td>
+                    <td class="text-center">98%</td>
+                    <td class="text-right">
+                      <div>2019</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>

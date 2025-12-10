@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-sg9g)3+rwd*39$pqjb)z&cbgy22q*0(jnshr)1cpe1mfc39(6s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'Admin',
     'Registration',
     'Academics',
-    'xhtml2pdf',
     'Results',
 ]
 

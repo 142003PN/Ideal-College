@@ -7,9 +7,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from Academics.models import SessionYear
 import datetime
-from django.template.loader import get_template
+from django.template.loader import render_to_string
 from django.http import *
-from xhtml2pdf import pisa
+from weasyprint import HTML
+
+import tempfile
 import os
 
 # Create your views here.
@@ -38,15 +40,20 @@ def register(request):
         year_of_study = YearOfStudy.objects.get(id=year_of_study_id)
         selected_courses = request.POST.getlist('courses')
 
-        reg = Registration.objects.create(
-            student_id=sid,
-            year_of_study=year_of_study,
-            session_year=session_year,
-        )
-        reg.courses.set(selected_courses)
-        reg.save()
-        messages.success(request, "Successfully submitted awaiting Approval")
-        already_registered = True
+        if year_of_study is None:
+            messages.error(request, "Please select a year of study")
+            return redirect('Registration:register')
+        else:
+            reg = Registration.objects.create(
+                student_id=sid,
+                year_of_study=year_of_study,
+                session_year=session_year,
+            )
+            reg.courses.set(selected_courses)
+            reg.save()
+            messages.success(request, "Successfully submitted awaiting Approval")
+            already_registered = True
+            return redirect('Registration:register')
 
     context = {
         'courses': courses,
@@ -95,28 +102,37 @@ def view_submitted_courses(request, pk):
     return render(request, 'registration/view-registered.html')
 
 def print_confirmation_slip(request, student_id):
+        
+        student_id = request.user
+        return render(request, 'registration/confirmation-slip.html', {'student_id': student_id})
+"""
         #convert confirmation slip to pdf
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition']='attachment: filename=Confirmation'+'.pdf'
+        response['Content-Transfer-Encoding'] = 'binary'
+
         session_year = SessionYear.objects.get(is_current_year=1)
         student_id = request.user
         registration = Registration.objects.get(student_id=student_id, session_year=session_year)
         courses = registration.courses.all()
         today = datetime.date.today()
-        template = get_template('registration/confirmation-slip.html')
+
         context={'courses': courses, 'registration': registration,
                         'today': today, 'student_id': student_id}
         
-        html = template.render(context)
+        html_string = render_to_string('registration/confirmation-slip.html', context)
+        html = HTML(string=html_string)
 
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Deposition']='filename="confirmation-slip.pdf"'
+        result = html.write_pdf()
 
-        #create PDF
-        pisa_status=pisa.CreatePDF(html, dest=response)
+        with tempfile.NamedTemporaryFile(delete=True) as output:
+            output.write(result)
+            output.flush()
 
-        if pisa_status.err:
-            return HttpResponse('We had some errors <pre>' + html + '</pre>')
+            output=open(output.name, 'rb')
+            response.write(output.read())
         return response
-
+"""
 #----------------Delete Registration-----------------
 def delete_qrcode_media(registration):
     try:
