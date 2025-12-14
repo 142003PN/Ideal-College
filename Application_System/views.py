@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from Programs.models import Programs
-from Students.models import Student, StudentProfile
+from Students.models import *
 from .models import *
 from Courses.models import YearOfStudy
 from django.contrib import messages
@@ -8,8 +8,18 @@ import os
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from django.http import *
+from django.conf import settings
+from django.core.mail import EmailMessage, send_mail
+import threading
 
-# Create your views here.
+class EmailThread(threading.Thread):
+    def __init__(self, email_message):
+        self.email_message = email_message
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.email_message.send(fail_silently=False)
+
 def apply(request):
     programs = Programs.objects.all()
     year = YearOfStudy.objects.get(year_title="First Year")
@@ -155,6 +165,19 @@ def accept(request, pk):
         app_status.accepted_by= accepted_by
         app_status.save()
         messages.success(request, "Applicant accepted Successfully")
+
+
+        #Send acceptance email to applicant
+        student_id = Student.objects.get(NRC=admission_id.NRC).id
+        default_password =  'Pass123'  # Default password
+        subject = 'Application Accepted'
+        message = f'Dear {admission_id.first_name} {admission_id.last_name},\n\nCongratulations! Your application for the {admission_id.program} programme has been accepted.\n\n Your id is {student_id} \n\n Your Password: {default_password} \n\nBest regards,\nIdeal College Admissions Team'
+        recipient_list = [admission_id.email]
+        from_email = settings.EMAIL_HOST_USER
+        
+        email_message = EmailMessage(subject, message, from_email, recipient_list)
+        
+        EmailThread(email_message).start()
         return redirect('Application:recent')
     else:
         messages.error(request, 'Insufficient Privelleges')

@@ -9,6 +9,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 import logging
 from Users.models import CustomUser
+from django.contrib.auth.hashers import make_password
 
 logger = logging.getLogger(__name__)
 # Create your models here.
@@ -113,15 +114,14 @@ def create_student_on_approval(sender, instance, created, **kwargs):
     app = instance.application
     try:
         # Create or get Student using the unique email from General_Information.
-        default_password = 'pbkdf2_sha256$1000000$9OIhdL3lzqkLj3EflnZvAX$aAmj8j+gYKa+z9iI3b/ogjL5RRWTJIVUZzvweQeINQ8='  # In a real application, generate a secure password and communicate it safely.
-
+        password = make_password('Pass123')  # Default password; in real applications, ensure to hash and handle securely.
         student, student_created = Student.objects.get_or_create(
             email=app.email,
             defaults={
                 'first_name': app.first_name,
                 'last_name': app.last_name,
                 'NRC': app.NRC,
-                'password': default_password,  # In a real application, hash the password properly.
+                'password': password, # In a real application, hash the password properly.
             }
         )
         # Create or get StudentProfile linked to the created/found Student.
