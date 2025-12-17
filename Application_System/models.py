@@ -43,7 +43,7 @@ class General_Information(models.Model):
     #disability
     disability = models.CharField(max_length=5, default="No")
     disability_desc=models.CharField(max_length=15, null=True, blank=True)
-    year_of_study = models.ForeignKey(YearOfStudy, on_delete=models.SET_NULL, null=True, blank=True)#should added by default to first year
+    #year_of_study = models.ForeignKey(YearOfStudy, on_delete=models.SET_NULL, null=True, blank=True)#should added by default to first year
     program = models.ForeignKey(Programs, null=True, blank=True, on_delete=models.SET_NULL, related_name='applications')
     deposit_slip = models.FileField(upload_to='slips/', validators=[FileExtensionValidator(['pdf', 'jpg', 'jpeg', 'png'])])
     date_of_application = models.DateField(auto_now_add=True)
@@ -132,7 +132,7 @@ def create_student_on_approval(sender, instance, created, **kwargs):
                 'address': app.address,
                 'phone_number': app.phone_number,
                 'program': app.program,
-                'year_of_study': app.year_of_study,
+                #'year_of_study': app.year_of_study,
                 'gender': app.gender,
                 'profile_picture': app.passport_photo,
             }

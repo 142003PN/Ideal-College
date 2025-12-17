@@ -1,0 +1,150 @@
+{% extends 'applications/base.html' %}
+{% block title %}Step 1 – General Info{% endblock %}
+{% block content %}
+<h2>Step 1: General Information</h2>
+
+
+<!--Sweet alert-->
+{% for message in messages %}
+    {% if 'error' in message.tags %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "{{ message|escapejs }} ",
+            confirmButtonText: "OK",
+        });
+        });
+    </script>
+    {% else %}
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "{{ message|escapejs }} ",
+            confirmButtonText: "OK",
+        });
+        });
+    </script>
+    {% endif %}
+{% endfor %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="first_name">First Name <small class="text-danger">*</small></label>
+                <input name="first_name" placeholder="First Name" class="form-control" value="{{ data.first_name|default:'' }}" required>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="last_name">Last Name <small class="text-danger">*</small></label>
+                <input name="last_name" placeholder="Last Name" class="form-control" value="{{ data.last_name|default:'' }}" required>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="date_of_birth">Date of Birth <small class="text-danger">*</small></label>
+                <input type="date" name="date_of_birth" class="form-control" value="{{ data.date_of_birth|default:'' }}" required>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="NRC">NRC Number <small class="text-danger">*</small></label>
+                <input name="NRC" placeholder="NRC Number" class="form-control" maxlength="15" value="{{ data.NRC|default:'' }}" required>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="NRC_scan">Scan of NRC <small class="text-danger">* PDF ONLY</small></label>
+                <input type="file" name="NRC_scan" class="form-control" accept="application/pdf">
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="gender">Gender <small class="text-danger">*</small></label>
+                <select name="gender" class="form-control" value="{{ data.gender|default:'' }}">
+                    <option value="">Select Gender</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="disability">Disability <small class="text-danger">*</small></label>
+                <select name="disability"  class="form-control" id="disability" required>
+                    <option value="No" {% if data.disability|default:''|lower == 'no' %}selected{% endif %}>No</option>
+                    <option value="Yes" {% if data.disability|default:''|lower == 'yes' %}selected{% endif %}>Yes</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="disability_desc">If yes Select Disability<small class="text-danger">*</small></label>
+                <select name="disability_desc" class="form-control" id="disability_desc">
+                    <option value="" {% if not data.disability_desc %}selected{% endif %}>No disability</option>
+                    <option value="vision" {% if data.disability_desc == 'vision' %}selected{% endif %}>Vision</option>
+                    <option value="hearing" {% if data.disability_desc == 'hearing' %}selected{% endif %}>Hearing</option>
+                    <option value="speech" {% if data.disability_desc == 'speech' %}selected{% endif %}>Speech</option>
+                    <option value="mobility" {% if data.disability_desc == 'mobility' %}selected{% endif %}>Mobility</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="natinality">Nationality <small class="text-danger">*</small></label>
+                <input name="nationality" class="form-control" placeholder="Nationality" maxlength="20" value="{{ data.nationality|default:'' }}" required>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="email">Email <small class="text-danger">*</small></label>
+                <input name="email" class="form-control" type="email" placeholder="Email" maxlength="30" value="{{ data.email|default:'' }}" required>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="phone_number">Phone Number <small class="text-danger">*</small></label>
+                <input name="phone_number" class="form-control" maxlength="14" placeholder="Phone Number" value="{{ data.phone_number|default:'' }}">
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="address">Address <small class="text-danger">*</small></label>
+                <textarea name="address" class="form-control" placeholder="Address" required>{{ data.address|default:'' }}"</textarea>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="program">Programme <small class="text-danger">*</small></label>
+                <select name="program" id="program" class="form-control" required>
+                    <option value="">select Programme</option>
+                    {% for program in programs %}
+                        <option value="{{program.id}}">{{program.program_title}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="deposit_slip">Scan of Deposit Slip <small class="text-danger">*</small></label>
+                <input type="file" class="form-control" name="deposit_slip" accept="application/pdf, image/*" required>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="passport_photo">Passport Photo <small class="text-danger">*</small></label>
+                <input type="file" class="form-control" name="passport_photo" accept="image/*" required>
+            </div>
+        </div>
+        <div class="actions">
+            <span></span>
+            <button class="btn btn-primary" type="submit">Next</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'applications/base.html' %}
+{% block title %}Step 2 – Next of Kin{% endblock %}
+{% block content %}
+<h2>Step 2: Next of Kin</h2>
+<form method="post">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="full_name">Full Name <small class="text-danger">*</small></label>
+        <input name="full_name" class="form-control" placeholder="Full Name" value="{{ data.full_name|default:'' }}" required>
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input name="email" class="form-control" type="email" placeholder="Email" value="{{ data.email|default:'' }}">
+    </div>
+    <div class="form-group">
+        <label for="phone_number">Phone Number <small class="text-danger">*</small></label>
+        <input name="phone_number" class="form-control" required value="{{ data.phone_number|default:'' }}">
+    </div>
+    <div class="form-group">
+        <label for="address">Address <small class="text-danger">*</small></label>
+        <textarea name="NK_address" class="form-control" required placeholder="Address">{{ data.NK_address|default:'' }}
+
+        </textarea>
+    </div>
+
+    <div class="actions">
+    <a href="{% url 'Application:apply' %}" class="btn btn-back">Back</a>
+    <button class="btn btn-next" type="submit">Next</button>
+    </div>
+</form>
+{% endblock %}

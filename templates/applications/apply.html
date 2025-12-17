@@ -1,26 +1,13 @@
-<!DOCTYPE html>
+{% extends "navbar.html" %}
 {% load static %}
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admission Application Form</title>
+{% block title %}Application Form{% endblock title %}
+{% block extra_css %}
   <link rel="stylesheet" href="{% static "css/apply.css" %}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="stylesheet" href="{% static "plugins/bootstrap/css/bootstrap.min.css" %}">
-  <style>
-    .form-group{
-      margin-bottom: 10px;
-    }
-    .form-group label{
-        font-weight: 600;
-    }
-  </style>
-</head>
-<body>
-  {% block content %}
-
+{% endblock extra_css %}
+  
+{% block content %}
   <!--Sweet alert-->
   {% for message in messages %}
     {% if 'error' in message.tags %}
@@ -47,7 +34,7 @@
     </script>
     {% endif %}
     {% endfor %}
-  <div class="container">
+  <div class="container w-100 mt-3">
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <!-- Item 1: General Information -->
@@ -373,99 +360,7 @@
           </div>
         </div>
       </div>
-      <!--Item 3: Education Background and Personal Documents-->
-      <div class="accordion-item">
-        <div class="accordion-header" onclick=toggleAccordion(this)>
-          <span>3 - Education background and Personal documents</span>
-        </div>
-        <div class="accordion-content">
-          <div class="accordion-body">
-            <div class="section-description">
-              In this section you will need to provide records of your previously followed education (secondary education and up). You can use then one record, please enter as many records as needed.
-            </div>
-
-            <table class="form-table">
-              <thead>
-                <tr>
-                  <th style="width: 40%;">Information</th>
-                  <th style="width: 60%;">Input fields</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>3.1 - Type of certificate</td>
-                  <td>
-                    <select class="form-select" name="certificate_type">
-                      <option>Secondary school certificate</option>
-                      <option>High school diploma</option>
-                      <option>Bachelor's degree</option>
-                      <option>Master's degree</option>
-                      <option>Other</option>
-                    </select>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1.3.2 - Name of institution</td>
-                  <td>
-                    <input type="text" value="{{data.institution_name|default:""}}" class="form-input" name="institution_name" placeholder="">
-                    <div class="example-text">For example: Evelyn Hone,, Chamboli Secondary School</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>2.3.3 - Name of certification or Document</td>
-                  <td>
-                    <input type="text" value="{{data.certificate_name|default:""}}" class="form-input" name="certificate_name" placeholder="">
-                    <div class="example-text">For example: Grade 12 or Diploma in Business Studies</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>2.3.4 - Year of Completion</td>
-                  <td>
-                    <input type="number" value="{{data.completion_year|default:""}}" class="form-input" name="completion_year" placeholder="">
-                    <div class="example-text">For example: 2014 or 2020</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Scan of Certificate</td>
-                  <td>
-                    <div class="file-upload-wrapper">
-                      <input type="file" value="{{data.certificate|default:""}}" name="certificate" id="">
-                    </div>
-                    <div class="example-text">Upload the certificate, degree or diploma.<small class="text-danger">PDF only</small></div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <a href="#" class="add-record-link" onclick="addEducationRecord(event)">Add another education record</a>
-            <script>
-              function addEducationRecord(event) {
-                event.preventDefault();
-                const table = event.target.previousElementSibling;
-                const newRecord = table.cloneNode(true);
-                
-                // Clear all input values in the clone
-                newRecord.querySelectorAll('input').forEach(input => input.value = '');
-                newRecord.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
-                newRecord.querySelectorAll('.file-upload-wrapper span').forEach(span => span.textContent = 'No file chosen');
-                
-                // Add a remove button
-                const removeBtn = document.createElement('div');
-                removeBtn.innerHTML = '<a href="#" class="remove-record-link" onclick="removeEducationRecord(event)">Remove record</a>';
-                newRecord.appendChild(removeBtn);
-                
-                // Insert the new record before the "Add another" link
-                event.target.insertAdjacentElement('beforebegin', newRecord);
-              }
-
-              function removeEducationRecord(event) {
-                event.preventDefault();
-                event.target.closest('.form-table').remove();
-              }
-            </script>
-          </div>
-        </div>
-      </div>
-     <!-- Item 4: Next of Kin-->
+      <!-- Item 4: Next of Kin-->
       <div class="accordion-item">
         <div class="accordion-header" onclick=toggleAccordion(this)>
           <span>4 - Next of Kin</span>
@@ -503,12 +398,96 @@
           </div>
         </div>
       </div>
-      <div class="form-actions">
+      <!--Item 3: Education Background and Personal Documents-->
+      <div class="accordion-item">
+        <div class="accordion-header" onclick=toggleAccordion(this)>
+          <span>3 - Education background and Personal documents</span>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <div class="section-description">
+              In this section you will need to provide records of your previously followed education (secondary education and up). You can use then one record, please enter as many records as needed.
+            </div>
+           <div id="education-records-container" class="table-responsive">
+             <table class="education-record table table-hover table-center">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-wrap">Information</th>
+                  <th class="nowrap">Input fields</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-wrap">Name of Institution <small class="text-danger">*</small></td>
+                  <td><input type="text" name="institution_name" class="form-control" maxlength="50" placeholder="Enter the name of institution" autocomplete="off"></td>
+                </tr>
+                <tr>
+                  <td class="text-wrap">Certificate Type <small class="text-danger">*</small></td>
+                  <td>
+                    <select name="certificate_type" class="form-select">
+                      <option value="">Select certificate type</option>
+                      <option value="High School Certificate">High School Certificate</option>
+                      <option value="Bachelor's Degree">Bachelor's Degree</option>
+                      <option value="GCE">GCE</option>
+                      <option value="Master's Degree">Master's Degree</option>
+                      <option value="PhD">PhD</option>
+                      <option value="Other">Other</option>
+                    </select>
+                </tr>
+                <tr>
+                  <td class="text-wrap">Year Completed <small class="text-danger">*</small></td>
+                  <td><input type="number" name="completion_year" class="form-control" min="1900" max="2100" placeholder="Enter year completed"></td>
+                </tr>
+                <tr>
+                  <td class="text-wrap">Upload Certificate/Transcript <small class="text-danger">*</small></td>
+                  <td>
+                    <input type="file" name="certificate" class="form-control" accept="application/pdf">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+            <a href="#" class="add-record-link" onclick="addEducationRecord(event)">Add another education record</a>
+            <script>
+              function addEducationRecord(event) {
+                event.preventDefault();
+                const container = document.getElementById('education-records-container');
+                const firstTable = container.querySelector('.education-record');
+                const newRecord = firstTable.cloneNode(true);
+                
+                // Clear all input values in the clone
+                newRecord.querySelectorAll('input').forEach(input => input.value = '');
+                newRecord.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+                
+                // Create a wrapper div for the new record with remove button
+                const recordWrapper = document.createElement('div');
+                recordWrapper.className = 'education-record-wrapper';
+                recordWrapper.appendChild(newRecord);
+                
+                const removeBtn = document.createElement('div');
+                removeBtn.className = 'mt-2 mb-3';
+                removeBtn.innerHTML = '<a href="#" class="remove-record-link text-danger" onclick="removeEducationRecord(event)">Remove record</a>';
+                recordWrapper.appendChild(removeBtn);
+                
+                // Insert the new record before the "Add another" link
+                event.target.insertAdjacentElement('beforebegin', recordWrapper);
+              }
+
+              function removeEducationRecord(event) {
+                event.preventDefault();
+                event.target.closest('.education-record-wrapper').remove();
+              }
+            </script>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions mt-4">
         <button type="submit" class="btn btn-success">Submit Application</button>
       </div>
     </form>
   </div>
   {% endblock  %}
+  {% block extra_js %}
   <script>
     function toggleAccordion(header) {
       const item = header.parentElement;
@@ -525,5 +504,4 @@
       }
     }
   </script>
-</body>
-</html>
+{% endblock extra_js %}

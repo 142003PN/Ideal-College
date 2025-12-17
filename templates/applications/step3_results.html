@@ -1,0 +1,149 @@
+{% extends 'applications/base.html' %}
+{% block title %}Step 3 – Results{% endblock %}
+{% block content %}
+
+<h3 class="mb-4">Step 3: Secondary School Results</h3>
+
+<form method="post">
+    {% csrf_token %}
+
+    <!-- Add Subject Row -->
+    <div class="row align-items-end g-3 mb-4">
+        <div class="col-4">
+            <label class="form-label">Subject</label>
+            <select id="subjectInput" class="form-control">
+                <option value="">Select subject</option>
+                <option value="addma">Additional Mathematics</option>
+                <option value="science">Science</option>
+                <option value="math">Mathematics</option>
+                <option value="english">English</option>
+                <option value="biology">Biology</option>
+                <option value="chemistry">Chemistry</option>
+                <option value="physics">Physics</option>
+                <option value="civic">Civic Education</option>
+                <option value="geography">Geography</option>
+                <option value="history">History</option>
+                <option value="design_and_tech">Design & Technology</option>
+                <option value="religious_education">Religious Education</option>
+                <option value="commerce">Commerce</option>
+                <option value="food_nutrition">Food & Nutrition</option>
+            </select>
+        </div>
+        <div class="col-4">
+            <label class="form-label">Grade</label>
+            <select id="gradeInput" class="form-control">
+                <option value="">Select grade</option>
+                {% for i in "123456789" %}
+                    <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-primary" onclick="addSubject()">
+                Add
+            </button>
+        </div>
+    </div>
+
+    <!-- Results Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped" id="subjectTable">
+            <thead class="table-light">
+                <tr>
+                    <th>Subject</th>
+                    <th>Grade</th>
+                    <th width="120">Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Navigation -->
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{% url 'Application:step2' %}" class="btn btn-secondary">
+            Back
+        </a>
+
+        <button type="submit" class="btn btn-primary"
+            onclick="return subjects.length > 0 || alert('Please add at least one subject')">
+            Next
+        </button>
+    </div>
+</form>
+
+<!-- JS Logic -->
+<script>
+    const subjects = [];
+
+    function addSubject() {
+        const subject = document.getElementById("subjectInput").value;
+        const grade = document.getElementById("gradeInput").value;
+
+        if (!subject || !grade) {
+            alert("Please select both subject and grade");
+            return;
+        }
+
+        if (subjects.some(s => s.subject === subject)) {
+            alert("This subject has already been added");
+            return;
+        }
+
+        subjects.push({ subject, grade });
+        renderTable();
+        clearInputs();
+    }
+
+    function renderTable() {
+        const tbody = document.querySelector("#subjectTable tbody");
+        tbody.innerHTML = "";
+
+        subjects.forEach((item, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${formatSubject(item.subject)}</td>
+                    <td>${item.grade}</td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm"
+                            onclick="removeSubject(${index})">
+                            Remove
+                        </button>
+                    </td>
+
+                    <!-- Hidden inputs for Django -->
+                    <input type="hidden" name="subject_name" value="${item.subject}">
+                    <input type="hidden" name="grade" value="${item.grade}">
+                </tr>
+            `;
+        });
+    }
+
+    function removeSubject(index) {
+        subjects.splice(index, 1);
+        renderTable();
+    }
+
+    function clearInputs() {
+        document.getElementById("subjectInput").value = "";
+        document.getElementById("gradeInput").value = "";
+    }
+
+    function formatSubject(str) {
+        return str.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    /* 🔁 Restore from session when going back */
+    {% for r in results %}
+        subjects.push({
+            subject: "{{ r.subject_name }}",
+            grade: "{{ r.grade }}"
+        });
+    {% endfor %}
+
+    if (subjects.length > 0) {
+        renderTable();
+    }
+</script>
+
+{% endblock %}

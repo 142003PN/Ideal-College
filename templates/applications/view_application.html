@@ -125,8 +125,8 @@
                   <p>No next of kin data</p>
                   {% endif %}
                   <div class="col-12">
-                        <h5 class="form-title text-dark"><span style="color: #000; font-weight: 700; font-size: 1.5rem;">Grade 12 Results</span></h5>
-                    </div>
+                      <h5 class="form-title text-dark"><span style="color: #000; font-weight: 700; font-size: 1.5rem;">Grade 12 Results</span></h5>
+                  </div>
                   <div class="col-12 col-md-9 col-sm-6">
                     <table class="table mb-3">
                         <thead>
@@ -150,27 +150,28 @@
                           {% endif %}
                         </tbody>
                     </table>
+                  </div>
                     <!--School Cerficate-->
                   {% if school_certificates %}
                     <div class="col-12">
                       <h5 class="form-title text-dark"><span style="color: #000; font-weight: 700; font-size: 1.5rem;">Certificate(s)</span></h5>
                     </div>
-                    <div class="col-12">
-                      <table class="table mb-3">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-center">
                         <thead>
                           <tr>
-                            <th scope="col">Certificate Type</th>
-                            <th scope="col">Institution Name</th>
-                            <th scope="col">Year Obtained</th>
+                            <th scope="col" class="no-wrap">Certificate Type</th>
+                            <th scope="col" class="no-wrap">Institution Name</th>
+                            <th scope="col" class="text-center">Year Obtained</th>
                             <th scope="col">Certificate</th>
                           </tr>
                         </thead>
                         <tbody>
                           {% for school_certificate in school_certificates %}
                           <tr>
-                            <td>{{ school_certificate.certificate_type }}</td>
-                            <td>{{ school_certificate.institution_name }}</td>
-                            <td>{{ school_certificate.year_of_completion }}</td>
+                            <td class="no-wrap">{{ school_certificate.certificate_type }}</td>
+                            <td class="no-wrap">{{ school_certificate.institution_name }}</td>
+                            <td class="text-center">{{ school_certificate.year_of_completion }}</td>
                             <td>
                               {% if school_certificate.certificate %}
                                 <a href="{{ school_certificate.certificate.url }}" target="_blank">View Certificate</a>
@@ -230,7 +231,7 @@
                           }
                       })"
             >
-            Accept
+            Accept Applicant
         </a>
         </div>
         {% else %}
