@@ -1,0 +1,70 @@
+
+    <!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
+    <title>{% block title %}{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+<nav class="navbar">
+    <ul class="nav">
+        <li>
+            <a href="{% url "index" %}">
+                <img src="{% static 'img/logo.png' %}" alt="">
+                <h4>Ideal College</h4>
+            </a>
+        </li>
+        <li class="hideOnMobile"><a href="#programs">Programmes</a></li>
+        <li class="hideOnMobile"><a href="#fees">Fees</a></li>
+        <li class="hideOnMobile"><a href="#about">About</a></li>
+        <li class="hideOnMobile"><a href="#contact">Contact</a></li>
+        <li class="hideOnMobile">
+            <a href="{% url 'Users:login' %}" class="cta-btn">Login</a>
+        </li>
+        <li class="menu-btn" onclick="showSidebar()">
+            <img src="{% static 'img/menu1.png' %}" alt="">
+        </li>
+    </ul>
+ 
+    <ul class="sidebar">
+        <li class="menu-btn" onclick="hideSidebar()">
+            <img src="{% static 'img/close1.png' %}" alt="">
+        </li>
+        <li><a href="#programs">Programmes</a></li>
+        <li><a href="#fees">Fees</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li>
+            <a href="{% url 'Users:login' %}" class="cta-btn">Login</a>
+        </li>
+    </ul>
+</nav>
+
+{% block content %}{% endblock %}
+
+<!-- ✅ NAVBAR JS (GLOBAL) -->
+ <script>
+    function showSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar) sidebar.style.display = 'flex';
+    }
+
+    function hideSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar) sidebar.style.display = 'none';
+    }
+</script>
+{% block extra_js %}
+{% endblock %}
+<footer id="contact w-100 text-center p-4">
+    <p>&copy; 2025 Ideal College. All rights reserved.</p>
+    <p>📧 Email: info@idealcollege.edu | 📞 Phone: +1 (555) 123-4567</p>
+</footer>
+</body>
+</html>

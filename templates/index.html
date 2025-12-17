@@ -1,0 +1,118 @@
+{% extends "navbar.html" %}
+{% load static %}
+<title>{% block title %}Ideal College of Health and Applied Sciences{% endblock  %}</title>
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h1>Welcome to Ideal College of Health Sciences</h1>
+        <p>Join Ideal College and unlock your potential with world-class education and expert faculty.</p>
+        <div class="hero-buttons">
+            <a href="#programs" class="primary-btn">Explore Programs</a>
+            <a href="{% url "Application:apply" %}" class="secondary-btn">Apply Now</a>
+        </div>
+    </div>
+</section>
+    <h1 id="about" class="title">Our Vision and Mission</h1>
+    <section class="vision-mission">
+        <aside class="card">
+            <div class="card-title">
+                🎯 Our Mission
+            </div>
+            <div class="card-text">
+                <p>
+                    The College has unwavering commitment to produce professionals with vast knowledge
+                    in research, leadership and medical skills necessary for diagnosis, treatment and prevention of disease
+                    in order to assure optimum health care in the community and beyond
+                </p>
+            </div>
+        </aside>
+        <aside class="card">
+            <div class="card-title">
+                ⭐ Our Vision
+            </div>
+            <div class="card-text">
+                <p>
+                    To be recognised as a local,national and international leader in healthcare
+                    and service by upholding innovation,excellence, and dilligenceat affordable and 
+                    competitive rates above the private health colleges. 
+                </p>
+            </div>
+        </aside>
+    </section>
+    <h1 id="programs" class="title">Programmes on Offer</h1>
+    <section class="programs">
+        <div class="program">
+            <img src="{% static "img/hero.jpeg" %}" alt="" class="program-img">
+            <div class="program-title">
+                <h4>Diploma in Registered Nursing</h4>
+            </div>
+            <div class="program-text">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur 
+                    adipisicing elit. Dolore exercitationem blanditiis sit deleniti 
+                    fugiat asperiores reiciendis odit quam est cumque.
+                </p>
+            </div>
+        </div>
+        <div class="program">
+            <img src="{% static "img/nursing.jpeg" %}" alt="" class="program-img">
+            <div class="program-title">
+                <h4>Diploma in Pyschosocial Counselling</h4>
+            </div>
+            <div class="program-text">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur 
+                    adipisicing elit. Dolore exercitationem blanditiis sit deleniti 
+                    fugiat asperiores reiciendis odit quam est cumque.
+                </p>
+            </div>
+        </div>
+    </section>
+    <!-- Fees Section -->
+      <h1 id="fees" class="title">Fees</h1>
+    <section class="fees">
+        <div class="fees-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Program</th>
+                        <th>Tuition Fee (Per Year)</th>
+                        <th>Registration Fee</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Engineering</td>
+                        <td>$12,000</td>
+                        <td>$500</td>
+                    </tr>
+                    <tr>
+                        <td>Business Administration</td>
+                        <td>$10,000</td>
+                        <td>$500</td>
+                    </tr>
+                    <tr>
+                        <td>Science & Technology</td>
+                        <td>$11,000</td>
+                        <td>$500</td>
+                    </tr>
+                    <tr>
+                        <td>Arts & Humanities</td>
+                        <td>$8,500</td>
+                        <td>$500</td>
+                    </tr>
+                    <tr>
+                        <td>Medicine</td>
+                        <td>$15,000</td>
+                        <td>$500</td>
+                    </tr>
+                    <tr>
+                        <td>Law</td>
+                        <td>$9,000</td>
+                        <td>$500</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+{% endblock  %}
