@@ -9,7 +9,7 @@ from Academics.models import SessionYear
 import datetime
 from django.template.loader import render_to_string
 from django.http import *
-from weasyprint import HTML
+
 
 import tempfile
 import os

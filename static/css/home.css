@@ -1,0 +1,339 @@
+:root{
+    --font-clr: #212EA0;
+    --base-clr: #0B1F3A;
+    --hover-clr: #4958e4; 
+    --primary: #1e40af;
+    --accent: #0ea5e9;
+    --primary: #1e40af;
+    --neutral-50: #f9fafb;
+    --neutral-100: #f3f4f6;
+    --neutral-900: #111827;
+    --neutral-800: #1f2937;
+    /* Accent */
+    --accent: #0ea5e9;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+li img{
+    width: 50px;
+}
+nav{
+    background-color: #fff;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 2rem;
+    width: 100vw;
+}
+nav ul{
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
+li a{
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    color: var(--neutral-800);
+    font-size: 18px;
+}
+nav a:hover{
+    background-color: #f0f0f0;
+    color: var(--font-clr);
+    font-weight: 600;
+}
+.nav li a:hover{
+    background-color: transparent;
+}
+li:first-child{
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+}
+li:first-child h4 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--font-clr);
+}
+a{
+    text-decoration: none;
+}
+li:last-child{
+    margin-left: auto;
+}
+.sidebar{
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 250px;
+    z-index: 2000;
+    background-color: #ffffffd8;
+    backdrop-filter: blur(10px); 
+    box-shadow: -10px 0 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start; 
+    transition: 0.5s ease-in-out;
+}
+.sidebar li{
+    width: 100%;
+}
+.menu-btn{
+    display: none;
+}
+.menu-btn:hover{
+    cursor: pointer;
+}
+.sidebar a{
+    width: 100%;
+    padding: 10px 20px;
+}
+.sidebar li .cta-btn{
+    width: fit-content;
+    margin-left: 10px;
+}
+.cta-btn {
+    background-color: var(--font-clr);
+    color: white;
+    padding: 0.55rem 1.4rem;
+    border: none;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+.cta-btn:hover {
+    background-color: var(--accent);
+}
+/*Hero section*/
+.hero{
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    color: white;
+    padding: 6rem 2rem;
+    text-align: center;
+}
+.hero-content{
+    max-width: 800px;
+    margin: 0 auto;
+}
+.hero-content p {
+    font-size: clamp(0.6rem, 5vw, 1.25rem);
+    margin-bottom: 2rem;
+    opacity: 0.95;
+}
+.hero h1{
+    font-size: clamp(1.2rem, 5vw, 2.8rem);
+    margin-bottom: 1rem;
+    font-weight: 800;
+}
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.primary-btn {
+    background-color: white;
+    color: var(--primary);
+    padding: clamp(1.2rem, 5vw, 1rem);
+    border: none;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.secondary-btn {
+    background-color: transparent;
+    color: white;
+    padding: 1rem 2rem;
+    border: 2px solid white;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.secondary-btn:hover {
+    background-color: white;
+    color: var(--primary);
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+/*title*/
+.title{
+    margin: 1.5rem;
+    text-align: center;
+    color: var(--base-clr);
+}
+
+section {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+/* Vision and Mission */
+.vision-mission{
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.card{
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    width: 500px;
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1/2;
+    line-height: 1.7;
+}
+.card-title{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--base-clr);
+}
+.card-text{
+    font-size: 1rem;
+    color: var(--font-clr);
+}
+/*Programs*/
+.programs{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 450px));
+    gap: 1rem;
+    justify-content: center;
+}
+.program{
+    width: auto;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+.program-img{
+    width: 100%;
+    border-radius: 10px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    height: 250px;
+}
+.program-text{
+    padding: 0.1rem 1rem;
+    margin-bottom: 10px;
+    color:  var(--font-clr);
+}
+.program-title{
+    padding: 01.1rem 1rem;
+}
+/*---Fees---*/
+
+.fees-table {
+    background-color: white;
+    padding: 1.8rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+    margin: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table thead {
+    background-color: var(--font-clr);
+    color: white;
+}
+
+table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--neutral-100);
+}
+
+table tr:hover {
+    background-color: var(--neutral-50);
+}
+
+/* Footer */
+footer {
+    background-color: var(--neutral-800);
+    color: white;
+    width: 100vw !important;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+    position: relative;
+    bottom: 0;
+}
+
+
+/*---Responsive design */
+@media (max-width: 768px) {
+    .nav-links {
+        gap: 1rem;
+        font-size: 0.9rem;
+    }
+    table {
+        font-size: 0.9rem;
+    }
+    .hero-content p{
+        font-size: 1rem;
+    }
+    table th, table td {
+        padding: 0.75rem;
+    }
+    .hideOnMobile{
+        display: none;
+    }
+    .menu-btn{
+        display: block;
+    }
+    .menu-btn:hover{
+        cursor: pointer;
+    }
+    .primary-btn, .secondary-btn{
+        padding: 0.5rem 1rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .primary-btn, .secondary-btn {
+        width: 100%;
+    }
+    .vision-mission{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .card{
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        width: 400px;
+        display: grid;
+        grid-template-rows: subgrid;
+        grid-row: 1/2;
+    }
+}

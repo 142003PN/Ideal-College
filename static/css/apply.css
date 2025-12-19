@@ -7,16 +7,16 @@
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f5f5f5;
-      padding: 20px;
     }
 
     .container {
       max-width: 1100px;
-      margin: 0 auto;
-      background-color: white;
       border-radius: 4px;
       overflow: hidden;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin: 0;
+      padding: 0;
+      display: flex;
     }
 
     .accordion-item {
@@ -81,6 +81,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
+      overflow-y: scroll;
     }
 
     .form-table th {
@@ -99,6 +100,7 @@
 
     .form-table tr:last-child td {
       border-bottom: none;
+      padding-bottom: 1rem;
     }
 
     .form-input,
