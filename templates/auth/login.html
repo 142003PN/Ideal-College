@@ -1,12 +1,14 @@
+{% extends "navbar.html" %}
 {% load static %}
-<head>
-   <link rel="stylesheet" href="{% static "plugins/bootstrap/css/bootstrap.min.css" %}">
-   <link rel="stylesheet" href="{% static "plugins/fontawesome/css/fontawesome.min.css" %}">
-   <link rel="stylesheet" href="{% static "plugins/fontawesome/css/all.min.css" %}">
-   <link rel="stylesheet" href="{% static "css/style.css" %}">
-   <title>{% block title %}Login{% endblock %}</title>
-   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/fontawesome/css/fontawesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/fontawesome/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
+
 {% block content %}
 <div class="main-wrapper login-body">
    <div class="login-wrapper">
@@ -36,27 +38,6 @@
          </script>
          {% endif %}
          {% endfor %}
-         <div class="col-auto text-center ml-auto">
-          <a href="{% url "Application:apply" %}" class="btn-apply"
-            ><i class="fas fa-pen"></i> Apply Now</a
-            >
-        </div>
-        <style>
-         .btn-apply{
-            border: 1px solid #007bff;
-            color: #007bff;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            background-color: transparent;
-            transition: background-color 0.3s, color 0.3s;
-         }
-         .btn-apply:hover {
-            background-color: #007bff;
-            color: white;
-         }
-        </style>
          <div class="loginbox">
             <div class="login-left">
                
@@ -80,7 +61,7 @@
                       </div>
                      <button class="btn btn-primary btn-block" type="submit">Login</button>
                   </form>
-                  <div class="text-center forgotpass"><a href="{% url "Users:forgot-pass" %}">Forgot Password?</a></div>
+                  <div class="text-center forgotpass"><a href="{% url "Users:password_reset_request" %}">Forgot Password?</a></div>
                   <div class="text-center dont-have">Don’t have an account? <a href="{% url "Application:apply" %}">Apply Now</a></div>
                </div>
             </div>
