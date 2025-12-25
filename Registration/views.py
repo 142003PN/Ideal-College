@@ -104,35 +104,21 @@ def view_submitted_courses(request, pk):
 def print_confirmation_slip(request, student_id):
         
         student_id = request.user
-        return render(request, 'registration/confirmation-slip.html', {'student_id': student_id})
-"""
-        #convert confirmation slip to pdf
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition']='attachment: filename=Confirmation'+'.pdf'
-        response['Content-Transfer-Encoding'] = 'binary'
-
         session_year = SessionYear.objects.get(is_current_year=1)
         student_id = request.user
-        registration = Registration.objects.get(student_id=student_id, session_year=session_year)
-        courses = registration.courses.all()
-        today = datetime.date.today()
+        
+        not_registered = Registration.objects.filter(student_id=student_id, session_year=session_year).exists()
+        if not not_registered:
+            return HttpResponse('<h1>You are not registered for this academic year</h1>')
+        else:
+            registration = Registration.objects.get(student_id=student_id, session_year=session_year)
+            courses = registration.courses.all()
+            today = datetime.date.today()
 
         context={'courses': courses, 'registration': registration,
                         'today': today, 'student_id': student_id}
         
-        html_string = render_to_string('registration/confirmation-slip.html', context)
-        html = HTML(string=html_string)
-
-        result = html.write_pdf()
-
-        with tempfile.NamedTemporaryFile(delete=True) as output:
-            output.write(result)
-            output.flush()
-
-            output=open(output.name, 'rb')
-            response.write(output.read())
-        return response
-"""
+        return render(request, 'registration/confirmation-slip.html', context)
 #----------------Delete Registration-----------------
 def delete_qrcode_media(registration):
     try:
