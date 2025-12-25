@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-<title>{% block title %}Recent Applications{% endblock %}</title>
+<title>{% block title %}Accepted Applications{% endblock %}</title>
 {% block content %}
 <div class="page-wrapper">
   <div class="content container-fluid">
@@ -40,25 +40,25 @@
                 </thead>
                 <tbody>
                 {% for app in applications %}
-                  {% if app.status.status == 'PENDING' %}
-                  <tr>
-                    <td>{{app.first_name}} {{app.last_name}}</td>
-                    <td>{{app.NRC}}</td>
-                    <td>{{app.program}}</td>
-                    <td>{{app.gender}}</td>
-                    <td>{{app.city_of_residence}}</td>
-                    <td class="text-right">
-                      <div class="actions">
-                        <a href="{% url "Application:view" app.admission_id %}" class="btn btn-sm bg-success-light mr-2">
-                          <i class="fas fa-book"></i>
-                        </a>
-                        <a href="#" class="btn btn-sm bg-danger-light">
-                          <i class="fas fa-trash"></i>
-                        </a>
-                      </div>
-                    </td>
-                  </tr>
-                  {% endif %}
+                    {% if app.status.status == 'APPROVED' %}
+                    <tr>
+                        <td>{{app.first_name}} {{app.last_name}}</td>
+                        <td>{{app.NRC}}</td>
+                        <td>{{app.program}}</td>
+                        <td>{{app.gender}}</td>
+                        <td>{{app.city_of_residence}}</td>
+                        <td class="text-right">
+                        <div class="actions">
+                            <a href="" class="btn btn-sm bg-success-light mr-2">
+                            <i class="fas fa-book"></i>
+                            </a>
+                            <a href="#" class="btn btn-sm bg-danger-light">
+                            <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                        </td>
+                    </tr>
+                    {% endif %}
                 {% endfor %}
                 </tbody>
               </table>

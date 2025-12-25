@@ -1,53 +1,140 @@
 <!DOCTYPE html>
 {% load static %}
 <html>
-<head>
-   <link rel="stylesheet" href="{% static "plugins/bootstrap/css/bootstrap.min.css" %}">
-   <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<title>{% block title %}Application{% endblock %}</title>
-<style>
-    body { font-family: Arial, sans-serif; background:#f4f6f8; }
-    .container {
-    max-width: 700px; margin: 40px auto; background:#fff;
-    padding: 25px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .progress-wrapper { margin-bottom: 25px; }
-    .progress { background:#e5e7eb; border-radius: 10px; overflow:hidden; height:10px; }
-    .progress-bar { background:#2563eb; height:100%; transition: width .3s ease; }
-    .progress-steps { display:flex; justify-content:space-between; margin-top:8px; }
-    .step {
-    width:28px; height:28px; border-radius:50%;
-    background:#e5e7eb; color:#374151;
-    display:flex; align-items:center; justify-content:center;
-    font-size:14px; font-weight:bold;
-    }
-    .step.active { background:#2563eb; color:white; }
-    h2 { margin-bottom: 20px; }
-    .btn {
-    padding:  border: none; border-radius: 4px;
-    cursor: pointer; font-weight: bold;
-    }
-    .btn-next { background:#2563eb; color:white; }
-    .btn-back { background:#6b7280; color:white; text-decoration:none; }
-    .btn-add { background:#10b981; color:white; margin-bottom:10px; }
-    .btn-remove { background:#ef4444; color:white; }
-    .actions { display:flex; justify-content: space-between; margin-top:20px; }
-</style>
-</head>
-<body>
-<div class="container">
-<div class="progress-wrapper">
-<div class="progress">
-<div class="progress-bar" style="width: {{ progress }}%"></div>
-</div>
-<div class="progress-steps">
-<span class="step {% if progress >= 25 %}active{% endif %}">1</span>
-<span class="step {% if progress >= 50 %}active{% endif %}">2</span>
-<span class="step {% if progress >= 75 %}active{% endif %}">3</span>
-<span class="step {% if progress == 100 %}active{% endif %}">4</span>
-</div>
-</div>
-{% block content %}{% endblock %}
-</div>
-</body>
+  <head>
+    <link rel="stylesheet" href="{% static "plugins/bootstrap/css/bootstrap.min.css" %}">
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>{% block title %}Application{% endblock %}</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        margin: 0;
+        padding: 1rem;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 700px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Progress bar */
+      .progress-wrapper {
+        margin-bottom: 25px;
+      }
+
+      .progress {
+        background: #e5e7eb;
+        border-radius: 10px;
+        overflow: hidden;
+        height: 10px;
+      }
+
+      .progress-bar {
+        background: #2563eb;
+        height: 100%;
+        transition: width 0.3s ease;
+      }
+
+      .progress-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+
+      .step {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #e5e7eb;
+        color: #374151;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: bold;
+      }
+
+      .step.active {
+        background: #2563eb;
+        color: white;
+      }
+
+      h2 {
+        margin-bottom: 20px;
+        font-size: 1.4rem;
+      }
+
+      /* Buttons */
+      .btn {
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        padding: 10px 16px;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .btn-next {
+        background: #2563eb;
+        color: white;
+      }
+      .btn-back {
+        background: #6b7280;
+        color: white;
+        text-decoration: none;
+      }
+      .btn-add {
+        background: #10b981;
+        color: white;
+      }
+      .btn-remove {
+        background: #ef4444;
+        color: white;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      /* Desktop adjustments */
+      @media (min-width: 640px) {
+        .btn {
+          width: auto;
+        }
+
+        .actions {
+          justify-content: space-between;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="progress-wrapper">
+        <div class="progress">
+          <div class="progress-bar" style="width: {{ progress }}%"></div>
+        </div>
+        <div class="progress-steps">
+          <span class="step {% if progress >= 25 %}active{% endif %}">1</span>
+          <span class="step {% if progress >= 50 %}active{% endif %}">2</span>
+          <span class="step {% if progress >= 75 %}active{% endif %}">3</span>
+          <span class="step {% if progress == 100 %}active{% endif %}">4</span>
+        </div>
+      </div>
+      {% block content %}{% endblock %}
+    </div>
+  </body>
 </html>
