@@ -75,7 +75,7 @@ def password_reset_request(request):
         token = default_token_generator.make_token(user)
 
         reset_link = request.build_absolute_uri(
-            f"/auth/password_reset_confirm/{uid}/{token}/"
+            f"/auth/reset/{uid}/{token}/"
         )
 
         email_message = f"""
