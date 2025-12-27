@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>University Registration Slip</title>
+    <title>Registration Confirmation Slip</title>
     <style>
         * {
             margin: 0;
@@ -16,27 +16,26 @@
         body {
             background-color: #f5f5f5;
             padding: 20px;
-            line-height: 1.6;
+            line-height: 1.2;
         }
 
         .container {
             max-width: 900px;
             margin: 0 auto;
+            margin-top: 0;
             background-color: white;
             padding: 40px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
+        
         /* Header Section */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            border-bottom: 3px solid #333;
             padding-bottom: 30px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
-
         .header-left {
             flex: 1;
             text-align: center;
@@ -54,7 +53,7 @@
 
         .university-name {
             font-size: 24px;
-            font-weight: bold;
+            font-weight: 500;
             margin-bottom: 5px;
             color: #333;
         }
@@ -138,9 +137,8 @@
 
         /* Financial Statement Section */
         .financial-section {
-            border-top: 3px solid #333;
-            padding-top: 30px;
-            margin-top: 30px;
+            padding-top: 10px;
+            margin-top: 10px;
         }
 
         .financial-title {
@@ -163,7 +161,7 @@
         /* Table Styles */
         .table-wrapper {
             overflow-x: auto;
-            margin-top: 20px;
+            margin-top: 10px;
             border: 1px solid #999;
         }
 
@@ -211,10 +209,12 @@
         /* Print Styles */
         @media print {
             body {
-                background-color: white;
+                background-color: inherit;
                 padding: 0;
+                margin: 0;
             }
             .container {
+                margin-top: 0;
                 box-shadow: none;
                 max-width: 100%;
             }
@@ -222,7 +222,15 @@
                 display: none;
             }
         }
+        @media print {
+            @page {
+                margin: 0;
+            }
 
+            body {
+                margin: 1cm;
+            }
+        }
         .print-button {
             background-color: #333;
             color: white;
@@ -249,7 +257,7 @@
                 <div class="logo">
                     <img src="{% static "img/logo.png" %}" width="100" height="100" alt="">
                 </div>
-                <div class="university-name">Ideal College</div>
+                <div class="university-name">Ideal College of Health and Applied Sciences</div>
                 <div class="slip-title">REGISTRATION CONFIRMATION SLIP</div>
                 <div class="print-date">PRINTED: {{registration.student_id.id}} on {{today}}</div>
             </div>
@@ -263,14 +271,14 @@
                 </div>
             </div>
         </div>
-
+        <hr>
         <!-- Program Information -->
         <div class="program-info">
             <h2 class="program-title"></h2>
             <h3 class="program-code">Registered Courses-FT-{{registration.student_id.profile.program}} {{registration.year_of_study}}</h3>
 
             <div class="courses-section">
-                <p class="academic-session">Academic Session: Fall Time 2024/2025-14 Oct - 30 Dec</p>
+                <p class="academic-session">Academic Session: Full Time {{registration.session_year}}</p>
                 <ul class="courses-list">
                     {% for course in courses %}
                     <li><strong>{{course.course_code}}:</strong> - {{course.course_title}}</li>
@@ -278,7 +286,7 @@
                 </ul>
             </div>
         </div>
-
+        <hr>
         <!-- Financial Statement Section -->
         <div class="financial-section">
             <h3 class="financial-title">Financial Statement</h3>
@@ -304,74 +312,14 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><span class="transaction-id">TEC880072E</span></td>
-                            <td>2022-09-06</td>
+                            <td><span class="transaction-id"></span></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td>-</td>
-                            <td>Receipt Voucher</td>
-                            <td>-</td>
-                            <td class="amount-right">2,050</td>
-                            <td class="amount-right">-</td>
-                            <td class="amount-right">-2,050</td>
-                        </tr>
-                        <tr>
-                            <td><span class="transaction-id">MK1LY330000441</span></td>
-                            <td>2022-10-07</td>
-                            <td>-</td>
-                            <td>Invoice</td>
-                            <td>HIS/LSD Tuition fee 2022</td>
-                            <td class="amount-right">-</td>
-                            <td class="amount-right">14,050</td>
-                            <td class="amount-right">12,000</td>
-                        </tr>
-                        <tr>
-                            <td><span class="transaction-id">RCT-8003</span></td>
-                            <td>2023-02-08</td>
-                            <td>-</td>
-                            <td>Receipt</td>
-                            <td>HIS/LSD Tuition fee</td>
-                            <td class="amount-right">6,000</td>
-                            <td class="amount-right">-</td>
-                            <td class="amount-right">6,000</td>
-                        </tr>
-                        <tr>
-                            <td><span class="transaction-id">RCT-8006</span></td>
-                            <td>2023-05-09</td>
-                            <td>-</td>
-                            <td>Receipt</td>
-                            <td>HIS/LSD Tuition fee</td>
-                            <td class="amount-right">1,325</td>
-                            <td class="amount-right">-</td>
-                            <td class="amount-right">3,325</td>
-                        </tr>
-                        <tr>
-                            <td><span class="transaction-id">2201146</span></td>
-                            <td>2023-02-10</td>
-                            <td>-</td>
-                            <td>Invoice</td>
-                            <td>2022-2023-Tuition and matriculation fee</td>
-                            <td class="amount-right">-</td>
-                            <td class="amount-right">9,675</td>
-                            <td class="amount-right">12,000</td>
-                        </tr>
-                        <tr>
-                            <td><span class="transaction-id">RCT-8074</span></td>
-                            <td>2023-05-04</td>
-                            <td>-</td>
-                            <td>Receipt</td>
-                            <td>HIS/LSD Tuition fee</td>
-                            <td class="amount-right">1,325</td>
-                            <td class="amount-right">-</td>
-                            <td class="amount-right">9,675</td>
-                        </tr>
-                        <tr>
-                            <td><span class="transaction-id">RCT-8936-8974</span></td>
-                            <td>2023-09-11</td>
-                            <td>-</td>
-                            <td>Receipt</td>
-                            <td>HIS/LSD Tuition fee</td>
-                            <td class="amount-right">-</td>
-                            <td class="amount-right">9,675</td>
-                            <td class="amount-right">0</td>
+                            <td class="amount-right"></td>
+                            <td class="amount-right"></td>
+                            <td class="amount-right"></td>
                         </tr>
                     </tbody>
                 </table>

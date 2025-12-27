@@ -18,7 +18,7 @@ import os
 
 
 #----------Register for Courses-------------
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def register(request):
     # Get the logged in user
     sid = request.user

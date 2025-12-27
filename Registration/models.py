@@ -7,6 +7,8 @@ import qrcode
 from io import BytesIO
 from django.core.files import File
 from PIL import Image, ImageDraw
+from django.conf import settings
+from django.urls import reverse
 
 from django.dispatch import receiver
 from Students.models import StudentProfile
@@ -30,7 +32,8 @@ class Registration(models.Model):
         # Generate QR code if status is Approved and QR code doesn't exist
         if self.status == 'Approved' and not self.qr_code:
             qr = qrcode.QRCode(version=1, box_size=10, border=5)
-            qr.add_data(f"http://127.0.0.1:9000/registration/print/{self.id}/")
+            url = f"{settings.SITE_URL}{reverse('Registration:print_slip', args=[self.id])}"
+            qr.add_data(url)
             qr.make(fit=True)
             img = qr.make_image(fill_color="black", back_color="white")
             
