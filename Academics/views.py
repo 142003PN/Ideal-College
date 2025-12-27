@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect, get_list_or_404, get_object_or_40
 from .models import SessionYear
 from django.http import *
 from .forms import SessionYearForm, YearOfStudyForm
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from Courses.models import YearOfStudy
 # Create your views here.
+
+@login_required(login_url='/auth/login')
 def session_years(request):
     if request.user.role == 'ADMIN':
         #edit session year
@@ -16,6 +19,7 @@ def session_years(request):
     }
     return render(request, 'academics/session-year.html', context)
 
+@login_required(login_url='/auth/login')
 def add_session_year(request):
     if request.user.role == 'ADMIN':
         form = SessionYearForm()
@@ -33,7 +37,8 @@ def add_session_year(request):
             return render(request, 'academics/add-session-year.html', {'form': form})
     else:
         return HttpResponse('<h1>Insufficient Roles</h1>')
-    
+
+@login_required(login_url='/auth/login')
 def edit_session_year(request, pk):
     if request.user.role == 'ADMIN':
         year = SessionYear.objects.get(id=pk)
@@ -51,11 +56,13 @@ def edit_session_year(request, pk):
             return render(request, 'academics/add-session-year.html', {'form': form, 'year': year})
     else:
         return HttpResponse('<h1>Insufficient Roles</h1>')
-
+    
+@login_required(login_url='/auth/login')
 def years_of_study(request):
     years = YearOfStudy.objects.all()
     return render(request, 'admin/dashboard.html', {'years':years})
 
+@login_required(login_url='/auth/login')
 def add_year_of_study(request):
     if request.user.role != 'STUDENT':
         form = YearOfStudyForm()
@@ -71,6 +78,7 @@ def add_year_of_study(request):
         form = YearOfStudyForm()
     return render(request, 'academics/add-year-of-study.html', {'form':form})
 
+@login_required(login_url='/auth/login')
 def years_of_study(request):
     if request.user.role != 'STUDENT':
         years = YearOfStudy.objects.all()

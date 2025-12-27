@@ -134,7 +134,7 @@
                 ></a>
                 <ul>
                   <li><a href=" {% url "Application:recent" %}">Recent Applications</a></li>
-                  <li><a href="">Accepted Students</a></li>
+                  <li><a href="{% url "Application:accepted" %}">Accepted Students</a></li>
                 </ul>
               </li>
               <li class="submenu">
@@ -258,9 +258,11 @@
                 <li>
                   <a href="{% url "Registration:register" %}"><i class="fas fa-plus"></i> <span>Course Registration</span></a>
                 </li>
+                {% if request.user.registration %}
                 <li>
                   <a href="{% url "Registration:print_slip" request.user.id %}"><i class="fas fa-book"></i> <span>Confirmation Slip</span></a>
                 </li>
+                {% endif %}
                 <li>
                   <a href="{% url "Results:view-grades" request.user.id %}"><i class="fas fa-book"></i><span>My Grades</span></a>
                 </li>

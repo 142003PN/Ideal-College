@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 #-------------add programme----------------
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def add_programme(request):
     if request.user.role == 'ADMIN' or request.user.staff_profile.position=='HOD':
         user=request.user.id
@@ -35,7 +35,7 @@ def add_programme(request):
         return HttpResponse('<h1>Insufficient</h1>')
     return render(request, 'programs/add-program.html', {'form':form, 'title':'Add Programme'})
 #----------------Edit programme----------------------
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def edit_programme(request, pk):
     if request.user.role != 'ADMIN':
         messages.error(request, 'Only an admin can edit a program')
@@ -58,12 +58,12 @@ def edit_programme(request, pk):
         form = ProgramForm(instance=program)
     return render(request, 'programs/add-program.html', {'form':form, 'title':title})
 #-----------------List programmes---------------
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def programmes(request):
     programmes = Programs.objects.all().order_by('date_added')
     return render(request, 'programs/programs.html', {'programmes':programmes})
 #-----------------View Programme------------------
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def view_programme(request, pk):
     programme = Programs.objects.get(pk=pk)
     courses = Courses.objects.filter(program_id=programme)
@@ -79,7 +79,7 @@ def delete_programme(request, pk):
     return redirect('Programs:programs')
 
 #---------export programmes to excel-------------
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def export_excel(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition']='attachment; filename = Programmes'+str(datetime.datetime.now())+'.xls'

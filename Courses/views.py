@@ -13,7 +13,7 @@ import encodings
 from Users.models import CustomUser
 
 #add course
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def add_course(request):
     if request.user.role !='STUDENT':
         user=request.user.id
@@ -35,13 +35,13 @@ def add_course(request):
     return render(request, 'courses/add-course.html', {'form':form})
 
 #course list
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def course_list(request):
     courses = Courses.objects.all()
     return render(request, 'courses/courses.html', {'courses':courses})
 
 #edit course
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def edit_course(request, pk):
     title = "Edit Course"
     course_id = Courses.objects.get(pk=pk)
@@ -61,7 +61,7 @@ def edit_course(request, pk):
     }
     return render(request, 'courses/add-course.html', context)
 #delete course
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def delete(request, pk):
     if request.user.role == 'ADMIN':
         course_id = Courses.objects.get(pk=pk)
@@ -70,7 +70,7 @@ def delete(request, pk):
     else:
         return HttpResponse("<h1>You cannot delete a course<\h1>")
 
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def export_excel(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition']='attachment; filename=Courses'+ str(datetime.datetime.now())+'.xls'
@@ -88,7 +88,7 @@ def export_excel(request):
         ws.write(row_num, col_num, columns[col_num], font_style)
 
     font_style = xlwt.XFStyle()
-    rows = Courses.objects.all().values_list('course_code', 'course_title', 'program_id', 'year_of_study', 'date_adde')
+    rows = Courses.objects.all().values_list('course_code', 'course_title', 'program_id', 'year_of_study', 'date_added')
 
     for row in rows:
         row_num += 1

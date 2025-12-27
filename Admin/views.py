@@ -4,6 +4,7 @@ from Academics.models import *
 from Users.models import CustomUser
 
 # Create your views here.
+
 def dashboard(request):
     if request.user.role == 'ADMIN':
         years = YearOfStudy.objects.all()

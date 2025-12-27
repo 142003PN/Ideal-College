@@ -7,6 +7,8 @@ from Academics.models import SessionYear
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 # Create your views here.
+
+@login_required(login_url='/auth/login')
 def fetch_student(request):
     if request.user.role == 'ADMIN':
         if request.method == 'POST':
@@ -30,6 +32,7 @@ def fetch_student(request):
                 return render(request, 'results/etch-student.html', context)
     return render(request, 'results/fetch-student.html')
 
+@login_required(login_url='/auth/login')
 def add_results(request):
     student_id=request.session.get('student_id')
     session_year=SessionYear.objects.get(is_current_year=1)
@@ -55,13 +58,13 @@ def add_results(request):
     }
     return render(request, 'results/add-results.html', context)   
  
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def edit_results(request):
     student_id=request.session.get('student_id')
     session_year=SessionYear.objects.get(is_current_year=1)
     results=Results.objects.filter(student_id=student_id, session_year=session_year).exclude(grade__isnull=False)
 
-@login_required(login_url='/users/login/')
+@login_required(login_url='/auth/login')
 def view_results(request, student_id):
     #student_id=request.user
     #result_id=Results.objects.get(student_id=student_id)
@@ -75,6 +78,7 @@ def view_results(request, student_id):
     return render(request, 'results/view-results.html', context)
 
 #------------------Fetch Student for Edit Results----------------------------
+@login_required(login_url='/auth/login')
 def fetch_student_edit(request):
     title = 'edit_results'
     if request.user.role == 'ADMIN':
@@ -99,6 +103,8 @@ def fetch_student_edit(request):
                 messages.warning(request, 'Student no registered')
                 return render(request, 'results/etch-student.html', context)
     return render(request, 'results/fetch-student.html')
+
+@login_required(login_url='/auth/login')
 def edit_results(request):
     student_id=request.session.get('student_id')
     session_year=SessionYear.objects.get(is_current_year=1)
@@ -123,6 +129,8 @@ def edit_results(request):
         'student_id':student_id,
     }
     return render(request, 'results/view-edit-results.html', context)
+
+@login_required(login_url='/auth/login')
 def edit_result(request, result_id):
     if request.user.role != 'ADMIN':
         raise Http404("You do not have permission to access this page.")

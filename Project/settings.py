@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'Results',
 ]
 
+SITE_URL = "https://sis-ichas.com"
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

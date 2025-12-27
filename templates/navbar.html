@@ -21,7 +21,7 @@
         top: 0;
         width: 100%;
         background: var(--white);
-        padding: 1rem 2rem;
+        padding: 0.5rem 1rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -34,6 +34,14 @@
         font-size: 1.5rem;
         font-weight: bold;
         color: var(--primary);
+    }
+    .logo img{
+        width: 50px;
+    }
+    a.logo{
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
     }
     a{
         text-decoration: none;
@@ -122,11 +130,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ideal College</title>
     <link rel="stylesheet" href="{% static "css/home.css" %}">
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
 
 <header class="navbar">
-    <div class="logo">Ideal<span>College</span></div>
+    <a href="{% url "index" %}" class="logo">
+        <img src="{% static "img/logo.png" %}" alt="">
+        Ideal<span>College</span>
+    </a>
 
     <nav class="nav-links" id="navLinks">
         <a href="#programs">Programmes</a>
