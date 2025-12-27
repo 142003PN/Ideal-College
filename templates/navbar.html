@@ -1,70 +1,163 @@
+<style>
+    :root {
+        --primary: #212EA0;
+        --white: #ffffff;
+    }
 
-    <!DOCTYPE html>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+        background: #f5f7ff;
+    }
+
+    /* Navbar */
+    .navbar {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        background: var(--white);
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        z-index: 1000;
+    }
+
+    /* Logo */
+    .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+    a{
+        text-decoration: none;
+    }
+    .logo span {
+        color: #000;
+    }
+
+    /* Navigation */
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: var(--primary);
+        font-weight: 500;
+        position: relative;
+    }
+
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -5px;
+        width: 0;
+        height: 2px;
+        background: var(--primary);
+        transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+        width: 100%;
+    }
+
+    /* Hamburger */
+    .hamburger {
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+    }
+
+    .hamburger span {
+        height: 3px;
+        width: 25px;
+        background: var(--primary);
+        margin-bottom: 5px;
+        border-radius: 5px;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+        .hamburger {
+            display: flex;
+        }
+
+        .nav-links {
+            position: absolute;
+            top: 70px;
+            right: 0;
+            background: var(--white);
+            flex-direction: column;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            display: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-links.active {
+            display: flex;
+        }
+
+        .nav-links a {
+            padding: 1rem 0;
+            font-size: 1.1rem;
+        }
+    }
+</style>
+<!DOCTYPE html>
 {% load static %}
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
-    <title>{% block title %}{% endblock %}</title>
-
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
-    {% block extra_css %}{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ideal College</title>
+    <link rel="stylesheet" href="{% static "css/home.css" %}">
 </head>
-
 <body>
-<nav class="navbar">
-    <ul class="nav">
-        <li>
-            <a href="{% url "index" %}">
-                <img src="{% static 'img/logo.png' %}" alt="">
-                <h4>Ideal College</h4>
-            </a>
-        </li>
-        <li class="hideOnMobile"><a href="#programs">Programmes</a></li>
-        <li class="hideOnMobile"><a href="#fees">Fees</a></li>
-        <li class="hideOnMobile"><a href="#about">About</a></li>
-        <li class="hideOnMobile"><a href="#contact">Contact</a></li>
-        <li class="hideOnMobile">
-            <a href="{% url 'Users:login' %}" class="cta-btn">Login</a>
-        </li>
-        <li class="menu-btn" onclick="showSidebar()">
-            <img src="{% static 'img/menu1.png' %}" alt="">
-        </li>
-    </ul>
- 
-    <ul class="sidebar">
-        <li class="menu-btn" onclick="hideSidebar()">
-            <img src="{% static 'img/close1.png' %}" alt="">
-        </li>
-        <li><a href="#programs">Programmes</a></li>
-        <li><a href="#fees">Fees</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li>
-            <a href="{% url 'Users:login' %}" class="cta-btn">Login</a>
-        </li>
-    </ul>
-</nav>
 
-{% block content %}{% endblock %}
+<header class="navbar">
+    <div class="logo">Ideal<span>College</span></div>
 
-<!-- ✅ NAVBAR JS (GLOBAL) -->
- <script>
-    function showSidebar() {
-        const sidebar = document.querySelector('.sidebar');
-        if (sidebar) sidebar.style.display = 'flex';
-    }
+    <nav class="nav-links" id="navLinks">
+        <a href="#programs">Programmes</a>
+        <a href="#about">About</a>
+        <a href="#fees">Fees</a>
+        <a href="#contact">Contact</a>
+        <a href="{% url "Application:apply" %}">Apply Now</a>
+        <a style="" href="{% url "Users:login" %}" >Login</a>
+    </nav>
 
-    function hideSidebar() {
-        const sidebar = document.querySelector('.sidebar');
-        if (sidebar) sidebar.style.display = 'none';
-    }
-</script>
-{% block extra_js %}
-{% endblock %}
-<footer id="contact w-100 text-center p-4">
+    <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</header>
+{% block content %}
+
+{% endblock  %}
+<!-- Footer -->
+<footer id="contact">
     <p>&copy; 2025 Ideal College. All rights reserved.</p>
     <p>📧 Email: info@idealcollege.edu | 📞 Phone: +1 (555) 123-4567</p>
 </footer>
+<script >
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("navLinks");
+
+    hamburger.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+    });
+</script>
 </body>
 </html>
