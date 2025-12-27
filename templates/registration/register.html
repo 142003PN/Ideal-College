@@ -73,29 +73,29 @@
                     <span><input type="radio" name="year_of_study" value="{{year.id}}" required> {{year.year_title}}     {{student.program }}</span>
                   </div>
                   <div class="accordion-content">
-                    <div class="accordion-body">
-                    <table class="form-table">
-                      <thead>
-                      <tr>
-                        <th style="width: 10%;">Select</th>
-                        <th style="width: 20%;">Code</th>
-                        <th style="width: 40%;">Code Description</th>
-                        <th style="width: 20%;">Year</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      {% for course in courses %}
-                        {% if course.year_of_study.id == year.id %}
+                    <div class="accordion-body table-responsive">
+                      <table class="form-table">
+                        <thead>
                         <tr>
-                        <td><input type="checkbox" name="courses" value="{{course.id}}"></td>
-                        <td>{{course.course_code}}</td>
-                        <td>{{course.course_title}}</td>
-                        <td>{{course.year_of_study}}</td>
+                          <th style="width: 10%;">Select</th>
+                          <th style="width: 20%;">Code</th>
+                          <th style="width: 30%;">Code Description</th>
+                          <th style="width: 20%;">Year</th>
                         </tr>
-                        {% endif %}
-                      {% endfor %}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                        {% for course in courses %}
+                          {% if course.year_of_study.id == year.id %}
+                          <tr>
+                          <td><input type="checkbox" name="courses" value="{{course.id}}"></td>
+                          <td>{{course.course_code}}</td>
+                          <td>{{course.course_title}}</td>
+                          <td>{{course.year_of_study}}</td>
+                          </tr>
+                          {% endif %}
+                        {% endfor %}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                   </div>

@@ -17,6 +17,35 @@
             </div>
          </div>
       </div>
+      {% for message in messages %}
+         {% if 'success' in message.tags %}
+         <script>
+            document.addEventListener("DOMContentLoaded", function () {
+               Swal.fire({
+               icon: "success",
+               title: "Success",
+               text: "{{ message|escapejs }}",
+               confirmButtonText: "OK",
+               }).then((result) => {
+               if (result.isConfirmed) {
+               window.location.href = "{% url 'Registration:recent' %}"; 
+               }
+               });
+            });
+         </script>
+         {% else %}
+         <script>
+            document.addEventListener("DOMContentLoaded", function () {
+               Swal.fire({
+               icon: "error",
+               title: "Error",
+               text: "{{ message|escapejs }} ",
+               confirmButtonText: "OK",
+               });
+            });
+         </script>
+         {% endif %}
+      {% endfor %}
       <div class="row">
          <div class="col-sm-12">
             <div class="card card-table">
@@ -48,7 +77,43 @@
                            <td class="text-right">
                               <a href="{% url "Registration:view_courses" registration.id %}" class="btn btn-sm btn-primary mr-2">View</a>
                               {% if request.user.role == 'ADMIN' %}
-                              <a href="{% url "Registration:delete" registration.id %}" class="btn btn-sm btn-danger">Deregister</a> 
+                              <a href="{% url "Registration:delete" registration.id %}" class="btn btn-sm btn-danger"
+                                 onclick="event.preventDefault();
+                                    const url = this.href;
+                                    Swal.fire({
+                                       title: 'Are you sure?',
+                                       text: 'You won\'t be able to revert this!',
+                                       icon: 'warning',
+                                       showCancelButton: true,
+                                       confirmButtonColor: '#3085d6',
+                                       cancelButtonColor: '#d33',
+                                       confirmButtonText: 'Yes, deregister!'
+                                    }).then((result) => {
+                                       if (result.isConfirmed) {
+                                        fetch(url)
+                                        .then(response => {
+                                          if(response.ok) {
+                                           Swal.fire(
+                                             'Deregistered!',
+                                             'Student successully Deregistered',
+                                             'success'
+                                           ).then(() => {
+                                             window.location.reload();
+                                           });
+                                          }
+                                        }).catch(() => {
+                                          Swal.fire('Error','Request failed.','error');
+                                        });
+                                       } else {
+                                        Swal.fire(
+                                          'Cancelled',
+                                          'Not Deregistered',
+                                          'info'
+                                        );
+                                       }
+                                    })"
+                              
+                              >Deregister</a> 
                               {% endif %} 
                            </td>
                         </tr>

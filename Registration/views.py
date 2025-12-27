@@ -82,7 +82,6 @@ def approve_registration(request, pk):
             registration.save()
             student.save()
             messages.success(request, "Registration approved successfully.")
-            return redirect('Registration:recent')
         except Registration.DoesNotExist:
             messages.error(request, "Registration not found.")
     return render(request, 'registration/recently_registered.html')
