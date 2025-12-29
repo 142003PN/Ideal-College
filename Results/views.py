@@ -66,14 +66,17 @@ def edit_results(request):
 
 @login_required(login_url='/auth/login')
 def view_results(request, student_id):
-    #student_id=request.user
-    #result_id=Results.objects.get(student_id=student_id)
+    grade='F'
     years=Registration.objects.filter(student_id=student_id)
     results=Results.objects.filter(student_id=student_id)
+
+    count = Results.objects.filter(student_id=student_id)
+    repeat_courses=Results.objects.filter(student_id=student_id, grade=grade)
 
     context={
         'results':results,
         'years':years,
+        'repeat_courses': repeat_courses,
     }
     return render(request, 'results/view-results.html', context)
 

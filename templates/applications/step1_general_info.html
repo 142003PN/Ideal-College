@@ -3,7 +3,6 @@
 
 {% block content %}
 <h2 class="mb-3">Step 1: General Information</h2>
-
 <!--Sweet alert-->
 {% for message in messages %}
     {% if 'error' in message.tags %}
@@ -34,42 +33,45 @@
 
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    <div class="row g-3">
 
-    <!-- Bootstrap Grid Wrapper -->
-    <div class="container-fluid px-0">
-        <div class="row g-3">
-
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>First Name <small class="text-danger">*</small></label>
-                <input name="first_name" class="form-control"
-                       value="{{ data.first_name|default:'' }}" required>
+                <input name="first_name" class="form-control" value="{{ data.first_name|default:'' }}" required>
             </div>
+        </div>
 
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>Last Name <small class="text-danger">*</small></label>
-                <input name="last_name" class="form-control"
-                       value="{{ data.last_name|default:'' }}" required>
+                <input name="last_name" class="form-control" value="{{ data.last_name|default:'' }}" required>
             </div>
+        </div>
 
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>Date of Birth <small class="text-danger">*</small></label>
-                <input type="date" name="date_of_birth" class="form-control"
-                       value="{{ data.date_of_birth|default:'' }}" required>
+                <input type="date" name="date_of_birth" class="form-control" value="{{ data.date_of_birth|default:'' }}" required>
             </div>
+        </div>
 
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>NRC Number <small class="text-danger">*</small></label>
-                <input name="NRC" class="form-control"
-                       maxlength="15" value="{{ data.NRC|default:'' }}" required>
+                <input name="NRC" class="form-control" maxlength="15" value="{{ data.NRC|default:'' }}" required>
             </div>
+        </div>
 
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>Scan of NRC <small class="text-danger">PDF ONLY</small></label>
-                <input type="file" name="NRC_scan" class="form-control"
-                       accept="application/pdf">
+                <input type="file" name="NRC_scan" class="form-control" accept="application/pdf">
             </div>
+        </div>
 
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>Gender <small class="text-danger">*</small></label>
                 <select name="gender" class="form-control" required>
                     <option value="">Select Gender</option>
@@ -77,16 +79,20 @@
                     <option value="F" {% if data.gender == 'F' %}selected{% endif %}>Female</option>
                 </select>
             </div>
+        </div>
 
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>Disability <small class="text-danger">*</small></label>
                 <select name="disability" class="form-control" id="disability" required>
                     <option value="No" {% if data.disability|lower == 'no' %}selected{% endif %}>No</option>
                     <option value="Yes" {% if data.disability|lower == 'yes' %}selected{% endif %}>Yes</option>
                 </select>
             </div>
+        </div>
 
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>If Yes, Select Disability</label>
                 <select name="disability_desc" class="form-control" id="disability_desc">
                     <option value="">No disability</option>
@@ -96,33 +102,40 @@
                     <option value="mobility" {% if data.disability_desc == 'mobility' %}selected{% endif %}>Mobility</option>
                 </select>
             </div>
+        </div>
 
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>Nationality <small class="text-danger">*</small></label>
-                <input name="nationality" class="form-control"
-                       value="{{ data.nationality|default:'' }}" required>
+                <input name="nationality" class="form-control" value="{{ data.nationality|default:'' }}" required>
             </div>
+        </div>
 
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>Email <small class="text-danger">*</small></label>
-                <input type="email" name="email" class="form-control"
-                       value="{{ data.email|default:'' }}" required>
+                <input type="email" name="email" class="form-control" value="{{ data.email|default:'' }}" required>
             </div>
+        </div>
 
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>Phone Number <small class="text-danger">*</small></label>
-                <input name="phone_number" class="form-control"
-                       value="{{ data.phone_number|default:'' }}" required>
+                <input name="phone_number" class="form-control" value="{{ data.phone_number|default:'' }}" required>
             </div>
+        </div>
 
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>Address <small class="text-danger">*</small></label>
                 <textarea name="address" class="form-control" required>
                 {{ data.address|default:'' }}
                 </textarea>
             </div>
+        </div>
 
-            <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
                 <label>Programme <small class="text-danger">*</small></label>
                 <select name="program" class="form-control" required>
                     <option value="">Select Programme</option>
@@ -131,25 +144,27 @@
                     {% endfor %}
                 </select>
             </div>
-
-            <div class="col-12 col-sm-6">
-                <label>Deposit Slip <small class="text-danger">*</small></label>
-                <input type="file" name="deposit_slip" class="form-control"
-                       accept="application/pdf,image/*" required>
-            </div>
-
-            <div class="col-12 col-sm-6">
-                <label>Passport Photo <small class="text-danger">*</small></label>
-                <input type="file" name="passport_photo" class="form-control"
-                       accept="image/*" required>
-            </div>
-
-            <!-- Actions -->
-            <div class="col-12 d-flex justify-content-end mt-3">
-                <button class="btn btn-primary px-4" type="submit">Next</button>
-            </div>
-
         </div>
+
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label>Deposit Slip <small class="text-danger">*</small></label>
+                <input type="file" name="deposit_slip" class="form-control" accept="application/pdf,image/*" required>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label>Passport Photo <small class="text-danger">*</small></label>
+                <input type="file" name="passport_photo" class="form-control" accept="image/*" required>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="col-12 d-flex justify-content-end mt-3">
+            <button class="btn btn-primary btn-sm" type="submit">Next</button>
+        </div>
+
     </div>
 </form>
 {% endblock %}

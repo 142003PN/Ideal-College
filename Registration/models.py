@@ -21,7 +21,7 @@ class Registration(models.Model):
     courses=models.ManyToManyField(Courses, related_name='registrations')
     status=models.CharField(max_length=10, choices=STATUS.choices, default='Pending')
     year_of_study=models.ForeignKey(YearOfStudy, on_delete=models.SET_NULL, blank=True, null=True)
-    session_year=models.ForeignKey(SessionYear,on_delete=models.CASCADE)
+    session_year=models.ForeignKey(SessionYear,on_delete=models.CASCADE, related_name='session_years')
     registration_date=models.DateTimeField(auto_now_add=True)
     qr_code=models.ImageField(upload_to='registration_qr_codes', blank=True, null=True)
 
@@ -32,7 +32,7 @@ class Registration(models.Model):
         # Generate QR code if status is Approved and QR code doesn't exist
         if self.status == 'Approved' and not self.qr_code:
             qr = qrcode.QRCode(version=1, box_size=10, border=5)
-            url = f"{settings.SITE_URL}{reverse('Registration:print_slip', args=[self.id])}"
+            url = f"{settings.SITE_URL}{reverse('Registration:print_slip', args=[self.student_id.id])}"
             qr.add_data(url)
             qr.make(fit=True)
             img = qr.make_image(fill_color="black", back_color="white")

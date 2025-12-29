@@ -18,20 +18,6 @@
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
 }
-.cta-btn {
-    background-color: var(--font-clr);
-    color: white;
-    padding: 0.55rem 1.4rem;
-    border: none;
-    border-radius: 2rem;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-}
-.cta-btn:hover {
-    background-color: var(--accent);
-}
-/*Hero section*/
 .hero{
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     color: white;
@@ -58,6 +44,7 @@
     justify-content: center;
     flex-wrap: wrap;
 }
+
 .primary-btn {
     background-color: white;
     color: var(--primary);
@@ -90,35 +77,28 @@
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
-/*title*/
 .title{
-    margin: 1.5rem;
+    margin: 1rem 0;
     text-align: center;
     color: var(--base-clr);
 }
-
-section {
-    padding: 4rem 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-}
 /* Vision and Mission */
 .vision-mission{
-    display: flex;
-    gap: 20px;
-    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 450px));
+    column-gap: 3em;
+    row-gap: 3em;
     justify-content: center;
-    margin: 0;
 }
 .card{
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-    width: 500px;
     display: grid;
     grid-template-rows: subgrid;
-    grid-row: 1/2;
+    grid-row: span 2;
     line-height: 1.7;
+    gap: 0;
 }
 .card-title{
     font-size: 1.2rem;
@@ -163,7 +143,7 @@ section {
     padding: 1.8rem;
     border-radius: 1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    overflow-x: auto;
+    margin: 0.5rem 0;
 }
 
 table {
@@ -187,17 +167,12 @@ table td {
     border-bottom: 1px solid var(--neutral-100);
 }
 
-table tr:hover {
-    background-color: var(--neutral-50);
-}
-
 /* Footer */
 footer {
     background-color: var(--neutral-800);
     color: white;
     text-align: center;
     padding: 2rem;
-    margin-top: 2rem;
     position: relative;
     bottom: 0;
 }
@@ -205,9 +180,8 @@ footer {
 
 /*---Responsive design */
 @media (max-width: 768px) {
-    .nav-links {
-        gap: 1rem;
-        font-size: 0.9rem;
+    .programs, .vision-mission{
+        margin: 1rem 1rem;
     }
     table {
         font-size: 0.9rem;
@@ -218,30 +192,14 @@ footer {
     table th, table td {
         padding: 0.75rem;
     }
+    .primary-btn, .secondary-btn{
+        padding: 0.5rem 1rem;
+    }
     .hero-buttons {
         flex-direction: column;
     }
 
     .primary-btn, .secondary-btn {
         width: 100%;
-    }
-    .vision-mission{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin: 0 10px;
-    }
-    .card{
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-        width: 400px;
-        display: grid;
-        grid-template-rows: subgrid;
-        grid-row: 1/2;
-    }
-    .cta-btn{
-        margin-left: 4em;
     }
 }

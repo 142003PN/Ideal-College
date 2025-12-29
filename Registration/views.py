@@ -101,10 +101,7 @@ def view_submitted_courses(request, pk):
     return render(request, 'registration/view-registered.html')
 
 def print_confirmation_slip(request, student_id):
-        
-        student_id = request.user
         session_year = SessionYear.objects.get(is_current_year=1)
-        student_id = request.user
         
         not_registered = Registration.objects.filter(student_id=student_id, session_year=session_year).exists()
         if not not_registered:

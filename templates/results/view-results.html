@@ -57,7 +57,18 @@
                   {% endfor %}
                 </tbody>
               </table>
-              {% endfor %}
+              <div class="remark d-flex g-1 mt-3">
+                <strong>PROCCED: </strong>
+                {% for result in results %}
+                    {% if result.session_year == year.session_year %}
+                      {% if result.grade == 'F' %}
+                        <p>{{result.course.course_code}}</p>,
+                      {% else %}
+                      {% endif %}
+                    {% endif %}
+                {% endfor %}
+                {% endfor %}
+              </div>
             </div>
           </div>
         </div>
