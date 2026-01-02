@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Student, StudentProfile
+from .models import *
+from Registration.models import *
 from Courses.models import YearOfStudy
 from Programs.models import Programs
 from django.contrib import messages
@@ -195,4 +196,13 @@ def delete_student(request, pk):
 # Student dashboard view
 @login_required(login_url='/users/login/')
 def student_dashboard(request):
-    return render(request, 'students/student-dashboard.html')
+    student_id = request.user.id
+    session_year = SessionYear.objects.get(is_current_year=1)
+    registration = Registration.objects.get(student_id=student_id, session_year=session_year)
+    courses = registration.courses.all()
+
+    context={
+        'registration':registration,
+        'courses':courses,
+    }
+    return render(request, 'students/student-dashboard.html', context)
