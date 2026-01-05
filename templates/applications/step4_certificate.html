@@ -1,130 +1,146 @@
-{% extends 'applications/base.html' %}
-{% block title %}Step 4 – Certificates{% endblock %}
+{% extends "applications/base.html" %}
+
 {% block content %}
-<h3 class="mb-4">Step 4: School Certificates</h3>
-
-<p class="text-muted">
-    Add all certificates you have obtained. You may upload more than one certificate. <br>
-    <small class="text-warning">Click 'add certificate' button again if you have more than 1 certificate</small>
-
-</p>
-
-<script>
-function addCertificate() {
-    const container = document.getElementById('certificates');
-
-    const div = document.createElement('div');
-    div.className = 'card mb-3';
-
-    div.innerHTML = `
-        <div class="card-body">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Certificate Type <small class="text-danger">*</small></label>
-                    <select name="certificate_type[]" class="form-control" required>
-                        <option value="SECONDARY">Secondary</option>
-                        <option value="DIPLOMA">Diploma</option>
-                        <option value="DEGREE">Degree</option>
-                        <option value="ADVANCED_CERTIFICATE">Advanced Certificate</option>
-                        <option value="OTHER">Other</option>
-                    </select>
+<main class="py-4 py-md-5">
+        <div class="container">
+            <!-- Header Section -->
+             <div class="progress-wrapper">
+                <div class="progress">
+                    <div class="progress-bar" style="width: {{ progress }}%"></div>
                 </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Year of Completion <small class="text-danger">*</small></label>
-                    <input name="year_of_completion[]" type="number" class="form-control">
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Certificate Name <small class="text-danger">*</small></label>
-                    <input name="certificate_name[]" class="form-control">
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Institution Name <small class="text-danger">*</small></label>
-                    <input name="institution_name[]" class="form-control">
-                </div>
-
-                <div class="col-md-12">
-                    <label class="form-label">Upload Certificate <small class="text-danger">* (PDF ONLY)</small></label>
-                    <input type="file" name="certificate[]" class="form-control" accept="application/pdf" required>
+                <div class="progress-steps">
+                    <span class="step {% if progress >= 25 %}active{% endif %}">1</span>
+                    <span class="step {% if progress >= 50 %}active{% endif %}">2</span>
+                    <span class="step {% if progress >= 75 %}active{% endif %}">3</span>
+                    <span class="step {% if progress == 100 %}active{% endif %}">4</span>
                 </div>
             </div>
+            <script>
+                function addCertificate() {
+                    const container = document.getElementById('certificates');
 
-            <div class="mt-3 text-end">
-                <button type="button" class="btn btn-outline-danger btn-sm"
-                        onclick="this.closest('.card').remove()">
-                    Remove Certificate
-                </button>
+                    const div = document.createElement('div');
+                    div.className = 'card mb-3';
+
+                    div.innerHTML = `
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='certificate_type'>Certificate Type <small class="text-danger">*</small></label>
+                                    <select name="certificate_type[]" id='certificate_type' class="form-control" required>
+                                        <option value="SECONDARY">Secondary</option>
+                                        <option value="DIPLOMA">Diploma</option>
+                                        <option value="DEGREE">Degree</option>
+                                        <option value="ADVANCED_CERTIFICATE">Advanced Certificate</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='year_of_completion'>Year of Completion <small class="text-danger">*</small></label>
+                                    <input name="year_of_completion[]" id='year_of_completion' type="number" class="form-control">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='certificate_name'>Certificate Name <small class="text-danger">*</small></label>
+                                    <input name="certificate_name[]" id='certificate_name' class="form-control">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='institution_name'>Institution Name <small class="text-danger">*</small></label>
+                                    <input name="institution_name[]" id='institution_name' class="form-control">
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label fw-500" for='certificate'>Upload Certificate <small class="text-danger">* (PDF ONLY)</small></label>
+                                    <input type="file" name="certificate[]" id='certificate' class="form-control" accept="application/pdf" required>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 text-end">
+                                <button type="button" class="btn btn-outline-danger btn-sm"
+                                        onclick="this.closest('.card').remove()">
+                                    Remove Certificate
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                }
+                </script>
+            <div class="text-center mb-3">
+                <p class="lead text-muted">Click on 'add certificate' to add certificate details, if you have more than one document click again on 'add certificate'</p>
+            </div>
+            <!-- Form Section -->
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xl-7">
+                    <form id="admissionForm" method='post' enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                        <div class="section-header mb-4">
+                            <h2 class="section-title">Upload your Certificate Documents</h2>
+                        </div>
+                        <div id="certificates">
+                            {% if certificates %}
+                                {% for c in certificates %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-500" for='certificate_type'>Certificate Type</label>
+                                                <select name="certificate_type[]" id='certificate_type' class="form-select" required>
+                                                    <option value="SECONDARY" {% if c.certificate_type == 'SECONDARY' %}selected{% endif %}>Secondary</option>
+                                                    <option value="DIPLOMA" {% if c.certificate_type == 'DIPLOMA' %}selected{% endif %}>Diploma</option>
+                                                    <option value="DEGREE" {% if c.certificate_type == 'DEGREE' %}selected{% endif %}>Degree</option>
+                                                    <option value="ADVANCED_CERTIFICATE" {% if c.certificate_type == 'ADVANCED_CERTIFICATE' %}selected{% endif %}>Advanced Certificate</option>
+                                                    <option value="OTHER" {% if c.certificate_type == 'OTHER' %}selected{% endif %}>Other</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-500" for='year_of_completion'>Year of Completion</label>
+                                                <input name="year_of_completion[]" id='year_of_completion' class="form-control"
+                                                    value="{{ c.year_of_completion|default:'' }}">
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-500" for='certificate_name'>Certificate Name</label>
+                                                <input name="certificate_name[]" id='certificate_name' class="form-control"
+                                                    value="{{ c.certificate_name|default:'' }}">
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-500" for='institution_name'>Institution Name</label>
+                                                <input name="institution_name[]" id='institution_name' class="form-control"
+                                                    value="{{ c.institution_name|default:'' }}">
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <label class="form-label fw-500" for='certificate'>Upload Certificate <small class="text-danger">* PDF ONLY</small></label>
+                                                <input type="file" name="certificate[]" id='certificate' class="form-control" accept="application/pdf">
+                                                <small class="text-muted">
+                                                    Leave empty to keep previously uploaded file
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <button type="button" id='btn-primary-outline' class="btn btn-success" onclick="addCertificate()">
+                                + Add certificate
+                            </button>
+                        </div>
+
+                        <div class="actions">
+                            <a href="{% url 'Application:step3' %}" class="btn btn-secondary">Back</a>
+                            <button type="submit" class="btn btn-primary">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    `;
-    container.appendChild(div);
-}
-</script>
-
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-
-    <div id="certificates">
-        {% if certificates %}
-            {% for c in certificates %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Certificate Type</label>
-                            <select name="certificate_type[]" class="form-select" required>
-                                <option value="SECONDARY" {% if c.certificate_type == 'SECONDARY' %}selected{% endif %}>Secondary</option>
-                                <option value="DIPLOMA" {% if c.certificate_type == 'DIPLOMA' %}selected{% endif %}>Diploma</option>
-                                <option value="DEGREE" {% if c.certificate_type == 'DEGREE' %}selected{% endif %}>Degree</option>
-                                <option value="ADVANCED_CERTIFICATE" {% if c.certificate_type == 'ADVANCED_CERTIFICATE' %}selected{% endif %}>Advanced Certificate</option>
-                                <option value="OTHER" {% if c.certificate_type == 'OTHER' %}selected{% endif %}>Other</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Year of Completion</label>
-                            <input name="year_of_completion[]" class="form-control"
-                                   value="{{ c.year_of_completion|default:'' }}">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Certificate Name</label>
-                            <input name="certificate_name[]" class="form-control"
-                                   value="{{ c.certificate_name|default:'' }}">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Institution Name</label>
-                            <input name="institution_name[]" class="form-control"
-                                   value="{{ c.institution_name|default:'' }}">
-                        </div>
-
-                        <div class="col-md-12">
-                            <label class="form-label">Upload Certificate <small class="text-danger">* PDF ONLY</small></label>
-                            <input type="file" name="certificate[]" class="form-control" accept="application/pdf">
-                            <small class="text-muted">
-                                Leave empty to keep previously uploaded file
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        {% endif %}
-    </div>
-
-    <div class="mb-4">
-        <button type="button" class="btn btn-outline-primary" onclick="addCertificate()">
-            + Add certificate
-        </button>
-    </div>
-
-    <div class="d-flex justify-content-between">
-        <a href="{% url 'Application:step3' %}" class="btn btn-secondary">Back</a>
-        <button type="submit" class="btn btn-primary">Submit Application</button>
-    </div>
-</form>
-
-{% endblock %}
+    </main>
+{% endblock  %}

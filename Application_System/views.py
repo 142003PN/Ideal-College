@@ -22,6 +22,11 @@ class EmailThread(threading.Thread):
 
     def run(self):
         self.email_message.send(fail_silently=False)
+def require_session_keys(request, keys, redirect_to):
+        for key in keys:
+            if key not in request.session:
+                return redirect(redirect_to)
+        return None
 
 def step1_general_info(request):
     programs = Programs.objects.all()
@@ -81,6 +86,14 @@ def step1_general_info(request):
 
 
 def step2_next_of_kin(request):
+    guard = require_session_keys(
+        request,
+        ['general_info'],
+        'Application:apply'
+    )
+    if guard:
+        return guard
+
     if request.method == 'POST':
         request.session['next_of_kin'] = {
             'full_name': request.POST.get('full_name'),
@@ -97,6 +110,13 @@ def step2_next_of_kin(request):
     return render(request, 'applications/step2_next_of_kin.html', context)
 
 def step3_results(request):
+    guard = require_session_keys(
+        request,
+        ['general_info', 'next_of_kin'],
+        'Application:step2'
+    )
+    if guard:
+        return guard
     if request.method == 'POST':
         subjects = request.POST.getlist('subject_name')
         grades = request.POST.getlist('grade')
@@ -115,6 +135,14 @@ def step3_results(request):
 
 
 def step4_certificate(request):
+    guard = require_session_keys(
+        request,
+        ['general_info', 'next_of_kin', 'results'],
+        'Application:step3'
+    )
+    if guard:
+        return guard
+
     if request.method == 'POST':
         fs = FileSystemStorage(location=tempfile.gettempdir())
 

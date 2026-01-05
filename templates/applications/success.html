@@ -1,6 +1,23 @@
-{% extends 'applications/base.html' %}
-{% block title %}Successs{% endblock %}
-{% block content %}
-<h2>Application Submitted Successfully</h2>
+{% extends "applications/base.html" %}
 
-{% endblock %}
+{% block content %}
+<main class="py-4 py-md-5">
+        <div class="container">
+            <!-- Header Section -->
+            <div class="progress-wrapper">
+                <div class="progress">
+                    <div class="progress-bar" style="width: {{ progress }}%"></div>
+                </div>
+                <div class="progress-steps">
+                    <span class="step {% if progress >= 25 %}active{% endif %}">1</span>
+                    <span class="step {% if progress >= 50 %}active{% endif %}">2</span>
+                    <span class="step {% if progress >= 75 %}active{% endif %}">3</span>
+                    <span class="step {% if progress == 100 %}active{% endif %}">4</span>
+                </div>
+            </div>
+            <div class="row justify-content-center align-center">
+                <h5 class='text-center'>Application Submitted Successfully ✅</h5>
+            </div>
+        </div>
+    </main>
+{% endblock  %}

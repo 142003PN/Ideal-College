@@ -1,170 +1,289 @@
-{% extends 'applications/base.html' %}
-{% block title %}Step 1 – General Info{% endblock %}
+{% extends "applications/base.html" %}
 
 {% block content %}
-<h2 class="mb-3">Step 1: General Information</h2>
-<!--Sweet alert-->
-{% for message in messages %}
-    {% if 'error' in message.tags %}
+<main class="py-4 py-md-5">
+        <div class="container">
+            <!-- Header Section -->
+            <div class="progress-wrapper">
+                <div class="progress">
+                    <div class="progress-bar" style="width: {{ progress }}%"></div>
+                </div>
+                <div class="progress-steps">
+                    <span class="step {% if progress >= 25 %}active{% endif %}">1</span>
+                    <span class="step {% if progress >= 50 %}active{% endif %}">2</span>
+                    <span class="step {% if progress >= 75 %}active{% endif %}">3</span>
+                    <span class="step {% if progress == 100 %}active{% endif %}">4</span>
+                </div>
+            </div>
+            <!--messages-->
+            {% for message in messages %} 
+            {% if 'success' in message.tags %}
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "{{ message|escapejs }}",
+                confirmButtonText: "OK",
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = ""; 
+                }
+                });
+            });
+            </script>
+            {% else %}
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "{{ message|escapejs }}",
+                confirmButtonText: "OK",
+                });
+            });
+            </script>
+            {% endif %} 
+            {% endfor %}
+            <!-- Form Section -->
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xl-7">
+                    <form method='post' enctype="multipart/form-data" id="admissionForm" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <!-- SECTION 1: Personal Information -->
+                        <div class="form-section mb-5">
+                            <div class="section-header mb-4">
+                                <h2 class="section-title">Personal Information</h2>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="first_name" class="form-label fw-500">First Name <small class="text-danger">*</small></label>
+                                    <input name="first_name" id="first_name" maxlength='24' class="form-control" value="{{ data.first_name|default:'' }}" required>
+                                    <div class="invalid-feedback">First name is required.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="last_name" class="form-label fw-500">Last Name <small class="text-danger">*</small></label>
+                                    <input name="last_name" id="last_name" maxlength='15' class="form-control" value="{{ data.last_name|default:'' }}" required>
+                                    <div class="invalid-feedback">Last name is required.</div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for='NRC' class="form-label fw-500">NRC Number <small class="text-danger">*</small></label>
+                                    <input name="NRC" id="NRC" class="form-control" value="{{ data.NRC|default:'' }}" required
+                                    pattern="^[0-9/]+$"
+                                    title="NRC must contain only numbers and /"
+                                    >
+                                    <div class="invalid-feedback">Please Provide a valid NRC</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="date_of_birth" class="form-label fw-500">Date of Birth <small class="text-danger">*</small></label>
+                                    <input type="date" id='date_of_birth' name="date_of_birth" class="form-control" value="{{ data.date_of_birth|default:'' }}" required>
+                                    <div class="invalid-feedback">Date of birth is required.</div>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='NRC_scan'>Scan of NRC <small class="text-danger">*</small></label>
+                                    <input type="file" id='NRC_scan' name="NRC_scan"  class="form-control" id="documents" accept="application/pdf" required>
+                                    <div class="invalid-feedback">Please upload NRC</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='Gender'>Gender <small class="text-danger">*</small></label>
+                                    <select name="gender" id='Gender' class="form-control" required>
+                                        <option value="">Select Gender</option>
+                                        <option value="M" {% if data.gender == 'M' %}selected{% endif %}>Male</option>
+                                        <option value="F" {% if data.gender == 'F' %}selected{% endif %}>Female</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please Select Gender</div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6" for='email'>
+                                    <label for="email" class="form-label fw-500">Email Address <small class="text-danger">*</small></label>
+                                    <input type="email" id='email' name="email" class="form-control" value="{{ data.email|default:'' }}" required>
+                                    <div class="invalid-feedback">Please provide a valid email address.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label fw-500">Phone Number <small class="text-danger">*</small></label>
+                                    <input name="phone_number"  id='phone' class="form-control" value="{{ data.phone_number|default:'' }}" required>
+                                    <div class="invalid-feedback">Phone number is required.</div>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='Disability'>Disability <small class="text-danger">*</small></label>
+                                    <select name="disability" id='Disability' class="form-control" required>
+                                        <option value="No" {% if data.disability|lower == 'no' %}selected{% endif %}>No</option>
+                                        <option value="Yes" {% if data.disability|lower == 'yes' %}selected{% endif %}>Yes</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='disability_desc'>If Yes, Select Disability</label>
+                                    <select name="disability_desc" id='disability_desc' class="form-control">
+                                        <option value="">No disability</option>
+                                        <option value="vision" {% if data.disability_desc == 'vision' %}selected{% endif %}>Vision</option>
+                                        <option value="hearing" {% if data.disability_desc == 'hearing' %}selected{% endif %}>Hearing</option>
+                                        <option value="speech" {% if data.disability_desc == 'speech' %}selected{% endif %}>Speech</option>
+                                        <option value="mobility" {% if data.disability_desc == 'mobility' %}selected{% endif %}>Mobility</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='nationality'>Nationality <small class="text-danger">*</small></label>
+                                    <input name="nationality" id='nationality' class="form-control" value="{{ data.nationality|default:'' }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='program'>Programme <small class="text-danger">*</small></label>
+                                    <select name="program" id='program' class="form-control" required>
+                                        <option value="">Select Programme</option>
+                                        {% for program in programs %}
+                                            <option value="{{ program.id }}">{{ program.program_title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='passport_photo'>Passport Photo <small class="text-danger">*</small></label>
+                                    <input type="file" id='passport_photo' name="passport_photo" class="form-control" accept="image/*" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='deposit_slip'>Deposit Slip <small class="text-danger">*</small></label>
+                                    <input type="file" id='deposit_slip' name="deposit_slip" class="form-control" accept="application/pdf,image/*" required>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="city" class="form-label fw-500">City of Residence</label>
+                                    <input id="city" type="text" name="city_of_residence" value="{{data.city_of_residence|default:''}}" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-500" for='address'>Address <small class="text-danger">*</small></label>
+                                    <textarea name="address" id='address' class="form-control" required>{{ data.address|default:'' }}</textarea>
+                                </div>
+                            </div>
+                            <!-- Actions -->
+                            <div class="col-12 d-flex justify-content-end mt-3">
+                                <button class="btn btn-primary" type="submit">Next</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "{{ message|escapejs }} ",
-            confirmButtonText: "OK",
-        });
-        });
+        (() => {
+            'use strict';
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+                const form = document.getElementById('admissionForm');
+                if (!form) return;
+
+                /* ===== LIGHT INPUT SANITIZATION ===== */
+                form.addEventListener('input', (e) => {
+                    const el = e.target;
+                    if (!el.id) return;
+
+                    switch (el.id) {
+                        case 'NRC':
+                            el.value = el.value.replace(/[^0-9/]/g, '').slice(0, 12);
+                            break;
+
+                        case 'phone':
+                            el.value = el.value.replace(/[^0-9+-]/g, '').slice(0, 15);
+                            break;
+
+                        case 'first_name':
+                            el.value = el.value.slice(0, 24);
+                            break;
+
+                        case 'last_name':
+                            el.value = el.value.slice(0, 15);
+                            break;
+
+                        case 'email':
+                            el.value = el.value.slice(0, 30);
+                            break;
+
+                        case 'nationality':
+                            el.value = el.value.slice(0, 20);
+                            break;
+
+                        case 'city':
+                            el.value = el.value.slice(0, 20);
+                            break;
+                    }
+                });
+
+                /* ===== DATE OF BIRTH VALIDATION (>= 16 YEARS) ===== */
+                const dobInput = document.getElementById('date_of_birth');
+
+                if (dobInput) {
+                    const validateDOB = () => {
+                        if (!dobInput.value) return;
+
+                        const dob = new Date(dobInput.value);
+                        const today = new Date();
+
+                        let age = today.getFullYear() - dob.getFullYear();
+                        const monthDiff = today.getMonth() - dob.getMonth();
+                        const dayDiff = today.getDate() - dob.getDate();
+
+                        // Adjust if birthday hasn't occurred yet this year
+                        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                            age--;
+                        }
+
+                        if (age < 16) {
+                            dobInput.setCustomValidity(
+                                'Applicant must be at least 16 years old.'
+                            );
+                        } else {
+                            dobInput.setCustomValidity('');
+                        }
+                    };
+
+                    dobInput.addEventListener('change', validateDOB);
+                    dobInput.addEventListener('blur', validateDOB);
+                }
+
+                /* ===== DISABILITY TOGGLE ===== */
+                const disability = document.getElementById('Disability');
+                const disabilityDesc = document.getElementById('disability_desc');
+
+                if (disability && disabilityDesc) {
+                    const toggleDisability = () => {
+                        const isYes = disability.value === 'Yes';
+                        disabilityDesc.disabled = !isYes;
+                        disabilityDesc.required = isYes;
+
+                        if (!isYes) {
+                            disabilityDesc.value = '';
+                        }
+                    };
+
+                    disability.addEventListener('change', toggleDisability);
+                    toggleDisability();
+                }
+
+                /* ===== BLOCK FORM SUBMIT IF DOB INVALID ===== */
+                form.addEventListener('submit', (e) => {
+                    if (!form.checkValidity()) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                });
+            });
+        })();
     </script>
-    {% else %}
-        <script>
-        document.addEventListener("DOMContentLoaded", function () {
-        Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: "{{ message|escapejs }} ",
-            confirmButtonText: "OK",
-        });
-        });
-    </script>
-    {% endif %}
-{% endfor %}
 
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="row g-3">
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>First Name <small class="text-danger">*</small></label>
-                <input name="first_name" class="form-control" value="{{ data.first_name|default:'' }}" required>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Last Name <small class="text-danger">*</small></label>
-                <input name="last_name" class="form-control" value="{{ data.last_name|default:'' }}" required>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Date of Birth <small class="text-danger">*</small></label>
-                <input type="date" name="date_of_birth" class="form-control" value="{{ data.date_of_birth|default:'' }}" required>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>NRC Number <small class="text-danger">*</small></label>
-                <input name="NRC" class="form-control" maxlength="15" value="{{ data.NRC|default:'' }}" required>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Scan of NRC <small class="text-danger">PDF ONLY</small></label>
-                <input type="file" name="NRC_scan" class="form-control" accept="application/pdf">
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Gender <small class="text-danger">*</small></label>
-                <select name="gender" class="form-control" required>
-                    <option value="">Select Gender</option>
-                    <option value="M" {% if data.gender == 'M' %}selected{% endif %}>Male</option>
-                    <option value="F" {% if data.gender == 'F' %}selected{% endif %}>Female</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Disability <small class="text-danger">*</small></label>
-                <select name="disability" class="form-control" id="disability" required>
-                    <option value="No" {% if data.disability|lower == 'no' %}selected{% endif %}>No</option>
-                    <option value="Yes" {% if data.disability|lower == 'yes' %}selected{% endif %}>Yes</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>If Yes, Select Disability</label>
-                <select name="disability_desc" class="form-control" id="disability_desc">
-                    <option value="">No disability</option>
-                    <option value="vision" {% if data.disability_desc == 'vision' %}selected{% endif %}>Vision</option>
-                    <option value="hearing" {% if data.disability_desc == 'hearing' %}selected{% endif %}>Hearing</option>
-                    <option value="speech" {% if data.disability_desc == 'speech' %}selected{% endif %}>Speech</option>
-                    <option value="mobility" {% if data.disability_desc == 'mobility' %}selected{% endif %}>Mobility</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Nationality <small class="text-danger">*</small></label>
-                <input name="nationality" class="form-control" value="{{ data.nationality|default:'' }}" required>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Email <small class="text-danger">*</small></label>
-                <input type="email" name="email" class="form-control" value="{{ data.email|default:'' }}" required>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Phone Number <small class="text-danger">*</small></label>
-                <input name="phone_number" class="form-control" value="{{ data.phone_number|default:'' }}" required>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Address <small class="text-danger">*</small></label>
-                <textarea name="address" class="form-control" required>
-                {{ data.address|default:'' }}
-                </textarea>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Programme <small class="text-danger">*</small></label>
-                <select name="program" class="form-control" required>
-                    <option value="">Select Programme</option>
-                    {% for program in programs %}
-                        <option value="{{ program.id }}">{{ program.program_title }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Deposit Slip <small class="text-danger">*</small></label>
-                <input type="file" name="deposit_slip" class="form-control" accept="application/pdf,image/*" required>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6">
-            <div class="form-group">
-                <label>Passport Photo <small class="text-danger">*</small></label>
-                <input type="file" name="passport_photo" class="form-control" accept="image/*" required>
-            </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="col-12 d-flex justify-content-end mt-3">
-            <button class="btn btn-primary btn-sm" type="submit">Next</button>
-        </div>
-
-    </div>
-</form>
-{% endblock %}
+{% endblock  %}

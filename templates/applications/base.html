@@ -1,35 +1,78 @@
 <!DOCTYPE html>
 {% load static %}
-<html>
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ideal College of Health and Applied Sciences - Admission Form</title>
     <link rel="stylesheet" href="{% static "plugins/bootstrap/css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/apply.css" %}">
     <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>{% block title %}Application{% endblock %}</title>
     <style>
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: Arial, sans-serif;
-        background: #f4f6f8;
-        margin: 0;
-        padding: clamp(0.4rem, 5vw, 1rem);
+    /* Navbar */
+    .navbar {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        background: var(--white);
+        padding: 0.5rem 1rem;
         display: flex;
         align-items: center;
-        justify-content: center;
-      }
+        justify-content: space-between;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        z-index: 1000;
+    }
 
-      .page-wrapper {
+    /* Logo */
+    .logo {
+        font-size: clamp(0.8rem, 5vw, 1.5rem);
+        font-weight: bold;
+        color: var(--primary);
+    }
+    .logo img{
+        width: 50px;
+    }
+    a.logo{
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    a{
+        text-decoration: none;
+    }
+    .logo span {
+        color: #000;
+    }
+
+    /* Navigation */
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: var(--primary);
+        font-weight: 500;
+        position: relative;
+    }
+
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -5px;
+        width: 0;
+        height: 2px;
+        background: var(--primary);
+        transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
         width: 100%;
-        max-width: 700px;
-        background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
+    }
 
-      /* Progress bar */
+    /* Progress bar */
       .progress-wrapper {
         margin-bottom: 25px;
       }
@@ -75,68 +118,38 @@
         margin-bottom: 20px;
         font-size: 1.4rem;
       }
-
-      /* Buttons */
-      .btn {
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-        padding: 10px 16px;
-        width: 100%;
-        margin-bottom: 10px;
-      }
-
-      .btn-next {
-        background: #2563eb;
-        color: white;
-      }
-      .btn-back {
-        background: #6b7280;
-        color: white;
-        text-decoration: none;
-      }
-      .btn-add {
-        background: #10b981;
-        color: white;
-      }
-      .btn-remove {
-        background: #ef4444;
-        color: white;
-      }
-
       .actions {
         display: flex;
         gap: 10px;
+        justify-content: space-between;
         margin-top: 20px;
       }
-
-      /* Desktop adjustments */
-      @media (min-width: 640px) {
-        .btn {
-          width: auto;
-        }
-
-        .actions {
-          justify-content: space-between;
-        }
-      }
     </style>
-  </head>
-  <body>
-    <div class="page-wrapper">
-      <div class="progress-wrapper">
-        <div class="progress">
-          <div class="progress-bar" style="width: {{ progress }}%"></div>
+</head>
+<body>
+    <header class="navbar">
+    <a href="{% url "index" %}" class="logo">
+        <img src="{% static "img/logo.png" %}" alt="">
+        Ideal<span>College</span>
+    </a>
+    </header>
+{% block content %}
+
+{% endblock  %}
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5 mt-5">
+        <div class="container">
+            <hr class="bg-secondary">
+            <div class="text-center text-muted">
+                <p>&copy; 2025 Ideal College of Health and Applied Sciences. All rights reserved.</p>
+            </div>
         </div>
-        <div class="progress-steps">
-          <span class="step {% if progress >= 25 %}active{% endif %}">1</span>
-          <span class="step {% if progress >= 50 %}active{% endif %}">2</span>
-          <span class="step {% if progress >= 75 %}active{% endif %}">3</span>
-          <span class="step {% if progress == 100 %}active{% endif %}">4</span>
-        </div>
-      </div>
-      {% block content %}{% endblock %}
-    </div>
-  </body>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static "js/form-validation.js" %}"></script>
+    
+</body>
 </html>

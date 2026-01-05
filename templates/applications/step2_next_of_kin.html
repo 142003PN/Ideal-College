@@ -1,32 +1,102 @@
-{% extends 'applications/base.html' %}
-{% block title %}Step 2 – Next of Kin{% endblock %}
+{% extends "applications/base.html" %}
+
 {% block content %}
-<h2>Step 2: Next of Kin</h2>
-<form method="post">
-    {% csrf_token %}
+<main class="py-4 py-md-5">
+        <div class="container">
+            <div class="progress-wrapper">
+                <div class="progress">
+                    <div class="progress-bar" style="width: {{ progress }}%"></div>
+                </div>
+                <div class="progress-steps">
+                    <span class="step {% if progress >= 25 %}active{% endif %}">1</span>
+                    <span class="step {% if progress >= 50 %}active{% endif %}">2</span>
+                    <span class="step {% if progress >= 75 %}active{% endif %}">3</span>
+                    <span class="step {% if progress == 100 %}active{% endif %}">4</span>
+                </div>
+            </div>
+            <!-- Header Section -->
+            <div class="text-center mb-3">
+                <p class="lead text-muted">Join us and advance your career in health and applied sciences</p>
+            </div>
 
-    <div class="form-group">
-        <label for="full_name">Full Name <small class="text-danger">*</small></label>
-        <input name="full_name" class="form-control" placeholder="Full Name" value="{{ data.full_name|default:'' }}" required>
-    </div>
-    <div class="form-group">
-        <label for="email">Email</label>
-        <input name="email" class="form-control" type="email" placeholder="Email" value="{{ data.email|default:'' }}">
-    </div>
-    <div class="form-group">
-        <label for="phone_number">Phone Number <small class="text-danger">*</small></label>
-        <input name="phone_number" class="form-control" required value="{{ data.phone_number|default:'' }}">
-    </div>
-    <div class="form-group">
-        <label for="address">Address <small class="text-danger">*</small></label>
-        <textarea name="NK_address" class="form-control" required placeholder="Address">{{ data.NK_address|default:'' }}
+            <!-- Form Section -->
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xl-7">
+                    <form method='post' enctype="multipart/form-data" id="admissionForm" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <!-- SECTION 2: Contact Address -->
+                        <div class="form-section mb-5">
+                            <div class="section-header mb-4">
+                                <h2 class="section-title">Next of Kin Details</h2>
+                            </div>
 
-        </textarea>
-    </div>
+                            <div>
+                                <label for="full_name" class="form-label fw-500">Full Name <small class="text-danger">*</small></label>
+                                <input name="full_name" id='full_name' class="form-control" placeholder="Full Name" value="{{ data.full_name|default:'' }}" required>
+                                <div class="invalid-feedback">Full name is required.</div>
+                            </div>
 
-    <div class="actions">
-    <a href="{% url 'Application:apply' %}" class="btn btn-back">Back</a>
-    <button class="btn btn-next" type="submit">Next</button>
-    </div>
-</form>
-{% endblock %}
+                            <div>
+                                <label for="email" class="form-label fw-500">Email</label>
+                                <input name="email" id='email' class="form-control" type="email" placeholder="Email" value="{{ data.email|default:'' }}">
+                            </div>
+                            <div>
+                                <label for="phone" class="form-label fw-500">Phone Number <small class="text-danger">*</small></label>
+                                <input name="phone_number" id='phone' class="form-control" required value="{{ data.phone_number|default:'' }}">
+                                <div class="invalid-feedback">Phone Number is required.</div>
+                            </div>
+                            <div class="form-label fw-500">
+                                <label for="address" class="form-label fw-500">Address <small class="text-danger">*</small></label>
+                                <textarea name="NK_address" id='address' class="form-control" required >{{ data.NK_address|default:''}}</textarea>
+                                <div class="invalid-feedback">Address is required.</div>
+                            </div>
+
+                            <!---->
+                            <div class="actions">
+                                <a href="{% url 'Application:apply' %}" class="btn btn-secondary">Back</a>
+                                <button class="btn btn-primary" type="submit">Next</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        (() => {
+            'use strict';
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+                const form = document.getElementById('admissionForm');
+                if (!form) return;
+
+                /* ===== LIGHT INPUT SANITIZATION ===== */
+                form.addEventListener('input', (e) => {
+                    const el = e.target;
+                    if (!el.id) return;
+
+                    switch (el.id) {
+                        case 'phone':
+                            el.value = el.value.replace(/[^0-9+-]/g, '').slice(0, 15);
+                            break;
+
+                        case 'full_name':
+                            el.value = el.value.slice(0, 24);
+                            break;
+                    }
+                });
+
+                /* ===== BLOCK FORM SUBMIT IF DOB INVALID ===== */
+                form.addEventListener('submit', (e) => {
+                    if (!form.checkValidity()) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                });
+            });
+        })();
+    </script>
+
+{% endblock  %}

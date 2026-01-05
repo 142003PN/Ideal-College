@@ -31,7 +31,7 @@ class General_Information(models.Model):
         )
     ])
     NRC = models.CharField(max_length=20, unique=True)
-    NRC_scan = models.FileField(upload_to='nrc_scans/', validators=[FileExtensionValidator(['pdf'])], null=True, blank=True)
+    NRC_scan = models.FileField(upload_to='nrc_scans/', null=True, blank=True)
     marital_status = models.CharField(max_length=30, null=True, blank=True)
     gender = models.CharField(max_length=10, choices=GenderChoices.choices, null=True, blank=True)
     nationality = models.CharField(max_length=50)
@@ -45,7 +45,7 @@ class General_Information(models.Model):
     disability_desc=models.CharField(max_length=15, null=True, blank=True)
     #year_of_study = models.ForeignKey(YearOfStudy, on_delete=models.SET_NULL, null=True, blank=True)#should added by default to first year
     program = models.ForeignKey(Programs, null=True, blank=True, on_delete=models.SET_NULL, related_name='applications')
-    deposit_slip = models.FileField(upload_to='slips/', validators=[FileExtensionValidator(['pdf', 'jpg', 'jpeg', 'png'])])
+    deposit_slip = models.FileField(upload_to='slips/', null=True, blank=True)
     date_of_application = models.DateField(auto_now_add=True)
     passport_photo = models.ImageField(upload_to='profile_picture', default='fallback.png', validators=[FileExtensionValidator(['jpg', 'jpeg', 'png'])])
     def __str__(self):
