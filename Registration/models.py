@@ -24,6 +24,7 @@ class Registration(models.Model):
     session_year=models.ForeignKey(SessionYear,on_delete=models.CASCADE, related_name='session_years')
     registration_date=models.DateTimeField(auto_now_add=True)
     qr_code=models.ImageField(upload_to='registration_qr_codes', blank=True, null=True)
+    fees_invoiced = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.student_id} - {self.courses} - {self.session_year}"

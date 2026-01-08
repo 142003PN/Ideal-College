@@ -196,13 +196,24 @@ def delete_student(request, pk):
 # Student dashboard view
 @login_required(login_url='/users/login/')
 def student_dashboard(request):
-    student_id = request.user.id
-    session_year = SessionYear.objects.get(is_current_year=1)
-    registration = Registration.objects.get(student_id=student_id, session_year=session_year)
-    courses = registration.courses.all()
+    student = request.user
 
-    context={
-        'registration':registration,
-        'courses':courses,
+    session_year = SessionYear.objects.filter(is_current_year=True).first()
+
+    registration = None
+    courses = []
+
+    if session_year:
+        registration = Registration.objects.filter(
+            student_id=student,
+            session_year=session_year
+        ).first()
+        if registration:
+            courses = registration.courses.all()
+
+    context = {
+        'registration': registration,
+        'courses': courses,
+        'session_year': session_year,
     }
     return render(request, 'students/student-dashboard.html', context)

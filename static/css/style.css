@@ -260,6 +260,7 @@ table.table td h2 span {
 	font-weight: 200;
 	color: #0B1F3A;
 }
+
 /*-----------------
 	3. Helper Class
 -----------------------*/
@@ -3150,6 +3151,9 @@ table.table-inbox tbody tr.checked {
 @media (max-width: 767.98px) {
 	body {
 		font-size: 0.9375rem;
+	}
+	tbody tr td{
+		color: #0B1F3A;
 	}
 	h1, .h1 {
 		font-size: 2rem;

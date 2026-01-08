@@ -42,6 +42,7 @@
             </div>
           </div>
           <!---->
+          {% if registration %}
           <div class="row">
               <div class="col-12 d-flex">
                 <div class="card flex-fill">
@@ -84,6 +85,8 @@
                 </div>
               </div>
           </div>
+          {% else %}
+          {% endif %}
         </div>
       </div>
 {% endblock  %}

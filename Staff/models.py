@@ -25,6 +25,7 @@ class StaffProfile(models.Model):
         PSYCHOLOGIST = 'Psychologist', 'Pyschologist'
         LIBRARIAN = 'Librarian', 'Librarian'
         INSTRUCTOR = 'Clinical Instructor', 'Clinical Instructor'
+        ACCOUNTANT = 'Accountant', 'Accountant'
     class GenderChoices(models.TextChoices):
         MALE = 'M', 'Male'
         FEMALE = 'F', 'Female'
