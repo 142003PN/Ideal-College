@@ -50,15 +50,19 @@
                         <a>{{fee.fee_type}}</a>
                       </h2>
                     </td>
-                    <td>{{fee.programme}}</td>
+                    {% if fee.Programs %}
+                    <td>{{fee.Programs}}</td>
+                    {% else %}
+                    <td>All Programmes</td>
+                    {% endif %}
                     <td>K{{fee.amount}}</td>
                     <td>{{fee.year_of_study}}</td>
                     <td class="text-right">
                       <div class="actions">
-                        <a href="{% url "Fees:edit" fee.id %}" class="btn btn-sm bg-success-light mr-2">
+                        <a href="" class="btn btn-sm bg-success-light mr-2">
                           <i class="fas fa-pen"></i>
                         </a>
-                        <a href="{% url "Fees:delete_fee" fee.id %}" class="btn btn-sm bg-danger"
+                        <a href="" class="btn btn-sm bg-danger"
                          onclick="event.preventDefault();
                                     const url = this.href;
                                     Swal.fire({

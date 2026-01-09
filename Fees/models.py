@@ -2,6 +2,7 @@ from django.db import models
 from decimal import Decimal
 from Students.models import Student
 from Programs.models import Programs
+from Courses.models import YearOfStudy
 
 
 # STUDENT ACCOUNT
@@ -39,6 +40,7 @@ class Fee(models.Model):
         blank=True,
         on_delete=models.CASCADE
     )
+    year_of_study = models.ForeignKey(YearOfStudy, null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f'{self.fee_type} - K{self.amount}'

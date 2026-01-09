@@ -22,16 +22,16 @@
     {% if 'success' in message.tags %}
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "{{ message|escapejs }} ",
-          confirmButtonText: "OK",
+            Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "{{ message|escapejs }}",
+            didClose: () => { window.location.href = "{% url 'Fees:fees' %}"; },
+            confirmButtonText: "OK",
+            });
         });
-      });
     </script>
-    {% endif %}
-    {% if 'error' in message.tags %}
+    {% else %}
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         Swal.fire({
@@ -44,6 +44,20 @@
     </script>
     {% endif %}
     {% endfor %}
+    <style>
+        /* Django form error messages */
+        .errorlist {
+            color: #dc3545;          /* Bootstrap danger red */
+            margin: 0.25rem 0 0;
+            padding-left: 0;
+            list-style: none;
+            font-size: 0.875rem;
+        }
+
+        .errorlist li {
+            color: #dc3545;
+        }
+    </style>
     <div class="row">
     <div class="col-sm-12">
         <div class="card">
@@ -58,27 +72,16 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <div class="form-group">
-                        <label>Fee Type</label>
-                        {{form.fee_type}}
+                        <label>Student id</label>
+                        {{form.account}}
+                        {{form.account.errors}}
                     </div>
                 </div>
                 <div class="col-12 col-sm-6">
                     <div class="form-group">
-                        <label>Scope</label>
-                        {{form.scope}}
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6">
-                    <div class="form-group">
-                        <label>Programme</label>
-                        {{form.Programs}}
-                        {{form.Programs.errors}}
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6">
-                    <div class="form-group">
-                        <label>Year of Study</label>
-                        {{form.year_of_study}}
+                        <label>Fee</label>
+                        {{form.fee}}
+                        {{form.fee.errors}}
                     </div>
                 </div>
                 <div class="col-12 col-sm-6">
@@ -102,25 +105,27 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const scopeField = document.getElementById('id_scope');
-    const programField = document.getElementById('id_Programs');
+    const feeSelect = document.getElementById('id_fee');
+    const amountInput = document.getElementById('id_amount');
 
-    if (!scopeField || !programField) return;
+    if (!feeSelect || !amountInput) return;
 
-    function toggleProgramField() {
-        if (scopeField.value === 'Programs') {
-            programField.disabled = false;
-        } else {
-            programField.disabled = true;
-            programField.value = '';
+    function updateAmount() {
+        const selectedOption = feeSelect.options[feeSelect.selectedIndex];
+        if (!selectedOption) return;
+
+        // Extract amount from option text: "Registration - K500.00"
+        const match = selectedOption.text.match(/K([\d.]+)/);
+        if (match) {
+            amountInput.value = match[1];
         }
     }
 
-    // Run on page load
-    toggleProgramField();
+    // Populate on change
+    feeSelect.addEventListener('change', updateAmount);
 
-    // Update on change
-    scopeField.addEventListener('change', toggleProgramField);
+    // Populate on page load (edit form)
+    updateAmount();
 });
 </script>
 
