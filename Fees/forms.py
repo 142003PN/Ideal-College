@@ -119,7 +119,6 @@ class InvoiceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Customize fee labels (safe & correct)
         self.fields['fee'].label_from_instance = (
             lambda fee: f'{fee.fee_type} - K{fee.amount}'
         )
