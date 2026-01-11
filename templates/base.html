@@ -33,15 +33,6 @@
           <i class="fas fa-align-left"></i>
         </a>
 
-        <div class="top-nav-search">
-          <form>
-            <input type="text" class="form-control" placeholder="Search here" />
-            <button class="btn" type="submit">
-              <i class="fas fa-search"></i>
-            </button>
-          </form>
-        </div>
-
         <a class="mobile_btn" id="mobile_btn">
           <i class="fas fa-bars"></i>
         </a>
@@ -232,6 +223,15 @@
                     </ul>
                   </li>
                 {% elif request.user.staff_profile.position == "Accountant" %}
+                  <li>
+                    <a href="{% url "Fees:payment-history" %}"><i class="fas fa-money-check-alt"></i><span>Payments</span></a>
+                  </li>
+                  <li>
+                    <a href="{% url "Fees:add-payment" %}"><i class="fas fa-money-check-alt"></i><span>Add Payment</span></a>
+                  </li>
+                  <li>
+                    <a href="{% url "Fees:ledger" %}"><i class="fas fa-money-check-alt"></i><span>Ledger Entries</span></a>
+                  </li>
                   <li class="submenu">
                     <a href="#"
                       ><i class="fas fa-book-reader"></i> <span>Accounts</span>
@@ -241,6 +241,9 @@
                       <li><a href="{% url "Fees:fees" %}">Fees</a></li>
                       <li>
                         <a href="{% url "Fees:add" %}">Add Fee</a>
+                      </li>
+                      <li>
+                        <a href="{% url "Fees:add-invoice" %}">Add Invoice</a>
                       </li>
                       </li>
                     </ul>

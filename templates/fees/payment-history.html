@@ -1,0 +1,55 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Payments</h3>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="fees-collections.html">Accounts</a>
+            </li>
+            <li class="breadcrumb-item active">Payments</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover table-center mb-0">
+                <thead>
+                  <tr>
+                    <th>Payment ID</th>
+                    <th>Student Name</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th class='text-nowrap'>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for payment in payments %}
+                  <tr>
+                    <td>{{ payment.id }}</td>
+                    <td>{{ payment.account.student_id}}</td>
+                    <td>{{ payment.amount }}</td>
+                    <td>{{ payment.payment_method }}</td>
+                    <td>{{ payment.paid_on|date:"Y-m-d" }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+    

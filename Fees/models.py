@@ -7,7 +7,7 @@ from Courses.models import YearOfStudy
 
 # STUDENT ACCOUNT
 class StudentAccount(models.Model):
-    student = models.OneToOneField(Student, on_delete=models.CASCADE)
+    student = models.OneToOneField(Student, on_delete=models.CASCADE, related_name='account')
     balance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -57,7 +57,7 @@ class Invoice(models.Model):
         return f'Invoice #{self.id} - K{self.amount}'
 # PAYMENT (RECEIPT)
 class Payment(models.Model):
-    account = models.ForeignKey(StudentAccount, on_delete=models.CASCADE)
+    account = models.ForeignKey(StudentAccount, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=50)
     reference = models.CharField(max_length=100, blank=True)

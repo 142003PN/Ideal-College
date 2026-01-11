@@ -11,4 +11,7 @@ urlpatterns = [
     path('reverse/<str:ledger_id>', views.reverse_transaction_view, name='reverse'),
     path('ledger/live-search/', views.ledger_live_search, name='ledger_live_search'),
     path('payment', views.add_payment, name='add-payment'),
+    path('payment-history', views.payment_history, name='payment-history'),
+    path('student-ledger/<str:account_id>', views.student_fees_ledger, name='student-ledger'),
+    path('student-ledger/<str:account_id>/pdf', views.student_statement_pdf_view, name='ledger-pdf'),
 ]
