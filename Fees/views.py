@@ -98,9 +98,20 @@ def reverse_transaction_view(request, ledger_id):
     messages.success(request, "Transaction reversed successfully.")
     return redirect('Fees:ledger')
 
+#payment
+def add_payment(request):
+    if request.user.staff_profile.position == "Accountant":
+        if request.method == 'POST':
+            form = PaymentForm(request.POST)
+            if form.is_valid():
+                form.save(commit=False)
+                form.save()
+                messages.success(request, 'Payment successfully made')
+        else:
+            form = PaymentForm()
+    return render(request, 'Fees/add-payment.html', {'form':form})
 #search ledger
 from django.http import JsonResponse
-
 def ledger_live_search(request):
     q = request.GET.get('student_id', '')
 

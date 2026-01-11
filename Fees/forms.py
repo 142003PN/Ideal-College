@@ -5,42 +5,14 @@ from .models import *
 class FeesForm(forms.ModelForm):
     class Meta:
         model = Fee
-        fields = [
-            'fee_type',
-            'amount',
-            'scope',
-            'Programs',
-            'year_of_study',
-        ]
+        fields = ['fee_type','amount','scope','Programs','year_of_study',]
 
         widgets = {
-            'fee_type': forms.Select(
-                attrs={
-                    'class': 'form-control'
-                }
-            ),
-            'amount': forms.NumberInput(
-                attrs={
-                    'class': 'form-control',
-                    'step': '0.01',
-                    'min': '0'
-                }
-            ),
-            'scope': forms.Select(
-                attrs={
-                    'class': 'form-control', 'id':'id_scope'
-                }
-            ),
-            'Programs': forms.Select(
-                attrs={
-                    'class': 'form-control', 'id':'id_Programs'
-                }
-            ),
-            'year_of_study': forms.Select(
-                attrs={
-                    'class': 'form-control'
-                }
-            ),
+            'fee_type': forms.Select(attrs={'class': 'form-control'}),
+            'amount': forms.NumberInput(attrs={'class': 'form-control','step': '0.01','min': '0'}),
+            'scope': forms.Select(attrs={'class': 'form-control', 'id':'id_scope'}),
+            'Programs': forms.Select(attrs={'class': 'form-control', 'id':'id_Programs'}),
+            'year_of_study': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean(self):
@@ -75,41 +47,20 @@ class InvoiceForm(forms.ModelForm):
             'required': 'Please select a student account.',
             'invalid_choice': 'Student account does not exist.'
         },
-        widget=forms.NumberInput(
-            attrs={
-                'class': 'form-control',
-                'id': 'id_account'
-            }
-        )
-    )
+        widget=forms.NumberInput(attrs={'class': 'form-control','id': 'id_account'}))
 
     fee = forms.ModelChoiceField(
         queryset=Fee.objects.all(),
         error_messages={
             'required': 'Please select a fee.'
         },
-        widget=forms.Select(
-            attrs={
-                'class': 'form-control',
-                'id': 'id_fee'
-            }
-        )
-    )
+        widget=forms.Select(attrs={'class': 'form-control','id': 'id_fee'}))
 
-    amount = forms.DecimalField(
-        max_digits=10,
-        decimal_places=2,
+    amount = forms.DecimalField(max_digits=10,decimal_places=2,
         error_messages={
             'required': 'Amount is required.'
         },
-        widget=forms.NumberInput(
-            attrs={
-                'class': 'form-control',
-                'step': '0.01',
-                'min': '0',
-                'id': 'id_amount'
-            }
-        )
+        widget=forms.NumberInput(attrs={'class': 'form-control','step': '0.01','min': '0','id': 'id_amount'})
     )
 
     class Meta:
@@ -124,3 +75,20 @@ class InvoiceForm(forms.ModelForm):
         )
 
 
+class PaymentForm(forms.ModelForm):
+    account = forms.ModelChoiceField(
+        queryset=StudentAccount.objects.all(),
+        error_messages={
+            'required': 'Please select a student account.',
+            'invalid_choice': 'Student account does not exist.'
+        },
+        widget=forms.NumberInput(attrs={'class': 'form-control','id': 'id_account'}))
+    class Meta:
+        model = Payment
+        fields = ['account', 'amount', 'payment_method', 'reference']
+
+        widgets = {
+            'amount':forms.NumberInput(attrs={'class':'form-control'}),
+            'payment_method':forms.TextInput(attrs={'class':'form-control', 'maxlength':'10'}),
+            'reference':forms.TextInput(attrs={'class':'form-control', 'maxlength':'20'})
+        }

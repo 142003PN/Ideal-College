@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Add Fees{% endblock %}
+{% block title %}Add Payment{% endblock %}
 {% block content %}
 <div class="page-wrapper">
 <div class="content container-fluid">
@@ -9,41 +9,15 @@
         {% if title %}
         <h3 class="page-title">{{title}}</h3>
         {% else %}
-        <h3 class="page-title">Add Invoice</h3>
+        <h3 class="page-title">Add Payment</h3>
         {% endif %}
         <ul class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url "Fees:fees" %}">Fees</a></li>
-            <li class="breadcrumb-item active">Add Invoice</li>
+            <li class="breadcrumb-item active">Add Payment</li>
         </ul>
         </div>
     </div>
     </div>
-    {% for message in messages %}
-    {% if 'success' in message.tags %}
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-            Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: "{{ message|escapejs }}",
-            didClose: () => { window.location.href = "{% url 'Fees:fees' %}"; },
-            confirmButtonText: "OK",
-            });
-        });
-    </script>
-    {% else %}
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "{{ message|escapejs }} ",
-          confirmButtonText: "OK",
-        });
-      });
-    </script>
-    {% endif %}
-    {% endfor %}
     <style>
         /* Django form error messages */
         .errorlist {
@@ -58,6 +32,32 @@
             color: #dc3545;
         }
     </style>
+    {% for message in messages %}
+    {% if 'success' in message.tags %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "{{ message|escapejs }} ",
+          confirmButtonText: "OK",
+        });
+      });
+    </script>
+    {% endif %}
+    {% if 'error' in message.tags %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "{{ message|escapejs }} ",
+          confirmButtonText: "OK",
+        });
+      });
+    </script>
+    {% endif %}
+    {% endfor %}
     <div class="row">
     <div class="col-sm-12">
         <div class="card">
@@ -67,21 +67,27 @@
             <div class="row">
                 <div class="col-12">
                 <h5 class="form-title">
-                    <span>Fees Information</span>
+                    <span>Payment Information</span>
                 </h5>
                 </div>
                 <div class="col-12 col-sm-6">
                     <div class="form-group">
-                        <label>Student id</label>
+                        <label>Account</label>
                         {{form.account}}
-                        {{form.account.errors}}
+                        {{form.errors}}
                     </div>
                 </div>
                 <div class="col-12 col-sm-6">
                     <div class="form-group">
-                        <label>Fee</label>
-                        {{form.fee}}
-                        {{form.fee.errors}}
+                        <label>Payment Method</label>
+                        {{form.payment_method}}
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        <label>Reference</label>
+                        {{form.reference}}
+                        {{form.reference.errors}}
                     </div>
                 </div>
                 <div class="col-12 col-sm-6">
@@ -105,27 +111,25 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const feeSelect = document.getElementById('id_fee');
-    const amountInput = document.getElementById('id_amount');
+    const scopeField = document.getElementById('id_scope');
+    const programField = document.getElementById('id_Programs');
 
-    if (!feeSelect || !amountInput) return;
+    if (!scopeField || !programField) return;
 
-    function updateAmount() {
-        const selectedOption = feeSelect.options[feeSelect.selectedIndex];
-        if (!selectedOption) return;
-
-        // Extract amount from option text: "Registration - K500.00"
-        const match = selectedOption.text.match(/K([\d.]+)/);
-        if (match) {
-            amountInput.value = match[1];
+    function toggleProgramField() {
+        if (scopeField.value === 'Programs') {
+            programField.disabled = false;
+        } else {
+            programField.disabled = true;
+            programField.value = '';
         }
     }
 
-    // Populate on change
-    feeSelect.addEventListener('change', updateAmount);
+    // Run on page load
+    toggleProgramField();
 
-    // Populate on page load (edit form)
-    updateAmount();
+    // Update on change
+    scopeField.addEventListener('change', toggleProgramField);
 });
 </script>
 
