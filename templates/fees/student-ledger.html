@@ -49,9 +49,9 @@
                             <tr>
                                 <td>{{ row.date|date:"Y-m-d H:i" }}</td>
                                 <td>{{ row.description }}</td>
-                                <td>{% if row.debit %}{{ row.debit }}{% endif %}</td>
-                                <td>{% if row.credit %}{{ row.credit }}{% endif %}</td>
-                                <td>{{ row.balance }}</td>
+                                <td>{% if row.debit %}K{{ row.debit }}{% endif %}</td>
+                                <td>{% if row.credit %}K{{ row.credit }}{% endif %}</td>
+                                <td>K{{ row.balance }}</td>
                                 <td>
                                     {% if row.is_reversal %}
                                         <span style="color:red;">Reversal</span>

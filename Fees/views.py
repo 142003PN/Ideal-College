@@ -115,29 +115,12 @@ def add_payment(request):
         else:
             form = PaymentForm()
     return render(request, 'Fees/add-payment.html', {'form':form})
-#search ledger
-from django.http import JsonResponse
-def ledger_live_search(request):
-    q = request.GET.get('student_id', '')
 
-    if q:
-        ledgers = LedgerEntry.objects.filter(account__student_id__icontains=q)
-    else:
-        ledgers = LedgerEntry.objects.all()  # show all when empty
-
-    data = []
-    for l in ledgers:
-        data.append({
-            'id': l.id,
-            'student_id': l.account.student_id,
-            'entry_type': l.entry_type,
-            'amount': str(l.amount),
-            'description': l.description,
-            'is_reversal': l.is_reversal,
-            'reverse_url': f"/fees/reverse/{l.id}/"
-        })
-
-    return JsonResponse(data, safe=False)
+#recent payments
+def recent_payments(request):
+    if request.user.staff_profile.position == "Accountant":
+        payments = Payment.objects.all().order_by('-id')[:5]
+    return render(request, 'fees/recent-payments.html', {'payments':payments})
 
 #view payment history
 def payment_history(request):
@@ -240,3 +223,53 @@ def student_statement_pdf_view(request, account_id):
 
     doc.build(elements)
     return response
+
+#invoice many students
+def bulk_invoice_view(request):
+    form = BulkInvoiceForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        program = form.cleaned_data['program']
+        year = form.cleaned_data['year_of_study']
+        fee = form.cleaned_data['fee']
+        amount = form.cleaned_data['amount']
+        description = form.cleaned_data['description']
+
+        students = Student.objects.select_related('profile')
+
+        if program:
+            students = students.filter(profile__program=program)
+
+        if year:
+            students = students.filter(profile__year_of_study=year)
+
+        count = 0
+
+        with transaction.atomic():
+            for student in students:
+                account, _ = StudentAccount.objects.get_or_create(student=student)
+
+                # Skip if already invoiced and not reversed
+                if AppliedFee.objects.filter(
+                    account=account,
+                    fee=fee,
+                    is_reversed=False
+                ).exists():
+                    continue
+
+                Invoice.objects.create(
+                    account=account,
+                    fee=fee,
+                    amount=amount,
+                    description=description
+                )
+                count += 1
+
+        messages.success(request, f"{count} invoice(s) generated successfully.")
+        return redirect("admin:index")
+
+    return render(request, "fees/bulk-invoice.html", {
+        "form": form,
+        "fees": form.fields['fee'].queryset
+    })
+

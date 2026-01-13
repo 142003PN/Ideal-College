@@ -27,8 +27,15 @@ def invoice_post_save(sender, instance, created, **kwargs):
         return
 
     account = instance.account
-    fee = instance.fee
     amount = instance.amount
+
+    # Description logic
+    if instance.description:
+        description = instance.description
+    elif instance.fee:
+        description = f'{instance.fee.fee_type} Fee'
+    else:
+        description = 'Manual Charge'
 
     with transaction.atomic():
         ledger, ledger_created = LedgerEntry.objects.get_or_create(
@@ -37,19 +44,21 @@ def invoice_post_save(sender, instance, created, **kwargs):
                 'account': account,
                 'entry_type': LedgerEntry.EntryType.DEBIT,
                 'amount': amount,
-                'description': f'{fee.fee_type} Fee (Invoice #{instance.id})'
+                'description': description
             }
         )
 
-        # Only touch balance & applied fee ONCE
         if ledger_created:
             account.balance += amount
             account.save(update_fields=['balance'])
 
-            AppliedFee.objects.get_or_create(
-                account=account,
-                fee=fee
-            )
+            # Only create AppliedFee when fee exists
+            if instance.fee:
+                AppliedFee.objects.get_or_create(
+                    account=account,
+                    fee=instance.fee
+                )
+
 
 # PAYMENT SIGNAL → CREDIT ACCOUNT
 @receiver(post_save, sender=Payment)
@@ -95,19 +104,6 @@ def ledger_reversal_post_save(sender, instance, created, **kwargs):
         account.save(update_fields=['balance'])
 
 #Invoice a student automatically when the submmited courses are approved
-@receiver(pre_save, sender=Registration)
-def registration_pre_save(sender, instance, **kwargs):
-    if instance.pk:
-        instance._previous_status = (
-            Registration.objects
-            .filter(pk=instance.pk)
-            .values_list('status', flat=True)
-            .first()
-        )
-    else:
-        instance._previous_status = None
-
-
 @receiver(post_save, sender=Registration)
 def registration_post_save(sender, instance, created, **kwargs):
     previous_status = getattr(instance, '_previous_status', None)
@@ -116,33 +112,34 @@ def registration_post_save(sender, instance, created, **kwargs):
     if previous_status == instance.status or instance.status != 'Approved':
         return
 
-    account, _ = StudentAccount.objects.get_or_create(
-        student=instance.student_id
+    student = instance.student_id
+    year = instance.year_of_study
+    program = student.profile.program
+
+    # Get or create account
+    account, _ = StudentAccount.objects.get_or_create(student=student)
+
+    # Fetch applicable tuition fees
+    tuition_fees = Fee.objects.filter(
+        fee_type=Fee.FeeType.TUITION,
+        Programs=program,
+        year_of_study=year
     )
 
-    registration_fee = Fee.objects.filter(
-        fee_type='Registration'
-    ).first()
-    if not registration_fee:
-        return
-
-    amount = registration_fee.amount
-
     with transaction.atomic():
-        # Invoice is the source of truth
-        invoice, invoice_created = Invoice.objects.get_or_create(
-            account=account,
-            fee=registration_fee,
-            defaults={'amount': amount}
-        )
+        for fee in tuition_fees:
 
-        # Ledger entry must be unique per invoice
-        LedgerEntry.objects.get_or_create(
-            account=account,
-            invoice=invoice,
-            entry_type=LedgerEntry.EntryType.DEBIT,
-            defaults={
-                'amount': amount,
-                'description': f'{registration_fee.fee_type} Fee (Invoice #{invoice.id})'
-            }
-        )
+            # Prevent duplicate unless reversed
+            if AppliedFee.objects.filter(
+                account=account,
+                fee=fee,
+                is_reversed=False
+            ).exists():
+                continue
+
+            # Create invoice ONLY (ledger + balance handled by signals)
+            Invoice.objects.create(
+                account=account,
+                fee=fee,
+                amount=fee.amount
+            )

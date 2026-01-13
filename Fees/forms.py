@@ -92,3 +92,54 @@ class PaymentForm(forms.ModelForm):
             'payment_method':forms.TextInput(attrs={'class':'form-control', 'maxlength':'10'}),
             'reference':forms.TextInput(attrs={'class':'form-control', 'maxlength':'20'})
         }
+
+#bulk invoice form
+class BulkInvoiceForm(forms.ModelForm):
+    program = forms.ModelChoiceField(
+        queryset=Programs.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_program'}),
+        empty_label='All Programs'
+    )
+
+    year_of_study = forms.ModelChoiceField(
+        queryset=YearOfStudy.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_year_of_study'}),
+        empty_label='All Years'
+    )
+
+    fee = forms.ModelChoiceField(
+        queryset=Fee.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_fee'})
+    )
+
+    class Meta:
+        model = Invoice
+        fields = ['fee', 'amount', 'description']   # ONLY model fields
+
+        widgets = {
+            'amount': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'step': '0.01',
+                'min': '0',
+                'id': 'id_amount'
+            }),
+            'description': forms.TextInput(attrs={
+                'class':'form-control',
+                'step':'0.01',
+                'min':'0', 
+                'id': 'id_description'          
+                  })
+
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['fee'].label_from_instance = (
+            lambda fee: f'{fee.fee_type} - K{fee.amount}'
+        )
+
+        self.fields['amount'].required = True

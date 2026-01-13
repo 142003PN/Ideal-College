@@ -21,6 +21,7 @@ class Fee(models.Model):
         REGISTRATION = 'Registration'
         EXAM = 'Examination'
         LAB = 'Laboratory'
+        NCZ = 'NCZ'
 
     class Scope(models.TextChoices):
         ALL = 'ALL', 'All Students'
@@ -49,7 +50,8 @@ class Fee(models.Model):
 # INVOICE (CHARGE DOCUMENT)
 class Invoice(models.Model):
     account = models.ForeignKey(StudentAccount, on_delete=models.CASCADE)
-    fee = models.ForeignKey(Fee, on_delete=models.CASCADE)
+    fee = models.ForeignKey(Fee, null=True, blank=True, on_delete=models.SET_NULL)
+    description = models.CharField(max_length=30, null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     issued_on = models.DateTimeField(auto_now_add=True)
 
@@ -104,7 +106,7 @@ class LedgerEntry(models.Model):
 # APPLIED FEES (ANTI-DUPLICATE)
 class AppliedFee(models.Model):
     account = models.ForeignKey(StudentAccount, on_delete=models.CASCADE)
-    fee = models.ForeignKey(Fee, on_delete=models.CASCADE)
+    fee = models.ForeignKey(Fee, on_delete=models.SET_NULL, null=True, blank=True)
     applied_on = models.DateTimeField(auto_now_add=True)
 
     is_reversed = models.BooleanField(default=False)

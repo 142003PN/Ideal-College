@@ -224,6 +224,9 @@
                   </li>
                 {% elif request.user.staff_profile.position == "Accountant" %}
                   <li>
+                    <a href="{% url "Fees:bulk-invoice" %}"><i class="fas fa-money-check-alt"></i><span>Bulk Invoice</span></a>
+                  </li>
+                  <li>
                     <a href="{% url "Fees:payment-history" %}"><i class="fas fa-money-check-alt"></i><span>Payments</span></a>
                   </li>
                   <li>
@@ -279,6 +282,9 @@
                 {% if request.user.registration %}
                 <li>
                   <a href="{% url "Registration:print_slip" request.user.id %}"><i class="fas fa-book"></i> <span>Confirmation Slip</span></a>
+                </li>
+                <li>
+                  <a href="{% url "Fees:student-ledger" request.user.id %}"><i class="fas fa-book"></i> <span>Financial Slip</span></a>
                 </li>
                 {% endif %}
                 <li>
