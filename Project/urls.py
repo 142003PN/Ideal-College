@@ -22,4 +22,9 @@ urlpatterns = [
     path('registration/', include('Registration.urls')),
     path('results/', include('Results.urls')),
     path('fees/', include('Fees.urls')),
+    path('accounts/', include('Accounts.urls')),
     ]
+
+#error handlers
+handler404 = 'Project.views.error_404'
+handler500 = 'Project.views.error_500'

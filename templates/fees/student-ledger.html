@@ -18,14 +18,11 @@
             <a href="{% url "Fees:ledger-pdf" account.id %}" class="btn btn-outline-primary mr-2"
                 ><i class="fas fa-download"></i> Download</a
             >
-            <a href="add-fees-collection.html" class="btn btn-primary"
-                ><i class="fas fa-plus"></i
-            ></a>
             </div>
         </div>
         </div>
         <h2>Financial Statement</h2>
-        <p><strong>Student:</strong> {{ account.student }}</p>
+        <p><strong>Student:</strong>{{student_id.first_name}} {{student_id.last_name}}({{ student_id.id  }})</p>
         <p><strong>Current Balance:</strong> K{{ final_balance }}</p>
         <div class="row">
         <div class="col-sm-12">
@@ -41,7 +38,10 @@
                                 <th>Debit (K)</th>
                                 <th>Credit (K)</th>
                                 <th>Running Balance (K)</th>
+                                {% if request.user.staff_profile.position == "Accountant" %}
                                 <th>Reversal</th>
+                                {% endif %}
+
                             </tr>
                         </thead>
                         <tbody>
@@ -52,6 +52,7 @@
                                 <td>{% if row.debit %}K{{ row.debit }}{% endif %}</td>
                                 <td>{% if row.credit %}K{{ row.credit }}{% endif %}</td>
                                 <td>K{{ row.balance }}</td>
+                                {% if request.user.staff_profile.position == "Accountant" %}
                                 <td>
                                     {% if row.is_reversal %}
                                         <span style="color:red;">Reversal</span>
@@ -59,6 +60,7 @@
                                         -
                                     {% endif %}
                                 </td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>

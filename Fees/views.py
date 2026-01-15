@@ -8,28 +8,43 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from django.http import HttpResponse
+from django.db import transaction
 # Create your views here.
+
+#---------------student accounts ---------------
+def student_acoounts(request):
+    if request.user.staff_profile.position == 'Accountant':
+        accounts = get_object_or_404(StudentAccount)
+    return render(request, 'fees/accounts.html')
+
+#------------ADD FEES---------
 def add_fees(request):
-    if request.method =='POST':
-        form = FeesForm(request.POST)
-        if form.is_valid():
-            form.save(commit=False)
-            form.save()
-            messages.success(request, 'Fee added successfully.')
+    if request.user.staff_profile.position == "Accountant":
+        if request.method =='POST':
+            form = FeesForm(request.POST)
+            if form.is_valid():
+                form.save(commit=False)
+                form.save()
+                messages.success(request, 'Fee added successfully.')
+            else:
+                pass
         else:
-            pass
-    else:
-        form = FeesForm()
+            form = FeesForm()
     return render(request, 'fees/add-fees.html', {'form':form})
 
+#----------FETCH FEES -------------------
 def fees(request):
     if request.user.role != 'STUDENT':
         fees = Fee.objects.all()
     return render(request, 'fees/fees.html', {'fees':fees})
 
-#invoice view
-from django.db import transaction
+#------------------VIEW INVOICES -------------------
+def invoices(request):
+    if request.user.staff_profile.position == "Accountant":
+        invoices = Invoice.objects.all().order_by('-id')
+    return render(request, 'fees/invoices.html', {'invoices':invoices})
 
+#-----------ADD INVOICE -------------------
 def add_invoice(request):
     if request.user.staff_profile.position == "Accountant":
         if request.method == 'POST':
@@ -39,17 +54,66 @@ def add_invoice(request):
                     invoice = form.save()
                     messages.success(
                         request,
-                        f'Invoice #{invoice.id} created successfully.'
+                        f'Invoice created successfully.'
                     )
         else:
             form = InvoiceForm()
-    #return error404 if not accountant
     else:
         return redirect('error404')
 
     return render(request, 'fees/add-invoice.html', {'form': form})
 
-#view ledgers
+#----------------INVOICE MANY OR A GROUP OF STUDENTS -------------------
+def bulk_invoice_view(request):
+    if request.user.staff_profile.position != "Accountant":
+        return redirect('error404')
+    form = BulkInvoiceForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        program = form.cleaned_data['program']
+        year = form.cleaned_data['year_of_study']
+        fee = form.cleaned_data['fee']
+        amount = form.cleaned_data['amount']
+        description = form.cleaned_data['description']
+
+        students = Student.objects.select_related('profile')
+
+        if program:
+            students = students.filter(profile__program=program)
+
+        if year:
+            students = students.filter(profile__year_of_study=year)
+
+        count = 0
+
+        with transaction.atomic():
+            for student in students:
+                account, _ = StudentAccount.objects.get_or_create(student=student)
+
+                # Skip if already invoiced and not reversed
+                if AppliedFee.objects.filter(
+                    account=account,
+                    fee=fee,
+                    is_reversed=False
+                ).exists():
+                    continue
+
+                Invoice.objects.create(
+                    account=account,
+                    fee=fee,
+                    amount=amount,
+                    description=description
+                )
+                count += 1
+
+        messages.success(request, f"{count} invoice(s) generated successfully.")
+
+    return render(request, "fees/bulk-invoice.html", {
+        "form": form,
+        "fees": form.fields['fee'].queryset
+    })
+
+#---------------------VIEW LEDGER ENTRIES--------------
 def ledger(request):
     if request.user.staff_profile.position == "Accountant":
         ledgers = LedgerEntry.objects.all().order_by('-id')
@@ -66,44 +130,47 @@ def ledger(request):
         return redirect('error404')
     return render(request, 'fees/ledger.html', context)
 
-#reverse transaction
+#---------------REVERSE TRANSACTION ---------------
 def reverse_transaction_view(request, ledger_id):
-    entry = get_object_or_404(LedgerEntry, id=ledger_id)
+    if request.user.staff_profile.position == "Accountant":
+        entry = get_object_or_404(LedgerEntry, id=ledger_id)
 
-    # Block double reversal
-    if entry.is_reversal:
-        messages.error(request, "This entry is already a reversal.")
-        return redirect('Fees:ledger')
+        # Block double reversal
+        if entry.is_reversal:
+            messages.error(request, "This entry is already a reversal.")
+            return redirect('Fees:ledger')
 
-    if LedgerEntry.objects.filter(reversed_entry=entry).exists():
-        messages.error(request, "This transaction has already been reversed.")
-        return redirect('Fees:ledger')
+        if LedgerEntry.objects.filter(reversed_entry=entry).exists():
+            messages.error(request, "This transaction has already been reversed.")
+            return redirect('Fees:ledger')
 
-    with transaction.atomic():
-        # Create reversal entry
-        reversal = LedgerEntry.objects.create(
-            account=entry.account,
-            entry_type=(
-                LedgerEntry.EntryType.CREDIT
-                if entry.entry_type == LedgerEntry.EntryType.DEBIT
-                else LedgerEntry.EntryType.DEBIT
-            ),
-            amount=entry.amount,
-            description=f"Reversal of transaction #{entry.id}",
-            is_reversal=True,
-            reversed_entry=entry
-        )
+        with transaction.atomic():
+            # Create reversal entry
+            reversal = LedgerEntry.objects.create(
+                account=entry.account,
+                entry_type=(
+                    LedgerEntry.EntryType.CREDIT
+                    if entry.entry_type == LedgerEntry.EntryType.DEBIT
+                    else LedgerEntry.EntryType.DEBIT
+                ),
+                amount=entry.amount,
+                description=f"Reversal of transaction #{entry.id}",
+                is_reversal=True,
+                reversed_entry=entry
+            )
 
-        # Reverse AppliedFee if this was a fee invoice
-        AppliedFee.objects.filter(
-            account=entry.account,
-            is_reversed=False
-        ).update(is_reversed=True)
+            # Reverse AppliedFee if this was a fee invoice
+            AppliedFee.objects.filter(
+                account=entry.account,
+                is_reversed=False
+            ).update(is_reversed=True)
 
-    messages.success(request, "Transaction reversed successfully.")
+        messages.success(request, "Transaction reversed successfully.")
+    else:
+        return redirect('error404')
     return redirect('Fees:ledger')
 
-#payment
+#-----------------ADD PAYMENTS -------------------------
 def add_payment(request):
     if request.user.staff_profile.position == "Accountant":
         if request.method == 'POST':
@@ -116,23 +183,18 @@ def add_payment(request):
             form = PaymentForm()
     return render(request, 'Fees/add-payment.html', {'form':form})
 
-#recent payments
-def recent_payments(request):
-    if request.user.staff_profile.position == "Accountant":
-        payments = Payment.objects.all().order_by('-id')[:5]
-    return render(request, 'fees/recent-payments.html', {'payments':payments})
-
-#view payment history
+#-----------------RECENT PAYMENTS-----------------
 def payment_history(request):
     if request.user.staff_profile.position == "Accountant":
         payments = Payment.objects.all().order_by('-id')
         students = Student.objects.all()
     return render(request, 'fees/payment-history.html', {'payments':payments, 'students':students})
 
-#view student fees ledger
+#-------------------VIEW STUDENT LEDGER ---------------------
 from django.shortcuts import render, get_object_or_404
 def student_fees_ledger(request, account_id):
     account = get_object_or_404(StudentAccount, id=account_id)
+    student_id = get_object_or_404(Student, id=account_id)
 
     entries = LedgerEntry.objects.filter(
         account=account
@@ -163,13 +225,13 @@ def student_fees_ledger(request, account_id):
     context = {
         'account': account,
         'statement': statement,
-        'final_balance': running_balance
+        'final_balance': running_balance,
+        'student_id':student_id
     }
 
     return render(request, 'fees/student-ledger.html', context)
 
-#print student fees ledger
-
+#------------------PRINT STUDENT LEDGER ---------
 def student_statement_pdf_view(request, account_id):
     account = get_object_or_404(StudentAccount, id=account_id)
     entries = LedgerEntry.objects.filter(account=account).order_by('created_at')
@@ -223,53 +285,3 @@ def student_statement_pdf_view(request, account_id):
 
     doc.build(elements)
     return response
-
-#invoice many students
-def bulk_invoice_view(request):
-    form = BulkInvoiceForm(request.POST or None)
-
-    if request.method == "POST" and form.is_valid():
-        program = form.cleaned_data['program']
-        year = form.cleaned_data['year_of_study']
-        fee = form.cleaned_data['fee']
-        amount = form.cleaned_data['amount']
-        description = form.cleaned_data['description']
-
-        students = Student.objects.select_related('profile')
-
-        if program:
-            students = students.filter(profile__program=program)
-
-        if year:
-            students = students.filter(profile__year_of_study=year)
-
-        count = 0
-
-        with transaction.atomic():
-            for student in students:
-                account, _ = StudentAccount.objects.get_or_create(student=student)
-
-                # Skip if already invoiced and not reversed
-                if AppliedFee.objects.filter(
-                    account=account,
-                    fee=fee,
-                    is_reversed=False
-                ).exists():
-                    continue
-
-                Invoice.objects.create(
-                    account=account,
-                    fee=fee,
-                    amount=amount,
-                    description=description
-                )
-                count += 1
-
-        messages.success(request, f"{count} invoice(s) generated successfully.")
-        return redirect("admin:index")
-
-    return render(request, "fees/bulk-invoice.html", {
-        "form": form,
-        "fees": form.fields['fee'].queryset
-    })
-

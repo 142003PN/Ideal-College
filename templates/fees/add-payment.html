@@ -52,6 +52,7 @@
           icon: "error",
           title: "Error",
           text: "{{ message|escapejs }} ",
+          didClose: () => { window.location.href = "{% url 'Fees:payment-history' %}"; },
           confirmButtonText: "OK",
         });
       });

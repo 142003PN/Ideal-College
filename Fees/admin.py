@@ -25,6 +25,9 @@ class FeeAdmin(admin.ModelAdmin):
     list_display = ('fee_type', 'amount', 'scope', 'Programs')
     list_filter = ('fee_type', 'scope', 'Programs')
 
+    def has_add_permission(self, request):
+        return True
+
 
 # INVOICE ADMIN (READ ONLY)
 @admin.register(Invoice)
@@ -36,7 +39,7 @@ class InvoiceAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return True
 
 
 # PAYMENT ADMIN
@@ -44,6 +47,9 @@ class InvoiceAdmin(admin.ModelAdmin):
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('account', 'amount', 'payment_method', 'reference', 'paid_on')
     readonly_fields = ('paid_on',)
+
+    def has_delete_permission(self, request, obj = ...):
+        return True
 
 
 # LEDGER ADMIN WITH REVERSAL ACTION
@@ -74,6 +80,8 @@ class LedgerEntryAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
+    def has_delete_permission(self, request, obj = ...):
+        return True
     def has_change_permission(self, request, obj=None):
         return False
 
@@ -120,4 +128,4 @@ class AppliedFeeAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return True

@@ -198,10 +198,12 @@
                 </ul>
               </li>
               {% elif request.user.role == 'STAFF'  %}
-              <li>
-                <a href="{% url "Staff:dashboard" %}"><i class="fas fa-dashboard"></i> <span>Staff Dashboard</span></a>
-              </li>
-              <li>
+                {% if request.user.staff_profile.position == 'Accountant' %}
+                <li>
+                  <a href="{% url "Accounts:dashboard" %}"><i class="fas fa-dashboard"></i> <span>Dashboard</span></a>
+                </li>
+                {% endif %}
+                <li>
                 <a href="{% url "Staff:details" request.user.id %}"><i class="fas fa-user"></i><span>Profile</span></a>
               </li>
                 {% if request.user.staff_profile.position == "Lecturer" %}
@@ -224,20 +226,14 @@
                   </li>
                 {% elif request.user.staff_profile.position == "Accountant" %}
                   <li>
-                    <a href="{% url "Fees:bulk-invoice" %}"><i class="fas fa-money-check-alt"></i><span>Bulk Invoice</span></a>
-                  </li>
-                  <li>
-                    <a href="{% url "Fees:payment-history" %}"><i class="fas fa-money-check-alt"></i><span>Payments</span></a>
-                  </li>
-                  <li>
-                    <a href="{% url "Fees:add-payment" %}"><i class="fas fa-money-check-alt"></i><span>Add Payment</span></a>
+                    <a href="{% url "Fees:bulk-invoice" %}"><i class="fas fa-file-contract"></i><span>Bulk Invoice</span></a>
                   </li>
                   <li>
                     <a href="{% url "Fees:ledger" %}"><i class="fas fa-money-check-alt"></i><span>Ledger Entries</span></a>
                   </li>
                   <li class="submenu">
                     <a href="#"
-                      ><i class="fas fa-book-reader"></i> <span>Accounts</span>
+                      ><i class="fas fa-coins"></i> <span>Fees</span>
                       <span class="menu-arrow"></span
                     ></a>
                     <ul>
@@ -245,6 +241,29 @@
                       <li>
                         <a href="{% url "Fees:add" %}">Add Fee</a>
                       </li>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="submenu">
+                    <a href="#"
+                      ><i class="fas fa-credit-card"></i> <span>Payments</span>
+                      <span class="menu-arrow"></span
+                    ></a>
+                    <ul>
+                      <li><a href="{% url "Fees:payment-history" %}">Payments</a></li>
+                      <li>
+                        <a href="{% url "Fees:add-payment" %}">Add Payments</a>
+                      </li>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="submenu">
+                    <a href="#"
+                      ><i class="fas fa-file-invoice"></i> <span>Invoices</span>
+                      <span class="menu-arrow"></span
+                    ></a>
+                    <ul>
+                      <li><a href="{% url "Fees:invoices" %}">Invoices</a></li>
                       <li>
                         <a href="{% url "Fees:add-invoice" %}">Add Invoice</a>
                       </li>

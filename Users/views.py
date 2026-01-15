@@ -48,6 +48,8 @@ def login_view(request):
                 elif request.user.role == 'STAFF':
                     if request.user.staff_profile.position =='HOD':
                         return redirect('Departments:dashboard')
+                    elif request.user.staff_profile.position =='Accountant':
+                        return redirect('Accounts:dashboard')
                     else:
                         return redirect('Staff:dashboard')
                 else:

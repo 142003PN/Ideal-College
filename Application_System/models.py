@@ -64,7 +64,7 @@ class Next_of_Kin(models.Model):
 #--------Subject Results--------------------
 class CertificateResults(models.Model):
     admission_id = models.ForeignKey(General_Information, on_delete=models.CASCADE, related_name='results')
-    subject_name = models.CharField(max_length=10)
+    subject_name = models.CharField(max_length=30)
     grade=models.PositiveIntegerField()
 
     def __str__(self):

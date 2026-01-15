@@ -26,7 +26,7 @@
                 icon: "success",
                 title: "Success",
                 text: "{{ message|escapejs }}",
-                didClose: () => { window.location.href = "{% url 'Fees:fees' %}"; },
+                didClose: () => { window.location.href = "{% url 'Fees:invoices' %}"; },
                 confirmButtonText: "OK",
                 });
             });
@@ -38,6 +38,7 @@
             icon: "error",
             title: "Error",
             text: "{{ message|escapejs }} ",
+            didClose: () => { window.location.href = "{% url 'Fees:invoices' %}"; },
             confirmButtonText: "OK",
             });
         });
@@ -67,7 +68,7 @@
                 <div class="row">
                     <div class="col-12">
                     <h5 class="form-title">
-                        <span>Fees Information</span>
+                        <span>Invoice Information</span>
                     </h5>
                     </div>
                     <div class="col-12 col-sm-6">

@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'Academics',
     'Results',
     'Fees',
+    'Accounts',
 ]
 
 SITE_URL = "https://sis-ichas.com"
@@ -89,12 +90,8 @@ WSGI_APPLICATION = 'Project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ideal_college',
-        'USER': 'root',
-        'PASSWORD': '22010146',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

@@ -9,6 +9,7 @@ from Academics.models import SessionYear
 import datetime
 from django.template.loader import render_to_string
 from django.http import *
+from Fees.views import student_fees_ledger
 
 
 import tempfile
@@ -110,6 +111,8 @@ def print_confirmation_slip(request, student_id):
             registration = Registration.objects.get(student_id=student_id, session_year=session_year)
             courses = registration.courses.all()
             today = datetime.date.today()
+            #add a student ledger to the financial system
+            
 
         context={'courses': courses, 'registration': registration,
                         'today': today, 'student_id': student_id}

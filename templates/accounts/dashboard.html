@@ -1,0 +1,116 @@
+{% extends "base.html" %} {% load static %}
+<title>{% block title %}Dashboard{% endblock %}</title>
+{% block content %}
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <div class="page-header">
+      <div class="row">
+        <div class="col-sm-12">
+          <h3 class="page-title">
+            Welcome {{request.user.first_name}} {{request.user.last_name}}
+          </h3>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="index.html">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">Accounts Dashboard</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!--Data Cards-->
+    <div class="data-cards mt-0 mb-3">
+        <div class="Data-visual" id="chart-1">
+          <div class="data-text">
+            <h1>{{invoice_count}}</h1>
+            <h2>Invoices</h2>
+          </div>
+          <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+        </div>
+        <div class="Data-visual" id="chart-2">
+            <div class="data-text">
+              <h1>K{{total_payments}}</h1>
+              <h2>Total Payments</h2>
+            </div>
+            <i class="fa fa-user-circle" aria-hidden="true"></i>
+        </div>
+        <div class="Data-visual" id="chart-3">
+            <div class="data-text">
+              <h1>{{course_count}}</h1>
+              <h2>Courses</h2>
+            </div>
+            <i class="fa fa-users" aria-hidden="true"></i>
+        </div>
+        <div class="Data-visual" id="chart-4">
+            <div class="data-text">
+              <h1>{{program_count}}</h1>
+              <h2>Programmes</h2>
+            </div>
+            <i class="fa fa-users" aria-hidden="true"></i>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 d-flex">
+        <div class="card flex-fill">
+          <div class="card-header">
+            <h5 class="card-title">Recent Payments</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover table-center">
+                <thead class="thead-light">
+                  <tr>
+                    <th class="text-nowrap">Student Id</th>
+                    <th>Method</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for payment in payments %}
+                  <tr>
+                    <td class="text-nowrap">{{payment.account.id}}</td>
+                    <td class="text-left">
+                      {{payment.payment_method}}
+                    </td>
+                    <td>{{payment.amount}}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 d-flex">
+        <div class="card flex-fill">
+          <div class="card-header">
+            <h5 class="card-title">Recent Invoices</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover table-center">
+                <thead class="thead-light">
+                  <tr>
+                    <th class="text-nowrap">Student Id</th>
+                    <th class="">Fee</th>
+                    <th class="">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for invoice in invoices %}
+                  <tr>
+                    <td class="text-nowrap">{{invoice.account.id}}</td>
+                    <td class="">{{invoice.fee}}</td>
+                    <td class="">{{invoice.amount}}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

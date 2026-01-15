@@ -26,6 +26,7 @@
           icon: "success",
           title: "Success",
           text: "{{ message|escapejs }} ",
+          didClose: () => { window.location.href = "{% url 'Fees:fees' %}"; },
           confirmButtonText: "OK",
         });
       });

@@ -13,6 +13,6 @@ urlpatterns = [
     path('payment-history', views.payment_history, name='payment-history'),
     path('student-ledger/<str:account_id>', views.student_fees_ledger, name='student-ledger'),
     path('student-ledger/<str:account_id>/pdf', views.student_statement_pdf_view, name='ledger-pdf'),
-    path('recent-payments', views.recent_payments, name='recent-payments'),
     path('bulk-invoice', views.bulk_invoice_view, name='bulk-invoice'),
+    path('invoices', views.invoices, name='invoices'),
 ]
