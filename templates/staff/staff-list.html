@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Staff List{% endblock %}
 {% block content %}
       <div class="page-wrapper">
@@ -50,7 +51,11 @@
                            <td>{{staff.id}}</td>
                            <td>
                               <h2 class="table-avatar">
+                                  {% if staff.staff_profile.profile_picture %}
                                  <a href="{% url "Staff:details" staff.id %}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ staff.staff_profile.profile_picture.url }}" alt="User Image"></a>
+                                  {% else %}
+                                 <a href="{% url "Staff:details" staff.id %}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{% static "img/default.png" %}" alt="User Image"></a>
+                                  {% endif %}
                                  <a href="{% url "Staff:details" staff.id %}">{{staff.first_name}} {{staff.last_name}}</a>
                               </h2>
                            </td>

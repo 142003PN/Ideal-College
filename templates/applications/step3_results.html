@@ -81,9 +81,9 @@
                             <a href="{% url 'Application:step2' %}" class="btn btn-secondary">
                                 Back
                             </a>
-                            <button type="submit" class="btn btn-primary"
-                                    onclick="if (subjects.length < 5) { alert('Please add at least 5 subjects'); return false; }">
-                                Next
+                           <button class="btn btn-primary" type="submit">
+                                <span id="btnText">Next</span>
+                                <span id="btnSpinner" class="spinner-border spinner-border-sm ms-2 d-none"role="status" aria-hidden="true"></span>
                             </button>
                         </div>
                     </form>

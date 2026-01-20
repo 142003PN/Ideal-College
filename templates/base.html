@@ -56,7 +56,11 @@
                   <img class="rounded-circle" src="{% static "img/default.png" %}" width="31" alt="{{ request.user.first_name}} {{request.user.last_name}}">
                   {% endif %}
                   {% elif request.user.role == 'STAFF' %}
-                  <img class="rounded-circle" src="{{ request.user.staff_profile.profile_picture.url }}" width="31" alt="{{ request.user.first_name}} {{request.user.last_name}}">
+                    {% if request.user.staff_profile.profile_picture %}
+                    <img class="rounded-circle" src="{{ request.user.staff_profile.profile_picture.url }}" width="31" alt="{{ request.user.first_name}} {{request.user.last_name}}">
+                    {% else %}
+                    <img class="rounded-circle" src="{% static "img/default.png" %}" width="31" alt="{{ request.user.first_name}} {{request.user.last_name}}">
+                    {% endif %}
                   {% else %}
                   <img class="rounded-circle" src="{% static "img/logo.png" %}" width="31" alt="{{ request.user.first_name}} {{request.user.last_name}}"
               /></span>
@@ -72,11 +76,13 @@
                   <img src=""{% static "img/logo.png" %}"" alt="User Image" class="avatar-img rounded-circle"/>
                   {% endif %}
                 {% elif request.user.role == 'STAFF' %}
-                <img src="{{ request.user.staff_profile.profile_picture.url }}" alt="User Image" class="avatar-img rounded-circle"/>
-                {% else %}
-                  <img src=""{% static "img/logo.png" %}"" alt="User Image" class="avatar-img rounded-circle"/>
-                {% endif %}
+                  {% if request.user.staff_profile.profile_picture %}
+                  <img src="{{ request.user.staff_profile.profile_picture.url }}" alt="User Image" class="avatar-img rounded-circle"/>
+                  {% else %}
+                    <img src="{% static "img/default.png" %}" alt="User Image" class="avatar-img rounded-circle"/>
+                  {% endif %}
                 </div>
+                {% endif %}
                 <div class="user-text">
                   <h6>{{ request.user.first_name}} {{request.user.last_name}}</h6>
                   <p class="text-muted mb-0">{{ request.user.role}}</p>

@@ -303,29 +303,27 @@
                             <th>TRANSACTION</th>
                             <th>DATE</th>
                             <th>ITEM</th>
-                            <th>TYPE</th>
-                            <th>DESCRIPTION</th>
                             <th>DEBIT</th>
                             <th>CREDIT</th>
                             <th>BALANCE</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for row in statement %}
                         <tr>
-                            <td><span class="transaction-id"></span></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>-</td>
-                            <td class="amount-right"></td>
-                            <td class="amount-right"></td>
-                            <td class="amount-right"></td>
+                            <td><span class="transaction-id">{{row.id}}</span></td>
+                            <td>{{row.date|date:"Y d m"}}</td>
+                            <td>{{row.description}}</td>
+                            <td>{% if row.debit %}K{{ row.debit }}{% endif %}</td>
+                            <td>{% if row.credit %}K{{ row.credit }}{% endif %}</td>
+                            <td>K{{ row.balance }}</td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
-
+        <h4 style='margin-top: 30px;'>PLEASE KEEP THIS DOCUMENT FOR FUTURE REFERENCE</h4>
         <button class="print-button" onclick="window.print()">Print Registration Slip</button>
     </div>
 </body>
