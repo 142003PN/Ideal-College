@@ -35,8 +35,8 @@ class SessionYear(models.Model):
 #semesters
 class Semester(models.Model):
     class SemesterChoices(models.TextChoices):
-        FIRST = 'first'
-        SECOND = 'second'
+        Semester_1 = 'semester_1'
+        Semester_2 = 'semester_2'
     semester_name=models.CharField(max_length=20, choices=SemesterChoices.choices, null=True, unique=True)
     date=models.DateTimeField(auto_now_add=True)
     added_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)

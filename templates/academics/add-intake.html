@@ -5,12 +5,12 @@
     <div class="page-header">
     <div class="row align-items-center">
         <div class="col">
-        <h3 class="page-title">Add Session Year</h3>
+        <h3 class="page-title">Add Intake</h3>
         <ul class="breadcrumb">
             <li class="breadcrumb-item">
-            <a href="{% url "Academics:session-year" %}">Session year</a>
+            <a href="{% url "Academics:intakes" %}">Intakes</a>
             </li>
-            <li class="breadcrumb-item active">Add Session Year</li>
+            <li class="breadcrumb-item active">Add Intake</li>
         </ul>
         </div>
     </div>
@@ -31,12 +31,12 @@
                         });
                     });
                     </script>
-                    {% elif 'warning' in message.tags%}
+                    {% elif 'error' in message.tags%}
                     <script>
                     document.addEventListener("DOMContentLoaded", function () {
                         Swal.fire({
-                        icon: "warning",
-                        title: "Warning",
+                        icon: "error",
+                        title: "Error",
                         text: "{{ message|escapejs }} ",
                         confirmButtonText: "OK",
                         });
@@ -50,25 +50,13 @@
             <div class="row">
                 <div class="col-12">
                 <h5 class="form-title">
-                    <span>Academic Year Information</span>
+                    <span>Intake Information</span>
                 </h5>
                 </div>
                 <div class="col-12 col-sm-6">
                     <div class="form-group">
-                        {{ form.year_title.label_tag}}
-                        {{ form.year_title }}
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6">
-                    <div class="form-group">
-                        {{ form.intake.label_tag}}
-                        {{ form.intake }}
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6">
-                    <div class="form-group">
-                        {{ form.is_current_year.label_tag}}
-                        {{ form.is_current_year }}
+                        <label for="intake_name">Intake Name</label>
+                        {{ form.intake_name }}
                     </div>
                 </div>
                 <div class="col-12">

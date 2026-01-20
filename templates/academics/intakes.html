@@ -1,0 +1,57 @@
+{% extends "base.html" %} 
+<title>{% block title %}Session Years{% endblock %}</title>
+{% block content %}
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Intakes</h3>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url "Admin:dashboard" %}">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">intakes</li>
+          </ul>
+        </div>
+        <div class="col-auto text-right float-right ml-auto">
+            <a href="{% url "Academics:add-intake" %}" class="btn btn-info"
+                >Add Intake
+            </a>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card card-table">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover table-center">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Intake ID</th>
+                    <th>Intake Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for intake in intakes %}
+                    <tr>
+                      <td>
+                        <div>{{intake.id}} </div>
+                      </td>
+                      <td >
+                        <div>{{intake.intake_name}}</div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
