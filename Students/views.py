@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import *
 from Registration.models import *
-from Courses.models import YearOfStudy
+from Academics.models import YearOfStudy
 from Programs.models import Programs
 from django.contrib import messages
 from django.http import *

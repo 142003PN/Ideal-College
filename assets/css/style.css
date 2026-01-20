@@ -252,7 +252,7 @@ table.table td h2 span {
     white-space: nowrap;
 }
 .table .thead-light th {
-    color: #495057;
+    color: #495057; 
     background-color: #f8f9fa;
     border-color: #eff2f7;
 }

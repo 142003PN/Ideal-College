@@ -3,7 +3,7 @@ from django.core.validators import FileExtensionValidator
 import datetime
 from django.core import validators
 from Students.models import Student, StudentProfile
-from Courses.models import YearOfStudy
+from Academics.models import YearOfStudy
 from Programs.models import Programs
 from django.db.models.signals import post_save
 from django.dispatch import receiver

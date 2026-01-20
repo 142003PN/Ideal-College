@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import Registration
-from Academics.models import SessionYear
-from Courses.models import Courses, YearOfStudy
+from Academics.models import *
+from Courses.models import Courses
 from Students.models import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -9,9 +9,7 @@ from Academics.models import SessionYear
 import datetime
 from django.template.loader import render_to_string
 from django.http import *
-from Fees.views import student_fees_ledger
-
-
+from Fees.models import *
 import tempfile
 import os
 
@@ -111,11 +109,45 @@ def print_confirmation_slip(request, student_id):
             registration = Registration.objects.get(student_id=student_id, session_year=session_year)
             courses = registration.courses.all()
             today = datetime.date.today()
+
             #add a student ledger to the financial system
+            account = get_object_or_404(StudentAccount, id=student_id)
+            student_id = get_object_or_404(Student, id=student_id)
+
+            entries = LedgerEntry.objects.filter(
+                account=account
+            ).order_by('created_at')
+
+            running_balance = 0
+            statement = []
+
+            for entry in entries:
+                if entry.entry_type == LedgerEntry.EntryType.DEBIT:
+                    running_balance += entry.amount
+                    debit = entry.amount
+                    credit = None
+                else:
+                    running_balance -= entry.amount
+                    debit = None
+                    credit = entry.amount
+                id = entry.id
+                statement.append({
+                    'date': entry.created_at,
+                    'description': entry.description,
+                    'debit': debit,
+                    'credit': credit,
+                    'balance': running_balance,
+                    'id':id,
+                    'is_reversal': entry.is_reversal
+                })
             
 
         context={'courses': courses, 'registration': registration,
-                        'today': today, 'student_id': student_id}
+                    'today': today, 'student_id': student_id,
+                    'account': account,
+                    'statement': statement,
+                    'final_balance': running_balance,
+                }
         
         return render(request, 'registration/confirmation-slip.html', context)
 #----------------Delete Registration-----------------
@@ -141,3 +173,4 @@ def delete_registration(request, pk):
     except Registration.DoesNotExist:
         messages.error(request, "Registration not found.")
         return redirect('Registration:recent_registrations')
+    

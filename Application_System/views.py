@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from Programs.models import Programs
 from Students.models import *
 from .models import *
-from Courses.models import YearOfStudy
+from Academics.models import *
 from django.contrib import messages
 import os
 from django.core.exceptions import ValidationError
@@ -30,6 +30,7 @@ def require_session_keys(request, keys, redirect_to):
 
 def step1_general_info(request):
     programs = Programs.objects.all()
+
     if request.method == 'POST':
         email = request.POST.get('email')
         NRC = request.POST.get('NRC')
@@ -43,46 +44,43 @@ def step1_general_info(request):
         elif not all(c.isdigit() or c == '/' for c in NRC):
             messages.error(request, "NRC should only contain numbers and forward slashes /")
         else:
-            # Save files temporarily
-            fs = FileSystemStorage(location=tempfile.gettempdir())
+            fs = FileSystemStorage()  # uses MEDIA_ROOT
+
             nrc_scan = request.FILES.get('NRC_scan')
             deposit_slip = request.FILES.get('deposit_slip')
             passport_photo = request.FILES.get('passport_photo')
 
-            #valisation
-            program_id = request.POST.get('program')
             request.session['general_info'] = {
                 'first_name': request.POST.get('first_name'),
                 'last_name': request.POST.get('last_name'),
                 'date_of_birth': request.POST.get('date_of_birth'),
-                'NRC': request.POST.get('NRC'),
+                'NRC': NRC,
                 'marital_status': request.POST.get('marital_status'),
                 'gender': request.POST.get('gender'),
                 'nationality': request.POST.get('nationality'),
                 'address': request.POST.get('address'),
                 'phone_number': request.POST.get('phone_number'),
-                'email': request.POST.get('email'),
+                'email': email,
                 'city_of_residence': request.POST.get('city_of_residence'),
                 'disability': request.POST.get('disability'),
                 'disability_desc': request.POST.get('disability_desc'),
-                'program_id': program_id,
+                'program_id': request.POST.get('program'),
+            }
 
-                # file paths
+            # ✅ store ONLY file paths (strings)
+            request.session['uploaded_files'] = {
                 'NRC_scan': fs.save(nrc_scan.name, nrc_scan) if nrc_scan else None,
-                'deposit_slip': fs.save(deposit_slip.name, deposit_slip),
-                'passport_photo': fs.save(passport_photo.name, passport_photo),
+                'deposit_slip': fs.save(deposit_slip.name, deposit_slip) if deposit_slip else None,
+                'passport_photo': fs.save(passport_photo.name, passport_photo) if passport_photo else None,
             }
 
             return redirect('Application:step2')
 
-        # LOAD EXISTING SESSION DATA
-    context = {
+    return render(request, 'applications/step1_general_info.html', {
         'progress': 25,
         'data': request.session.get('general_info', {}),
-        'programs':programs,
-    }
-
-    return render(request, 'applications/step1_general_info.html', context)
+        'programs': programs,
+    })
 
 
 def step2_next_of_kin(request):
@@ -103,10 +101,10 @@ def step2_next_of_kin(request):
         }
         return redirect('Application:step3')
 
-    context = {'progress': 50,
-    'data': request.session.get('next_of_kin', {})
+    context = {
+        'progress': 50,
+        'data': request.session.get('next_of_kin', {})
     }
-
     return render(request, 'applications/step2_next_of_kin.html', context)
 
 def step3_results(request):
@@ -117,6 +115,7 @@ def step3_results(request):
     )
     if guard:
         return guard
+
     if request.method == 'POST':
         subjects = request.POST.getlist('subject_name')
         grades = request.POST.getlist('grade')
@@ -144,14 +143,11 @@ def step4_certificate(request):
         return guard
 
     if request.method == 'POST':
-        fs = FileSystemStorage(location=tempfile.gettempdir())
-
         types = request.POST.getlist('certificate_type[]')
         names = request.POST.getlist('certificate_name[]')
         institutions = request.POST.getlist('institution_name[]')
         years = request.POST.getlist('year_of_completion[]')
         files = request.FILES.getlist('certificate[]')
-
 
         certificates = []
         for i in range(len(types)):
@@ -160,20 +156,23 @@ def step4_certificate(request):
                 'certificate_name': names[i],
                 'institution_name': institutions[i],
                 'year_of_completion': years[i],
-                'certificate': fs.save(files[i].name, files[i]) if files[i] else None,
+                'certificate': files[i] if i < len(files) else None,
             })
 
         request.session['certificates'] = certificates
 
         with transaction.atomic():
             gi_data = request.session['general_info']
+            uploaded_files = request.session['uploaded_files']
+
             program = Programs.objects.get(id=gi_data['program_id'])
+
             general = General_Information.objects.create(
-                **{k: v for k, v in gi_data.items() if k not in ['NRC_scan', 'deposit_slip', 'passport_photo', 'program_id']},
-                NRC_scan=gi_data['NRC_scan'],
-                deposit_slip=gi_data['deposit_slip'],
-                passport_photo=gi_data['passport_photo'],
+                **gi_data,
                 program=program,
+                NRC_scan=uploaded_files['NRC_scan'],
+                deposit_slip=uploaded_files['deposit_slip'],
+                passport_photo=uploaded_files['passport_photo'],
             )
 
             Next_of_Kin.objects.create(
@@ -201,6 +200,7 @@ def step4_certificate(request):
         return redirect('Application:success')
 
     return render(request, 'applications/step4_certificate.html', {'progress': 100})
+
 
 def success(request):
     return render(request, 'Applications/success.html')

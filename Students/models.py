@@ -1,7 +1,7 @@
 from django.db import models
 from Users.models import CustomUser, CustomUserManager
 from Programs.models import Programs
-from Courses.models import YearOfStudy
+from Academics.models import YearOfStudy
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -37,3 +37,5 @@ class StudentProfile(models.Model):
 
     def __str__(self):
         return f"{self.student_id.first_name}'s Profile"
+    
+    

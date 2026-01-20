@@ -1,7 +1,7 @@
 from django.db import models
 from Students.models import Student
-from Academics.models import SessionYear
-from Courses.models import Courses, YearOfStudy
+from Academics.models import *
+from Courses.models import Courses
 from django.db.models.signals import post_save, pre_save, m2m_changed
 import qrcode
 from io import BytesIO

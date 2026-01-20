@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from Registration.models import Registration
+from Fees.models import StudentAccount
 from .models import Results
 from Courses.models import Courses
 from Academics.models import SessionYear
@@ -66,6 +67,7 @@ def edit_results(request):
 
 @login_required(login_url='/auth/login')
 def view_results(request, student_id):
+    account = get_object_or_404(StudentAccount, id=student_id)
     grade='F'
     years=Registration.objects.filter(student_id=student_id)
     results=Results.objects.filter(student_id=student_id)

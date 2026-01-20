@@ -2,8 +2,8 @@ from django.db import models
 from decimal import Decimal
 from Students.models import Student
 from Programs.models import Programs
-from Courses.models import YearOfStudy
-
+from Academics.models import YearOfStudy
+import uuid
 
 # STUDENT ACCOUNT
 class StudentAccount(models.Model):
@@ -49,6 +49,7 @@ class Fee(models.Model):
 
 # INVOICE (CHARGE DOCUMENT)
 class Invoice(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     account = models.ForeignKey(StudentAccount, on_delete=models.CASCADE)
     fee = models.ForeignKey(Fee, null=True, blank=True, on_delete=models.SET_NULL)
     description = models.CharField(max_length=30, null=True, blank=True)
@@ -59,6 +60,7 @@ class Invoice(models.Model):
         return f'Invoice #{self.id} - K{self.amount}'
 # PAYMENT (RECEIPT)
 class Payment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     account = models.ForeignKey(StudentAccount, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=50)
@@ -73,7 +75,7 @@ class LedgerEntry(models.Model):
     class EntryType(models.TextChoices):
         DEBIT = 'DEBIT'
         CREDIT = 'CREDIT'
-
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     account = models.ForeignKey(
         StudentAccount,
         related_name='ledger_entries',
