@@ -80,6 +80,10 @@
                       <span class="info-span">{{ application.program}}</span>
                     </li>
                     <li>
+                      <span class="title-span">Intake : </span>
+                      <span class="info-span">{{ application.intake}}</span>
+                    </li>
+                    <li>
                       <span class="title-span">Mobile : </span>
                       <span class="info-span">{{ application.phone_number }}</span>
                     </li>
@@ -96,6 +100,14 @@
                       <span class="title-span">DOB : </span>
                       <span class="info-span">{{ application.date_of_birth }}</span>
                     </li>
+                    <li>
+                      <span class="title-span">Disability : </span>
+                      <span class="info-span">{{ application.disability }}</span>
+                    </li>
+                    <li>
+                      <span class="title-span">Disability Description : </span>
+                      <span class="info-span">{{ application.disability_desc }}</span>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -111,7 +123,12 @@
                     </li>
                     <li>
                       <span class="title-span">NRC :     </span>
-                      <span class="info-span"><a href="{{application.NRC_scan.url}}">NRC</a></span>
+                      <span class="info-span"><a href="{{application.NRC_scan.url}}">Click here to view NRC</a></span>
+                    </li>
+                    <!--Deposit Slip -->
+                    <li>
+                      <span class="title-span">Deposit Slip :     </span>
+                      <span class="info-span"><a href="{{application.deposit_slip.url}}">Click here to view Deposit Slip</a></span>
                     </li>
                     <div class="col-12">
                         <h5 class="form-title text-dark"><span style="color: #000; font-weight: 700; font-size: 1.5rem;">Next of Kin Information</span></h5>

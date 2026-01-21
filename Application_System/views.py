@@ -30,7 +30,7 @@ def require_session_keys(request, keys, redirect_to):
 
 def step1_general_info(request):
     programs = Programs.objects.all()
-
+    intakes = Intake.objects.all()
     if request.method == 'POST':
         email = request.POST.get('email')
         NRC = request.POST.get('NRC')
@@ -65,6 +65,7 @@ def step1_general_info(request):
                 'disability': request.POST.get('disability'),
                 'disability_desc': request.POST.get('disability_desc'),
                 'program_id': request.POST.get('program'),
+                'intake_id': request.POST.get('intake'),
             }
 
             # ✅ store ONLY file paths (strings)
@@ -80,6 +81,7 @@ def step1_general_info(request):
         'progress': 25,
         'data': request.session.get('general_info', {}),
         'programs': programs,
+        'intakes': intakes
     })
 
 

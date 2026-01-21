@@ -3,7 +3,7 @@ from django.core.validators import FileExtensionValidator
 import datetime
 from django.core import validators
 from Students.models import Student, StudentProfile
-from Academics.models import YearOfStudy
+from Academics.models import YearOfStudy, Intake, SessionYear
 from Programs.models import Programs
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -35,6 +35,7 @@ class General_Information(models.Model):
     marital_status = models.CharField(max_length=30, null=True, blank=True)
     gender = models.CharField(max_length=10, choices=GenderChoices.choices, null=True, blank=True)
     nationality = models.CharField(max_length=50)
+    intake = models.ForeignKey(Intake, on_delete=models.SET_NULL, null=True, blank=True)
     #contact details
     address = models.TextField(null=True, blank=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
@@ -105,38 +106,71 @@ def create_application_status(sender, instance, created, **kwargs):
     if created:
         Application_Status.objects.create(application=instance)
 
-# Signal to create Student and StudentProfile upon application approval  
+from datetime import datetime
+from django.db.models import Max
+
 @receiver(post_save, sender=Application_Status)
 def create_student_on_approval(sender, instance, created, **kwargs):
-    # Only act when application status is approved
     if instance.status != 'APPROVED':
         return
+
     app = instance.application
+
     try:
-        # Create or get Student using the unique email from General_Information.
-        password = make_password('Pass123')  # Default password; in real applications, ensure to hash and handle securely.
-        student, student_created = Student.objects.get_or_create(
+        # ===== GENERATE STUDENT ID =====
+        intake_obj = app.intake
+        intake = intake_obj.intake_name if intake_obj else 'unknown'
+
+        year = datetime.now().year
+
+        if intake.lower() == 'january':
+            intake_code = '01'
+        elif intake.lower() == 'july':
+            intake_code = '02'
+        else:
+            intake_code = '00'
+
+        prefix = f"{year}{intake_code}01"
+
+        last_student = Student.objects.filter(id__startswith=prefix).order_by('-id').first()
+
+        if last_student:
+            last_serial = int(str(last_student.id)[-2:])
+            new_serial = last_serial + 1
+        else:
+            new_serial = 1
+
+        serial = str(new_serial).zfill(2)
+        student_id = f"{prefix}{serial}"
+
+        # ===== CREATE STUDENT =====
+        student, _ = Student.objects.update_or_create(
             email=app.email,
             defaults={
+                'id': student_id,
                 'first_name': app.first_name,
                 'last_name': app.last_name,
                 'NRC': app.NRC,
-                'password': password, # In a real application, hash the password properly.
+                'password': (
+                    'pbkdf2_sha256$1000000$9OIhdL3lzqkLj3EflnZvAX$'
+                    'aAmj8j+gYKa+z9iI3b/ogjL5RRWTJIVUZzvweQeINQ8='
+                ),
             }
         )
-        # Create or get StudentProfile linked to the created/found Student.
-        profile, profile_created = StudentProfile.objects.get_or_create(
+
+        # ===== CREATE / UPDATE PROFILE =====
+        StudentProfile.objects.update_or_create(
             student_id=student,
             defaults={
                 'date_of_birth': app.date_of_birth,
                 'address': app.address,
                 'phone_number': app.phone_number,
                 'program': app.program,
-                #'year_of_study': app.year_of_study,
                 'gender': app.gender,
                 'profile_picture': app.passport_photo,
             }
         )
-    except Exception:
-        logger.exception("Error creating Student or StudentProfile for application id %s", app.admission_id)
 
+    except Exception as e:
+        logger.exception("PROFILE ERROR: %s", str(e))
+        raise e  # <-- REMOVE SILENT FAILING
