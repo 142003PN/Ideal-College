@@ -3,7 +3,7 @@
 {% block content %}
 {% load static %}
 <head>
-  <link rel="stylesheet" href="{% static "css/apply.css" %}">
+  <link rel="stylesheet" href="{% static "css/register.css" %}">
 </head>
 <div class="page-wrapper">
   <div class="content container-fluid">
@@ -13,7 +13,7 @@
           <h3 class="page-title">Register Your Courses</h3>
           <ul class="breadcrumb">
             <li class="breadcrumb-item">
-              <a href="holiday.html">Register</a>
+              <a href="{% url "Students:dashboard" %}">Dashboard</a>
             </li>
             <li class="breadcrumb-item active">Register</li>
           </ul>
@@ -23,110 +23,165 @@
 
     <div class="row">
       <div class="col-sm-12">
-        <div class="card">
-          {% for message in messages %}
-                {% if 'success' in message.tags %}
-                <script>
-                    // Show SweetAlert for success message
-                    document.addEventListener("DOMContentLoaded", function () {
-                        Swal.fire({
-                        icon: "success",
-                        title: "Success",
-                        text: "{{ message|escapejs }}",
-                        didClose: () => { window.location.href = "{% url 'Registration:register' %}"; },
-                        confirmButtonText: "OK",
-                        });
-                    });
-                </script>
-                {% else %}
-                <script >
-                    document.addEventListener("DOMContentLoaded", function () {
-                        Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: "{{ message|escapejs }} ",
-                        confirmButtonText: "OK",
-                        });
-                    });
-                </script>
-                {% endif %}
-            {% endfor %}
-          <div class="card-body">
-            <form method='post' action="" >
-              {% csrf_token %}
-              <div class="row">
-                <div class="col-12">
-                  <h5 class="form-title">
+        {% for message in messages %}
+              {% if 'success' in message.tags %}
+              <script>
+                  // Show SweetAlert for success message
+                  document.addEventListener("DOMContentLoaded", function () {
+                      Swal.fire({
+                      icon: "success",
+                      title: "Success",
+                      text: "{{ message|escapejs }}",
+                      didClose: () => { window.location.href = "{% url 'Registration:register' %}"; },
+                      confirmButtonText: "OK",
+                      });
+                  });
+              </script>
+              {% else %}
+              <script >
+                  document.addEventListener("DOMContentLoaded", function () {
+                      Swal.fire({
+                      icon: "error",
+                      title: "Error",
+                      text: "{{ message|escapejs }} ",
+                      confirmButtonText: "OK",
+                      });
+                  });
+              </script>
+              {% endif %}
+          {% endfor %}
+        <div class="card-body">
+          <form method='post' action="" >
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-12">
+                <h5 class="form-title">
 
-                    <span>Select Courses</span>
-                  </h5>
-                </div>
-                {% if already_registered  %}
-                  <div class="col-12">
-                    <p>You have already registered your courses for this semester.</p>
-                  </div>
-                {% else %}
-                <div class="col-12">
-                  {% for year in years %}
-                  <div class="accordion-item">
-                  <div class="accordion-header" onclick="toggleAccordion(this)">
-                    <span><input type="radio" name="year_of_study" value="{{year.id}}" required> {{year.year_title}}     {{student.program }}</span>
-                  </div>
-                  <div class="accordion-content">
-                    <div class="accordion-body table-responsive">
-                      <table class="form-table">
-                        <thead>
-                        <tr>
-                          <th style="width: 10%;">Select</th>
-                          <th style="width: 20%;">Code</th>
-                          <th style="width: 30%;">Code Description</th>
-                          <th style="width: 20%;">Year</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for course in courses %}
-                          {% if course.year_of_study.id == year.id %}
-                          <tr>
-                          <td><input type="checkbox" name="courses" value="{{course.id}}"></td>
-                          <td>{{course.course_code}}</td>
-                          <td>{{course.course_title}}</td>
-                          <td>{{course.year_of_study}}</td>
-                          </tr>
-                          {% endif %}
-                        {% endfor %}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  </div>
-                  {% endfor %}
-                </div>
-                <div class="col-12">
-                  <button class="btn btn-success" type="submit">Submit</button>
-                </div>
-                {% endif %}
+                  <span>Select Courses</span>
+                </h5>
               </div>
-            </form>
-          </div>
+              {% if already_registered  %}
+                <div class="col-12">
+                  <p>You have already registered your courses for this semester.</p>
+                </div>
+              {% else %}
+              <div class="accordion-wrapper">
+                {% for year in years %}
+                  <div class="accordion-item">
+
+                    <!-- YEAR HEADER -->
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                      <span>
+                        <input type="radio" name="year_of_study" value="{{ year.id }}" required>
+                        {{ year.year_title }}
+                      </span>
+                    </div>
+
+                    <!-- YEAR CONTENT (SEMESTERS) -->
+                    <div class="accordion-content">
+                      {% for semester in semesters %}
+                          <div class="semester-item">
+
+                            <!-- SEMESTER HEADER -->
+                            <div class="semester-header" onclick="toggleSemester(this)">
+                              <span>
+                                <input type="radio" name="semester" value="{{semester.id}}" required>
+                                {{semester.semester_name}}
+                              </span>
+                            </div>
+
+                            <!-- SEMESTER BODY (COURSES) -->
+                            <div class="semester-body table-responsive">
+                              <table class="form-table">
+                                <thead>
+                                    <tr>
+                                    <th class="text-nowrap">Select</th>
+                                    <th class="text-nowrap">Code</th>
+                                    <th class="text-nowrap">Description</th>
+                                    <th class="text-nowrap">Year</th>
+                                    <th class="text-nowrap">Semester</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+
+                                  {% for course in courses %}
+                                    {% if course.year_of_study.id == year.id and course.semester.id == semester.id %}
+                                    <tr>
+                                      <td><input type="checkbox" name="courses" value="{{course.id}}"></td>
+                                        <td class="text-nowrap">{{course.course_code}}</td>
+                                        <td class="text-nowrap">{{course.course_title}}</td>
+                                        <td class="text-nowrap">{{course.year_of_study}}</td>
+                                        <td class="text-nowrap">{{course.semester}}</td>
+                                    </tr>
+                                    {% endif %}
+                                  {% endfor %}
+
+                                </tbody>
+                              </table>
+                            </div>
+
+                          </div>
+                      {% endfor %}
+                    </div>
+
+                  </div>
+                {% endfor %}
+              </div>
+              <div class="col-12">
+                <button class="btn btn-success" type="submit">Submit</button>
+              </div>
+              {% endif %}
+            </div>
+          </form>
         </div>
       </div>
     </div>
   </div>
 </div>
 <script>
-    function toggleAccordion(header) {
-      const item = header.parentElement;
-      const isActive = item.classList.contains('active');
+document.addEventListener("DOMContentLoaded", function () {
 
-      // Close all other accordion items
-      document.querySelectorAll('.accordion-item').forEach(el => {
-        el.classList.remove('active');
-      });
-      
-      // Toggle current item
-      if (!isActive) {
-        item.classList.add('active');
-      }
-    }
-  </script>
+    // ==========================
+    // PARENT ACCORDION (YEAR)
+    // ==========================
+    window.toggleAccordion = function (header) {
+        const item = header.parentElement;
+        const isActive = item.classList.contains("active");
+
+        // Close all other year accordions
+        document.querySelectorAll(".accordion-item").forEach(el => {
+            if (el !== item) {
+                el.classList.remove("active");
+                // Close child semesters
+                el.querySelectorAll(".semester-item").forEach(sem => {
+                    sem.classList.remove("active");
+                });
+            }
+        });
+
+        // Toggle this year's accordion
+        item.classList.toggle("active", !isActive);
+    };
+
+    // ==========================
+    // CHILD ACCORDION (SEMESTER)
+    // ==========================
+    window.toggleSemester = function (header) {
+        const item = header.parentElement;
+        const parentAccordion = item.closest(".accordion-content");
+        const isActive = item.classList.contains("active");
+
+        // Close other semesters inside same year
+        parentAccordion.querySelectorAll(".semester-item").forEach(sem => {
+            if (sem !== item) {
+                sem.classList.remove("active");
+            }
+        });
+
+        // Toggle selected semester
+        item.classList.toggle("active", !isActive);
+    };
+
+});
+</script>
 {% endblock %}

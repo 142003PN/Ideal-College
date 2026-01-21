@@ -22,6 +22,7 @@ class Registration(models.Model):
     status=models.CharField(max_length=10, choices=STATUS.choices, default='Pending')
     year_of_study=models.ForeignKey(YearOfStudy, on_delete=models.SET_NULL, blank=True, null=True)
     session_year=models.ForeignKey(SessionYear,on_delete=models.CASCADE, related_name='session_years')
+    semester = models.ForeignKey(Semester, on_delete=models.SET_NULL, blank=True, null=True)
     registration_date=models.DateTimeField(auto_now_add=True)
     qr_code=models.ImageField(upload_to='registration_qr_codes', blank=True, null=True)
     fees_invoiced = models.BooleanField(default=False)

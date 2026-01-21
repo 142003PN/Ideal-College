@@ -19,7 +19,6 @@ import os
 #----------Register for Courses-------------
 @login_required(login_url='/auth/login')
 def register(request):
-    # Get the logged in user
     sid = request.user
     # get program for the logged in user
     program = request.user.profile.program
@@ -28,16 +27,28 @@ def register(request):
     # get courses related to the logged in user's programme of study
     years = YearOfStudy.objects.filter()
     courses = Courses.objects.filter(program_id=program)
-    session_year = SessionYear.objects.get(is_current_year=1)
+    #get student intake
+    intake = request.user.profile.intake
+    #get current session year
+    no_session_year = not SessionYear.objects.filter(intake=intake, is_current_year=1).exists() 
+    if no_session_year:
+        return messages.error(request, "Current session year not set for your intake. Please contact administration.")
+    session_year = SessionYear.objects.get(is_current_year=1, intake=intake)
+    #semesters
+    semesters = Semester.objects.all()
 
     # Prevent multiple registrations in the same session year
     already_registered = Registration.objects.filter(student_id=sid, session_year=session_year).exists()
     if already_registered and request.method == 'POST':
         messages.warning(request, "You have already registered for the current session year.")
     elif request.method == 'POST':
+        semester_id = request.POST.get('semester')
+        semester = Semester.objects.get(id=semester_id)
+
         year_of_study_id = request.POST.get('year_of_study')
         year_of_study = YearOfStudy.objects.get(id=year_of_study_id)
         selected_courses = request.POST.getlist('courses')
+
 
         if year_of_study is None:
             messages.error(request, "Please select a year of study")
@@ -47,6 +58,7 @@ def register(request):
                 student_id=sid,
                 year_of_study=year_of_study,
                 session_year=session_year,
+                semester=semester,
             )
             reg.courses.set(selected_courses)
             reg.save()
@@ -60,6 +72,8 @@ def register(request):
         'student': student,
         'program': program,
         'already_registered': already_registered,
+        'semesters': semesters,
+        'no_session_year': no_session_year
     }
     return render(request, 'registration/register.html', context)
 #----------------View Recent Registrations-----------------
@@ -98,10 +112,14 @@ def view_submitted_courses(request, pk):
             messages.error(request, "Registration not found.")
             return redirect('Registration:recent')
     return render(request, 'registration/view-registered.html')
-
+#----------------Print Confirmation Slip-----------------
 def print_confirmation_slip(request, student_id):
-        session_year = SessionYear.objects.get(is_current_year=1)
-        
+        intake = StudentProfile.objects.get(student_id=student_id).intake
+        session_year = SessionYear.objects.get(intake=intake, is_current_year=1)
+
+        no_session_year = not SessionYear.objects.filter(intake=intake, is_current_year=1).exists() 
+        if no_session_year:
+            return messages.error(request, "Current session year not set for your intake. Please contact administration.")
         not_registered = Registration.objects.filter(student_id=student_id, session_year=session_year).exists()
         if not not_registered:
             return HttpResponse('<h1>You are not registered for this academic year</h1>')
@@ -147,6 +165,7 @@ def print_confirmation_slip(request, student_id):
                     'account': account,
                     'statement': statement,
                     'final_balance': running_balance,
+                    'no_session_year': no_session_year
                 }
         
         return render(request, 'registration/confirmation-slip.html', context)
