@@ -5,8 +5,13 @@ import uuid
 
 #year of study
 class YearOfStudy(models.Model):
+    class YearChoices(models.TextChoices):
+        First_Year = 'First Year'
+        Second_Year = 'Second Year'
+        Third_Year = 'Third Year'
+        Fourth_Year = 'Fourth Year'
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    year_title = models.CharField(max_length=50)
+    year_title = models.CharField(max_length=50, choices=YearChoices.choices, null=True, unique=True)
 
     def __str__(self):
         return self.year_title

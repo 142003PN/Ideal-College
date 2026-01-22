@@ -42,6 +42,17 @@
                         });
                     });
                     </script>
+                    {% elif 'error' in message.tags %}
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "{{ message|escapejs }} ",
+                            confirmButtonText: "OK",
+                            });
+                        });
+                    </script>
                 {% endif %}
             {% endfor %}
         <div class="card-body">

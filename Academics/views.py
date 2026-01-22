@@ -5,8 +5,22 @@ from .forms import SemesterForm, SessionYearForm, YearOfStudyForm, IntakeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from Academics.models import *
-# Create your views here.
-#semester views
+"""
+    1. Semester Views
+        i. List Semesters
+        ii. Add Semester
+    2. Intake Views
+        i. List Intakes
+        ii. Add Intake
+    3. Session Year Views
+        i. List Session Years
+        ii. Add Session Year
+        iii. Edit Session Year
+    4. Year of Study Views
+        i. List Years of Study
+        ii. Add Year of Study   
+"""
+#1. --------Semester Views-----------------
 @login_required(login_url='/auth/login')
 def semesters(request): 
     if request.user.role == 'ADMIN':
@@ -18,11 +32,8 @@ def semesters(request):
     }
     return render(request, 'academics/semesters.html', context)
 
-#add semester view
-from django.shortcuts import render, redirect
-from django.http import HttpResponseForbidden
-from django.contrib import messages
-
+#i. ---------------add semester view
+@login_required(login_url='/auth/login')
 def add_semester(request):
     if request.user.role != 'ADMIN':
         return HttpResponseForbidden('<h1>Insufficient Roles</h1>') 
@@ -46,7 +57,7 @@ def add_semester(request):
 
     return render(request, 'academics/add-semester.html', {'form': form})
     
-#-----------Intake Views-----------------
+#2. -----------Intake Views-----------------
 @login_required(login_url='/auth/login')
 def intakes(request): 
     if request.user.role == 'ADMIN':
@@ -83,12 +94,13 @@ def add_intake(request):
 
     return render(request, 'academics/add-intake.html', {'form': form})
     
-#--------Session Year Views-----------------
+#3. --------Session Year Views-----------------
+#i. ---------------List Session Years View
 @login_required(login_url='/auth/login')
 def session_years(request):
     if request.user.role == 'ADMIN':
         #edit session year
-        years = SessionYear.objects.all()
+        years = SessionYear.objects.all().order_by('-date')
     else:
         return HttpResponse('<h1>Insufficient Roles</h1>')
     context={
@@ -104,10 +116,21 @@ def add_session_year(request):
         if request.method == 'POST':
             form = SessionYearForm(request.POST)
             if form.is_valid():
-                session_year = form.save(commit=False)
-                form.save()
-                messages.success(request, 'Session Year Added Successfully')
-                return redirect('Academics:add-session-year')
+                #same intakes should not be current year
+                intake = form.cleaned_data['intake']
+                is_current_year = form.cleaned_data['is_current_year']
+                if is_current_year:
+                    SessionYear.objects.filter(intake=intake, is_current_year=True).update(is_current_year=False)
+                #year title should be unique
+                year_title = form.cleaned_data['year_title']
+                if SessionYear.objects.filter(year_title=year_title).exists():
+                    messages.error(request, 'Session Year with this title already exists.')
+                    return redirect('Academics:add-session-year')
+                else:
+                    session_year = form.save(commit=False)
+                    form.save()
+                    messages.success(request, 'Session Year Added Successfully')
+                    return redirect('Academics:add-session-year')
             else:
                 return messages.error(request, 'Failed to Add Session Year. Please Try Again')
         else:
@@ -125,6 +148,11 @@ def edit_session_year(request, pk):
         if request.method == 'POST':
             form = SessionYearForm(request.POST, instance=year)
             if form.is_valid():
+                #same intakes should not be current year
+                intake = form.cleaned_data['intake']
+                is_current_year = form.cleaned_data['is_current_year']
+                if is_current_year:
+                    SessionYear.objects.filter(intake=intake, is_current_year=True).exclude(id=pk).update(is_current_year=False)
                 form.save()
                 messages.success(request, 'Session Year Updated Successfully')
                 return redirect('Academics:session-year')
@@ -136,7 +164,7 @@ def edit_session_year(request, pk):
     else:
         return HttpResponse('<h1>Insufficient Roles</h1>')
 
-#--------Year of Study Views-----------------   
+#4. --------Year of Study Views-----------------   
 @login_required(login_url='/auth/login')
 def years_of_study(request):
     years = YearOfStudy.objects.all()

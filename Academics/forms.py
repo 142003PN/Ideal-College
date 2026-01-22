@@ -17,7 +17,7 @@ class YearOfStudyForm(forms.ModelForm):
         fields = ['year_title']
 
         widgets={
-            'year_title': forms.TextInput(attrs={'class': 'form-control'}),
+            'year_title': forms.Select(attrs={'class': 'form-control form-select'}),
         }
 
 #--------Semester Form-----------------

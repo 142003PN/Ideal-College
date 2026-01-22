@@ -30,8 +30,9 @@
               <table class="table table-hover table-center">
                 <thead class="thead-light">
                   <tr>
-                    <th>Code</th>
-                    <th>Course Title</th>
+                    <th>Year Title</th>
+                    <th>Is Current Year</th>
+                    <th>Intake</th>
                     <th>View</th>
                   </tr>
                 </thead>
@@ -41,8 +42,11 @@
                       <td>
                         <div>{{year.year_title}} </div>
                       </td>
-                      <td >
+                      <td>
                         <div>{{year.is_current_year}}</div>
+                      </td>
+                      <td >
+                        <div>{{year.intake}}</div>
                       </td>
                       <td>
                         <a href="{% url "Academics:edit-year" year.id %}" class="btn btn-primary btn-sm">Edit</a>
