@@ -13,47 +13,48 @@ from Fees.models import *
 import tempfile
 import os
 
-# Create your views here.
+"""
+    1. Register for Courses
+    2. View Recent Registrations
+    3. Approve Course Registration
+    4. View Submitted Courses
+    5. Print Confirmation Slip
+    6. Deregister Registration
+"""
 
-
-#----------Register for Courses-------------
-@login_required(login_url='/auth/login')
+#1. ----------Register for Courses-------------
 def register(request):
     sid = request.user
-    # get program for the logged in user
     program = request.user.profile.program
-    # get student profile for the logged in user
     student = StudentProfile.objects.get(student_id=sid)
-    # get courses related to the logged in user's programme of study
-    years = YearOfStudy.objects.filter()
+    years = YearOfStudy.objects.all()
     courses = Courses.objects.filter(program_id=program)
-    #get student intake
     intake = request.user.profile.intake
-    #get current session year
-    no_session_year = not SessionYear.objects.filter(intake=intake, is_current_year=1).exists() 
-    if no_session_year:
-        return messages.error(request, "Current session year not set for your intake. Please contact administration.")
-    session_year = SessionYear.objects.get(is_current_year=1, intake=intake)
-    #semesters
     semesters = Semester.objects.all()
 
-    # Prevent multiple registrations in the same session year
-    already_registered = Registration.objects.filter(student_id=sid, session_year=session_year).exists()
-    if already_registered and request.method == 'POST':
-        messages.warning(request, "You have already registered for the current session year.")
-    elif request.method == 'POST':
-        semester_id = request.POST.get('semester')
-        semester = Semester.objects.get(id=semester_id)
+    # Check if session year exists for intake
+    session_year_qs = SessionYear.objects.filter(intake=intake, is_current_year=True)
+    no_session_year = not session_year_qs.exists()
 
-        year_of_study_id = request.POST.get('year_of_study')
-        year_of_study = YearOfStudy.objects.get(id=year_of_study_id)
-        selected_courses = request.POST.getlist('courses')
+    if no_session_year:
+        session_year = None
+        already_registered = False
+    else:
+        session_year = session_year_qs.first()
+        already_registered = Registration.objects.filter(student_id=sid, session_year=session_year).exists()
 
+        if already_registered and request.method == 'POST':
+            messages.warning(request, "You have already registered for the current session year.")
 
-        if year_of_study is None:
-            messages.error(request, "Please select a year of study")
-            return redirect('Registration:register')
-        else:
+        elif request.method == 'POST':
+            semester = Semester.objects.get(id=request.POST.get('semester'))
+            year_of_study = YearOfStudy.objects.get(id=request.POST.get('year_of_study'))
+            selected_courses = request.POST.getlist('courses')
+
+            if not year_of_study:
+                messages.error(request, "Please select a year of study")
+                return redirect('Registration:register')
+
             reg = Registration.objects.create(
                 student_id=sid,
                 year_of_study=year_of_study,
@@ -61,9 +62,7 @@ def register(request):
                 semester=semester,
             )
             reg.courses.set(selected_courses)
-            reg.save()
             messages.success(request, "Successfully submitted awaiting Approval")
-            already_registered = True
             return redirect('Registration:register')
 
     context = {
@@ -75,13 +74,15 @@ def register(request):
         'semesters': semesters,
         'no_session_year': no_session_year
     }
+
     return render(request, 'registration/register.html', context)
-#----------------View Recent Registrations-----------------
+
+#2. ----------------View Recent Registrations-----------------
 def recent_registrations(request):
     registrations = Registration.objects.all().order_by('-registration_date')
     return render(request, 'registration/recently_registered.html', {'registrations': registrations})
 
-#------------------Approve Course Registration----------------------------
+#3. ------------------Approve Course Registration----------------------------
 def approve_registration(request, pk):
     if request.user.role != 'STAFF' and request.user.role != 'ADMIN':
         messages.error(request, "You do not have permission to approve registrations.")
@@ -99,7 +100,7 @@ def approve_registration(request, pk):
             messages.error(request, "Registration not found.")
     return render(request, 'registration/recently_registered.html')
 
-#--------------------View Submitted Courses-------------
+#4. --------------------View Submitted Courses-------------
 def view_submitted_courses(request, pk):
     if request.user.role=='ADMIN':
         try:
@@ -112,52 +113,61 @@ def view_submitted_courses(request, pk):
             messages.error(request, "Registration not found.")
             return redirect('Registration:recent')
     return render(request, 'registration/view-registered.html')
-#----------------Print Confirmation Slip-----------------
+
+#5. ----------------Print Confirmation Slip-----------------
 def print_confirmation_slip(request, student_id):
-        intake = StudentProfile.objects.get(student_id=student_id).intake
-        session_year = SessionYear.objects.get(intake=intake, is_current_year=1)
+    intake = StudentProfile.objects.get(student_id=student_id).intake
 
-        no_session_year = not SessionYear.objects.filter(intake=intake, is_current_year=1).exists() 
-        if no_session_year:
-            return messages.error(request, "Current session year not set for your intake. Please contact administration.")
-        not_registered = Registration.objects.filter(student_id=student_id, session_year=session_year).exists()
-        if not not_registered:
-            return HttpResponse('<h1>You are not registered for this academic year</h1>')
-        else:
-            registration = Registration.objects.get(student_id=student_id, session_year=session_year)
-            courses = registration.courses.all()
-            today = datetime.date.today()
+    session_year_qs = SessionYear.objects.filter(intake=intake, is_current_year=True)
 
-            #add a student ledger to the financial system
-            account = get_object_or_404(StudentAccount, id=student_id)
-            student_id = get_object_or_404(Student, id=student_id)
+    #Check if session year exists
+    if not session_year_qs.exists():
+        messages.error(request, "Current session year not set for your intake. Please contact administration.")
 
-            entries = LedgerEntry.objects.filter(
-                account=account
-            ).order_by('created_at')
+    session_year = session_year_qs.first()
 
-            running_balance = 0
-            statement = []
+    # Check if student is registered
+    is_registered = Registration.objects.filter(student_id=student_id, session_year=session_year).exists()
 
-            for entry in entries:
-                if entry.entry_type == LedgerEntry.EntryType.DEBIT:
-                    running_balance += entry.amount
-                    debit = entry.amount
-                    credit = None
-                else:
-                    running_balance -= entry.amount
-                    debit = None
-                    credit = entry.amount
-                id = entry.id
-                statement.append({
-                    'date': entry.created_at,
-                    'description': entry.description,
-                    'debit': debit,
-                    'credit': credit,
-                    'balance': running_balance,
-                    'id':id,
-                    'is_reversal': entry.is_reversal
-                })
+    not_registered = not is_registered
+    if not_registered:
+        return render(request, 'registration/confirmation-slip.html', {'not_registered': not_registered})
+    #get registration and courses
+    if is_registered:
+        registration = Registration.objects.get(student_id=student_id, session_year=session_year)
+        courses = registration.courses.all()
+        today = datetime.date.today()
+
+        #add a student ledger to the financial slip
+        account = get_object_or_404(StudentAccount, id=student_id)
+        student_id = get_object_or_404(Student, id=student_id)
+
+        entries = LedgerEntry.objects.filter(
+            account=account
+        ).order_by('created_at')
+
+        running_balance = 0
+        statement = []
+
+        for entry in entries:
+            if entry.entry_type == LedgerEntry.EntryType.DEBIT:
+                running_balance += entry.amount
+                debit = entry.amount
+                credit = None
+            else:
+                running_balance -= entry.amount
+                debit = None
+                credit = entry.amount
+            id = entry.id
+            statement.append({
+                'date': entry.created_at,
+                'description': entry.description,
+                'debit': debit,
+                'credit': credit,
+                'balance': running_balance,
+                'id':id,
+                'is_reversal': entry.is_reversal
+            })
             
 
         context={'courses': courses, 'registration': registration,
@@ -165,11 +175,14 @@ def print_confirmation_slip(request, student_id):
                     'account': account,
                     'statement': statement,
                     'final_balance': running_balance,
-                    'no_session_year': no_session_year
+                    'session_year_': session_year,
+                    'not_registered': not_registered,
+                    'is_registered': is_registered
                 }
-        
-        return render(request, 'registration/confirmation-slip.html', context)
-#----------------Delete Registration-----------------
+            
+    return render(request, 'registration/confirmation-slip.html', context)
+
+#6. ----------------Delete Registration-----------------
 def delete_qrcode_media(registration):
     try:
         if registration.qr_code and hasattr(registration.qr_code, 'path'):
@@ -177,7 +190,7 @@ def delete_qrcode_media(registration):
                 os.remove(registration.qr_code.path)
     except (AttributeError, OSError):
         pass
-#deregister
+#7. ---------------------------Deregister--------------------------------
 def delete_registration(request, pk):
     if request.user.role != 'ADMIN':
         messages.error(request, "You do not have permission to delete registrations.")

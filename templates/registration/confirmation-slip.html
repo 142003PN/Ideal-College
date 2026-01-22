@@ -249,6 +249,7 @@
     </style>
 </head>
 <body>
+    {% if is_registered %}
     <div class="container">
         <!-- Header Section -->
 
@@ -326,5 +327,19 @@
         <h4 style='margin-top: 30px;'>PLEASE KEEP THIS DOCUMENT FOR FUTURE REFERENCE</h4>
         <button class="print-button" onclick="window.print()">Print Registration Slip</button>
     </div>
+    {% elif not_registered %}
+    <div class="container">
+        <h2 style="text-align: center; color: #333;">You are not registered for the current session year.</h2>
+        <!--Add link to Dashboard-->
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'Students:dashboard' %}" style="text-decoration: none; color: white; background-color: #333; padding: 10px 20px; border-radius: 4px;">Go to Dashboard</a>
+        </div>  
+    </div>
+
+    {% else %}
+    <div class="container">
+        <h2 style="text-align: center; color: #333;">No session year set for this intake.</h2>  
+    </div>
+    {% endif %}
 </body>
 </html>

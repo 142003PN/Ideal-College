@@ -60,76 +60,82 @@
                   <span>Select Courses</span>
                 </h5>
               </div>
-              {% if already_registered  %}
+              {% if no_session_year %}
                 <div class="col-12">
-                  <p>You have already registered your courses for this semester.</p>
+                    <p>No session year set for this intake.</p>
                 </div>
               {% else %}
-              <div class="accordion-wrapper">
-                {% for year in years %}
-                  <div class="accordion-item">
-
-                    <!-- YEAR HEADER -->
-                    <div class="accordion-header" onclick="toggleAccordion(this)">
-                      <span>
-                        <input type="radio" name="year_of_study" value="{{ year.id }}" required>
-                        {{ year.year_title }}
-                      </span>
-                    </div>
-
-                    <!-- YEAR CONTENT (SEMESTERS) -->
-                    <div class="accordion-content">
-                      {% for semester in semesters %}
-                          <div class="semester-item">
-
-                            <!-- SEMESTER HEADER -->
-                            <div class="semester-header" onclick="toggleSemester(this)">
-                              <span>
-                                <input type="radio" name="semester" value="{{semester.id}}" required>
-                                {{semester.semester_name}}
-                              </span>
-                            </div>
-
-                            <!-- SEMESTER BODY (COURSES) -->
-                            <div class="semester-body table-responsive">
-                              <table class="form-table">
-                                <thead>
-                                    <tr>
-                                    <th class="text-nowrap">Select</th>
-                                    <th class="text-nowrap">Code</th>
-                                    <th class="text-nowrap">Description</th>
-                                    <th class="text-nowrap">Year</th>
-                                    <th class="text-nowrap">Semester</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-
-                                  {% for course in courses %}
-                                    {% if course.year_of_study.id == year.id and course.semester.id == semester.id %}
-                                    <tr>
-                                      <td><input type="checkbox" name="courses" value="{{course.id}}"></td>
-                                        <td class="text-nowrap">{{course.course_code}}</td>
-                                        <td class="text-nowrap">{{course.course_title}}</td>
-                                        <td class="text-nowrap">{{course.year_of_study}}</td>
-                                        <td class="text-nowrap">{{course.semester}}</td>
-                                    </tr>
-                                    {% endif %}
-                                  {% endfor %}
-
-                                </tbody>
-                              </table>
-                            </div>
-
-                          </div>
-                      {% endfor %}
-                    </div>
-
+                {% if already_registered  %}
+                  <div class="col-12">
+                    <p>You have already registered your courses for this semester.</p>
                   </div>
-                {% endfor %}
-              </div>
-              <div class="col-12">
-                <button class="btn btn-success" type="submit">Submit</button>
-              </div>
+                {% else %}
+                <div class="accordion-wrapper">
+                  {% for year in years %}
+                    <div class="accordion-item">
+
+                      <!-- YEAR HEADER -->
+                      <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>
+                          <input type="radio" name="year_of_study" value="{{ year.id }}" required>
+                          {{ year.year_title }}
+                        </span>
+                      </div>
+
+                      <!-- YEAR CONTENT (SEMESTERS) -->
+                      <div class="accordion-content">
+                        {% for semester in semesters %}
+                            <div class="semester-item">
+
+                              <!-- SEMESTER HEADER -->
+                              <div class="semester-header" onclick="toggleSemester(this)">
+                                <span>
+                                  <input type="radio" name="semester" value="{{semester.id}}" required>
+                                  {{semester.semester_name}}
+                                </span>
+                              </div>
+
+                              <!-- SEMESTER BODY (COURSES) -->
+                              <div class="semester-body table-responsive">
+                                <table class="form-table">
+                                  <thead>
+                                      <tr>
+                                      <th class="text-nowrap">Select</th>
+                                      <th class="text-nowrap">Code</th>
+                                      <th class="text-nowrap">Description</th>
+                                      <th class="text-nowrap">Year</th>
+                                      <th class="text-nowrap">Semester</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+
+                                    {% for course in courses %}
+                                      {% if course.year_of_study.id == year.id and course.semester.id == semester.id %}
+                                      <tr>
+                                        <td><input type="checkbox" name="courses" value="{{course.id}}"></td>
+                                          <td class="text-nowrap">{{course.course_code}}</td>
+                                          <td class="text-nowrap">{{course.course_title}}</td>
+                                          <td class="text-nowrap">{{course.year_of_study}}</td>
+                                          <td class="text-nowrap">{{course.semester}}</td>
+                                      </tr>
+                                      {% endif %}
+                                    {% endfor %}
+
+                                  </tbody>
+                                </table>
+                              </div>
+
+                            </div>
+                        {% endfor %}
+                      </div>
+
+                    </div>
+                  {% endfor %}
+                </div>
+                <div class="col-12">
+                  <button class="btn btn-success" type="submit">Submit</button>
+                </div>
+                {% endif %}
               {% endif %}
             </div>
           </form>
