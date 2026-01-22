@@ -45,88 +45,180 @@
                {% endfor %}
                <!--Messages-->
                <div class="card-body">
-                  <form method="post" enctype="multipart/form-data">
+                  <form method="post" enctype="multipart/form-data" id="studentform" class="needs-validation" novalidate>
                      {% csrf_token %}
                      <div class="row">
+
                         <div class="col-12">
                            <h5 class="form-title"><span>Student Information</span></h5>
                         </div>
+
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>First Name</label>
-                              <input type="text" value="{{student.first_name}}" name="first_name" class="form-control">
+                                 <label>First Name <span class="text-danger">*</span></label>
+                                 <input type="text" id="first_name" name="first_name" value="{{ student.first_name }}" class="form-control" required>
+                                 <div class="invalid-feedback">First name is required.</div>
                            </div>
                         </div>
+
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Last Name</label>
-                              <input type="text" value="{{student.last_name}}" name="last_name" class="form-control">
+                                 <label>Last Name <span class="text-danger">*</span></label>
+                                 <input type="text" id="last_name" name="last_name" value="{{ student.last_name }}" class="form-control" required>
+                                 <div class="invalid-feedback">Last name is required.</div>
                            </div>
                         </div>
+
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Email</label>
-                              <input type="email" value="{{student.email}}" name="email" class="form-control" aur>
+                                 <label>Email <span class="text-danger">*</span></label>
+                                 <input type="email" id="email" name="email" value="{{ student.email }}" class="form-control" required>
+                                 <div class="invalid-feedback">Enter a valid email.</div>
                            </div>
                         </div>
+
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>NRC Number</label>
-                                <input type="text" value="{{student.NRC}}" name="NRC" class="form-control">
+                                 <label>NRC Number <span class="text-danger">*</span></label>
+                                 <input type="text" id="nrc" name="NRC" value="{{ student.NRC }}" class="form-control" required pattern="^[0-9/]+$">
+                                 <div class="invalid-feedback">NRC must contain only numbers and /</div>
                            </div>
                         </div>
+
                         <div class="col-12">
                            <h5 class="form-title"><span>Profile Information</span></h5>
                         </div>
+
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Gender</label>
-                              <select class="form-control" name="gender">
+                                 <label>Gender <span class="text-danger">*</span></label>
+                                 <select class="form-control" name="gender" required>
                                     <option value="">Select Gender</option>
-                                    <option value="M" {% if student.profile.gender == "M" %}selected{% endif %}>Male</option>
-                                    <option value="F" {% if student.profile.gender == "F" %}selected{% endif %}>Female</option>
-                              </select>
+                                    <option value="M" {% if profile.gender == "M" %}selected{% endif %}>Male</option>
+                                    <option value="F" {% if profile.gender == "F" %}selected{% endif %}>Female</option>
+                                 </select>
+                                 <div class="invalid-feedback">Please select gender.</div>
                            </div>
                         </div>
+
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Date of Birth</label>
-                                <input type="date" value="{{ student.profile.date_of_birth|date:'Y-m-d' }}" name="date_of_birth" class="form-control">
+                                 <label>Date of Birth <span class="text-danger">*</span></label>
+                                 <input type="date" name="date_of_birth" value="{{ profile.date_of_birth|date:'Y-m-d' }}" class="form-control" required>
+                                 <div class="invalid-feedback">Date of birth required.</div>
                            </div>
                         </div>
+
                         {% if request.user.role == 'ADMIN' %}
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label id="programme">Programme</label>
-                              <select name="programme" id="programme" class="form-control">
-                                    <option value="">Select Programme</option>
-                                    <option value="{{student.profile.program.id}}">{{student.profile.program}}</option>
-                                 
-                              </select>
+                                 <label>Programme <span class="text-danger">*</span></label>
+                                 <select name="programme" id="programme" class="form-control" required>
+                                    <option value="{{profile.program.id}}">{{profile.program}}</option>
+                                    {% for program in programs %}
+                                       {% if program.id != profile.program.id %}
+                                          <option value="{{ program.id }}">{{ program.program_title }}</option>
+                                       {% endif %}
+                                    {% endfor %}
+                                 </select>
+                                 <div class="invalid-feedback">Please select programme.</div>
+                           </div>
+                        </div>
+                        <!--Intake-->
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                                 <label>Intake <span class="text-danger">*</span></label>
+                                 <select name="intake" id="intake" class="form-control" required>
+                                    <option value="{{profile.intake.id}}">{{profile.intake}}</option>
+                                    {% for intake in intakes %}
+                                       {% if intake.id != profile.intake.id %}
+                                          <option value="{{ intake.id }}">{{ intake.intake_name }}</option>
+                                       {% endif %}
+                                    {% endfor %}
+                                 </select>
+                                 <div class="invalid-feedback">Please select intake.</div>
                            </div>
                         </div>
                         {% endif %}
-                        <div class="col-12 col-sm-6">
-                            <div class="form-group">
-                                <label for="">Address</label>
-                                <textarea name="address" class="form-control" rows="3">{{student.profile.address}}</textarea>
-                            </div>
-                        </div>
+
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label >Mobile Number</label>
-                              <input type="tel" value="{{student.profile.phone_number}}" name="phone_number" class="form-control">
+                                 <label>Address <span class="text-danger">*</span></label>
+                                 <textarea name="address" class="form-control" rows="3" required>{{ profile.address }}</textarea>
+                                 <div class="invalid-feedback">Address is required.</div>
                            </div>
                         </div>
-                        <div class="col-12">
-                           <button type="submit" class="btn btn-primary">Submit</button>
+
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                                 <label>Mobile Number <span class="text-danger">*</span></label>
+                                 <input type="tel" id="phone" name="phone_number" value="{{ profile.phone_number }}" class="form-control" required>
+                                 <div class="invalid-feedback">Phone number is required.</div>
+                           </div>
                         </div>
+
+                        <div class="col-12">
+                           <button type="submit" class="btn btn-primary">Update Student</button>
+                        </div>
+
                      </div>
-                  </form>
+                     </form>
                </div>
             </div>
          </div>
       </div>
    </div>
 </div>
+<script>
+   (() => {
+      'use strict';
+
+      const form = document.getElementById('studentform');
+      if (!form) return;
+
+      /* loading spinner on submit */
+      form.addEventListener('submit', function(e) {
+         const submitBtn = document.getElementById('submitBtn');
+         const btnText = document.getElementById('btnText');
+         const spinner = document.getElementById('spinner');
+
+         /*change submit button text*/
+         btnText.innerText = 'Submitting';
+
+         if (!form.checkValidity()) {
+            btnText.innerText = 'Submit';
+            e.preventDefault();
+            e.stopPropagation();
+            return; // Stop loading if validation fails
+         }
+
+         submitBtn.disabled = true;
+         btnText.style.display = 'none';
+         spinner.style.display = 'inline-block';
+      });
+
+      const sanitizers = {
+         nrc: (val) => val.replace(/[^0-9/]/g, '').slice(0, 20),
+         phone_number: (val) => val.replace(/[^0-9+-]/g, '').slice(0, 15),
+         first_name: (val) => val.slice(0, 24),
+         last_name: (val) => val.slice(0, 15)
+      };
+
+      form.addEventListener('submit', (e) => {
+         if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+         }
+         form.classList.add('was-validated');
+      });
+
+      form.addEventListener('input', (e) => {
+         const sanitizer = sanitizers[e.target.id];
+         if (sanitizer) {
+            e.target.value = sanitizer(e.target.value);
+         }
+      });
+   })();
+</script>
+
 {% endblock  %}

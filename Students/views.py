@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render, redirect
 from .models import *
 from Registration.models import *
@@ -27,14 +28,17 @@ def list_students(request):
 def add_student(request):
     programmes=Programs.objects.all()
     years = YearOfStudy.objects.all()
+    intakes = Intake.objects.all()
+    
     if request.method == 'POST':
         #Retrieve student data from form
         first_name=request.POST.get('first_name')
         last_name=request.POST.get('last_name')
-        student_id=request.POST.get('student_id')
         email=request.POST.get('email')
         NRC=request.POST.get('NRC')
         #profile data
+        intake_id=request.POST.get('intake')
+        intake = Intake.objects.get(id=intake_id).id
         gender=request.POST.get('gender')
         date_of_birth=request.POST.get('date_of_birth')
         program_id=request.POST.get('programme')
@@ -45,14 +49,39 @@ def add_student(request):
         year_id=request.POST.get('year_of_study')
         year_of_study = YearOfStudy.objects.get(id=year_id)
         password="Pass123"
+
+        #generate student id
+        intake_obj = Intake.objects.filter(id=intake).first()
+        intake_gn = intake_obj.intake_name if intake_obj else 'unknown'
+
+        year = datetime.now().year
+
+        if intake_gn.lower() == 'january':
+            intake_code = '01'
+        elif intake_gn.lower() == 'july':
+            intake_code = '02'
+        else:
+            intake_code = '00'
+
+        prefix = f"{year}{intake_code}01"
+
+        last_student = Student.objects.filter(id__startswith=prefix).order_by('-id').first()
+
+        if last_student:
+            last_serial = int(str(last_student.id)[-2:])
+            new_serial = last_serial + 1
+        else:
+            new_serial = 1
+
+        serial = str(new_serial).zfill(2)
+        student_id = f"{prefix}{serial}"
+
+
         if Student.objects.filter(email=email).exists():
             messages.error(request, "Student with this ID already exists.")
             return redirect('Students:add') 
         elif Student.objects.filter(NRC=NRC).exists():
             messages.error(request, "Student with this NRC already exists.")
-            return redirect('Students:add')
-        elif Student.objects.filter(id=student_id).exists():
-            messages.error(request, "Student with this ID already exists.")
             return redirect('Students:add')
         elif len(NRC) > 15:
             messages.error(request, "NRC should have less than 15 characters")
@@ -62,42 +91,52 @@ def add_student(request):
             return redirect('Students:add')
         else:
              #save student
-            student=Student.objects.create(
-                first_name=first_name,
-                last_name=last_name,
-                id=student_id,
-                email=email,
-                NRC=NRC,
-            )
-            student.set_password(password)
-            student.save();
-            #save profile
-            profile=StudentProfile.objects.create(
-                gender=gender,
-                date_of_birth=date_of_birth,
-                address=address,
-                program=program,
-                phone_number=phone_number,
-                profile_picture=profile_picture,
-                year_of_study=year_of_study,
-                student_id=student
-            )
-            profile.save();
+            try:
+                student=Student.objects.create(
+                    first_name=first_name,
+                    last_name=last_name,
+                    id=student_id,
+                    email=email,
+                    NRC=NRC,
+                )
+                student.set_password(password)
+                student.save()
+                #save profile
+                profile=StudentProfile.objects.create(
+                    intake_id=intake,
+                    gender=gender,
+                    date_of_birth=date_of_birth,
+                    address=address,
+                    program=program,
+                    phone_number=phone_number,
+                    profile_picture=profile_picture,
+                    year_of_study=year_of_study,
+                    student_id=student
+                )
+                profile.save()
+            except Exception as e:
+                if student:
+                    student.delete()
+                messages.error(request, f"Error saving student: {str(e)}")
+                return redirect('Students:add')
             messages.success(request, "Student Added Successfully")
     else:
         pass
     context={
         'programmes':programmes,
         'years':years,
+        'intakes':intakes,
     }
     return render(request, 'students/add-student.html', context)
 
-#-------------edit student view-------------------
+#-------------edit student view----------------
 @login_required(login_url='/users/login/')
 def edit_student(request, pk):
     student = Student.objects.get(pk=pk)
     profile = StudentProfile.objects.get(student_id=student)
-    
+    programs = Programs.objects.filter(id=profile.program.id) | Programs.objects.exclude(id=profile.program.id)
+    intakes = Intake.objects.all()
+
     if request.method == 'POST':
         # Retrieve student data from form  
         first_name = request.POST.get('first_name')
@@ -110,6 +149,8 @@ def edit_student(request, pk):
         date_of_birth = request.POST.get('date_of_birth')
         address = request.POST.get('address')
         phone_number = request.POST.get('phone_number')
+        program_id = request.POST.get('programme')
+        program = Programs.objects.get(id=program_id)
 
         if email != student.email and Student.objects.filter(email=email).exists():
             messages.error(request, "Student with this email already exists.")
@@ -133,6 +174,8 @@ def edit_student(request, pk):
         profile.date_of_birth = date_of_birth
         profile.address = address
         profile.phone_number = phone_number
+        if program:
+            profile.program = program
         profile.save()
         
         messages.success(request, 'Student updated successfully')
@@ -141,6 +184,8 @@ def edit_student(request, pk):
     context = {
         'student': student,
         'profile': profile,
+        'programs': programs,
+        'intakes': intakes,
     }
     return render(request, 'students/edit-student.html', context)
 

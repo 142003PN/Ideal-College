@@ -1,7 +1,7 @@
 from django.db import models
 from Users.models import CustomUser, CustomUserManager
 from Programs.models import Programs
-from Academics.models import YearOfStudy
+from Academics.models import YearOfStudy, Intake
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -31,6 +31,7 @@ class StudentProfile(models.Model):
     year_of_study = models.ForeignKey(YearOfStudy, on_delete=models.SET_NULL, null=True, blank=True)
     profile_picture = models.ImageField(upload_to='student_profiles/', default='fallback.png', null=True, blank=True)
     gender = models.CharField(max_length=1, choices=GenderChoices.choices, null=True, blank=True)
+    intake = models.ForeignKey(Intake, on_delete=models.SET_NULL, null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True)

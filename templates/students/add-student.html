@@ -45,34 +45,43 @@
                {% endfor %}
                <!--Messages-->
                <div class="card-body">
-                  <form method="post" enctype="multipart/form-data">
-                     {% csrf_token %}
-                     <div class="row">
+                    <form method="post" enctype="multipart/form-data" id="studentform" class="needs-validation" novalidate>
+                      {% csrf_token %}
+                       <div class="row">
                         <div class="col-12">
                            <h5 class="form-title"><span>Student Information</span></h5>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>First Name</label>
-                              <input type="text" name="first_name" class="form-control">
+                            <label>First Name <small class="text-danger">*</small></label>
+                            <input type="text" name="first_name" id="first_name" class="form-control" required>
+                            <div class="invalid-feedback">First name is required.</div>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Last Name</label>
-                              <input type="text" name="last_name" class="form-control">
+                            <label>Last Name <small class="text-danger">*</small></label>
+                            <input type="text" name="last_name" id="last_name" class="form-control" required>
+                            <div class="invalid-feedback">Last name is required.</div>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Student Id</label>
-                              <input type="text" name="student_id" class="form-control">
+                            <label>Intake <small class="text-danger">*</small></label>
+                            <select name="intake" id="intake" class="form-control" required>
+                              <option value="">Select Intake</option>
+                             {% for intake in intakes %}
+                              <option value="{{intake.id}}">{{intake.intake_name}}</option>
+                              {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">Please select an intake.</div>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Email</label>
-                              <input type="email" name="email" class="form-control" aur>
+                            <label>Email <small class="text-danger">*</small></label>
+                            <input type="email" name="email" id="email" class="form-control" required>
+                            <div class="invalid-feedback">Please provide a valid email.</div>
                            </div>
                         </div>
                         <div class="col-12">
@@ -80,79 +89,142 @@
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Gender</label>
-                              <select class="form-control" name="gender">
-                                 <option>Select Gender</option>
-                                 <option value="F">Female</option>
-                                 <option value="M">Male</option>
-                              </select>
+                            <label>Gender <small class="text-danger">*</small></label>
+                            <select class="form-control" name="gender" id="gender" required>
+                              <option value="">Select Gender</option>
+                              <option value="F">Female</option>
+                              <option value="M">Male</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a gender.</div>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Date of Birth</label>
-                              <div>
-                                 <input type="date" name="date_of_birth" class="form-control">
-                              </div>
+                            <label>Date of Birth <small class="text-danger">*</small></label>
+                            <div>
+                              <input type="date" name="date_of_birth" id="date_of_birth" class="form-control" required>
+                              <div class="invalid-feedback">Please provide a date of birth.</div>
+                            </div>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>NRC Number</label>
-                              <div>
-                                 <input type="text" name="NRC" class="form-control">
-                              </div>
+                            <label>NRC Number <small class="text-danger">*</small></label>
+                            <div>
+                              <input type="text" name="NRC" id="nrc" class="form-control" required>
+                              <div class="invalid-feedback">NRC number is required.</div>
+                            </div>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label id="programme">Programme</label>
-                              <select name="programme" id="programme" class="form-control">
-                                {% for programme in programmes %}
-                                 <option value="{{programme.id}}">{{programme.program_title}}</option>
-                                 {% endfor %}
-                              </select>
+                            <label id="programme">Programme <small class="text-danger">*</small></label>
+                            <select name="programme" id="programme" class="form-control" required>
+                             <option value="">Select Programme</option>
+                             {% for programme in programmes %}
+                              <option value="{{programme.id}}">{{programme.program_title}}</option>
+                              {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">Please select a programme.</div>
                            </div>
                         </div>
 
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Year of Study</label>
-                              <select name="year_of_study" class="form-control" required>
-                                 <option value="">Select Year of Study</option>
-                                 {% for year in years %}
-                                    <option value="{{year.id}}">{{year.year_title}}</option>
-                                 {% endfor %}
-                              </select>
+                            <label>Year of Study <small class="text-danger">*</small></label>
+                            <select name="year_of_study" id="year_of_study" class="form-control" required>
+                              <option value="">Select Year of Study</option>
+                              {% for year in years %}
+                               <option value="{{year.id}}">{{year.year_title}}</option>
+                              {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">Please select a year of study.</div>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Address</label>
-                              <textarea class="form-control" name="address" id="" cols="10" rows="3"></textarea>
+                            <label>Address <small class="text-danger">*</small></label>
+                            <textarea class="form-control" name="address" id="address" cols="10" rows="3" required></textarea>
+                            <div class="invalid-feedback">Address is required.</div>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Mobile Number</label>
-                              <input type="tel" name="phone_number" class="form-control">
+                            <label>Mobile Number <small class="text-danger">*</small></label>
+                            <input type="tel" name="phone_number" id="phone_number" class="form-control" required>
+                            <div class="invalid-feedback">Mobile number is required.</div>
                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                            <div class="form-group">
-                              <label>Profile Picture</label>
-                              <input type="file" name="profile_picture" class="form-control">
+                            <label>Profile Picture</label>
+                            <input type="file" name="profile_picture" id="profile_picture" class="form-control">
                            </div>
                         </div>
                         <div class="col-12">
-                           <button type="submit" class="btn btn-primary">Submit</button>
+                           <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span id="btnText">Submit</span>
+                            <span id="spinner" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true" style="display: none;"></span>
+                           </button>
                         </div>
-                     </div>
-                  </form>
+                       </div>
+                    </form>
                </div>
             </div>
          </div>
       </div>
    </div>
 </div>
+<script>
+   (() => {
+      'use strict';
+
+      const form = document.getElementById('studentform');
+      if (!form) return;
+
+      /* loading spinner on submit */
+      form.addEventListener('submit', function(e) {
+         const submitBtn = document.getElementById('submitBtn');
+         const btnText = document.getElementById('btnText');
+         const spinner = document.getElementById('spinner');
+
+         /*change submit button text*/
+         btnText.innerText = 'Submitting';
+
+         if (!form.checkValidity()) {
+            btnText.innerText = 'Submit';
+            e.preventDefault();
+            e.stopPropagation();
+            return; // Stop loading if validation fails
+         }
+
+         submitBtn.disabled = true;
+         btnText.style.display = 'none';
+         spinner.style.display = 'inline-block';
+      });
+
+      const sanitizers = {
+         nrc: (val) => val.replace(/[^0-9/]/g, '').slice(0, 20),
+         phone_number: (val) => val.replace(/[^0-9+-]/g, '').slice(0, 15),
+         first_name: (val) => val.slice(0, 24),
+         last_name: (val) => val.slice(0, 15)
+      };
+
+      form.addEventListener('submit', (e) => {
+         if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+         }
+         form.classList.add('was-validated');
+      });
+
+      form.addEventListener('input', (e) => {
+         const sanitizer = sanitizers[e.target.id];
+         if (sanitizer) {
+            e.target.value = sanitizer(e.target.value);
+         }
+      });
+   })();
+</script>
+
 {% endblock  %}
