@@ -100,6 +100,7 @@ class Application_Status(models.Model):
     accepted_by=models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
     def __str__(self):
         return self.status
+    
 #signal to create Application_Status upon General_Information creation
 @receiver(post_save, sender=General_Information)
 def create_application_status(sender, instance, created, **kwargs):
@@ -168,6 +169,7 @@ def create_student_on_approval(sender, instance, created, **kwargs):
                 'program': app.program,
                 'gender': app.gender,
                 'profile_picture': app.passport_photo,
+                'intake': app.intake,
             }
         )
 

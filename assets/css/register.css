@@ -1,0 +1,139 @@
+/* 
+   PARENT ACCORDION (YEAR LEVEL)
+    */
+
+.accordion-item {
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.accordion-header {
+    padding: 14px 18px;
+    background: #0b2c4e;              /* Deep Blue */
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.25s ease;
+    border-bottom: 1px solid #004b9c;
+}
+
+.accordion-header:hover {
+    background: #004a9c;
+}
+
+.accordion-header::after {
+    content: "▼";
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.accordion-item.active > .accordion-header::after {
+    transform: rotate(-180deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+    background: #f9f9f9;
+    padding-left: 10px;
+}
+
+.accordion-item.active .accordion-content {
+    max-height: 2000px;
+    padding: 12px;
+}
+
+
+/* CHILD ACCORDION (SEMESTERS) */
+
+.semester-item {
+    margin-bottom: 10px;
+}
+
+.semester-header {
+    padding: 12px 15px;
+    background: #e6f1ff; 
+    color: #003a75;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    transition: background 0.25s ease;
+    border: 1px solid #c9dfff;
+}
+
+.semester-header:hover {
+    background: #d4e7ff;
+}
+
+.semester-header::after {
+    content: "▶";
+    font-size: 13px;
+    transition: transform 0.3s ease;
+}
+
+.semester-item.active > .semester-header::after {
+    transform: rotate(90deg);
+}
+
+.semester-body {
+    max-height: 0;
+    overflow: hidden;
+    background: white;
+    padding-left: 15px;
+    margin-top: 4px;
+    border-left: 4px solid #9fc5ff; /* subtle left border highlight */
+    border-radius: 4px;
+    transition: max-height 0.35s ease, padding 0.25s ease;
+}
+
+.semester-item.active .semester-body {
+    max-height: 1500px;
+    padding: 12px;
+}
+
+
+/* =======COURSE TABLE STYLING */
+
+.form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    overflow-x: scroll;
+}
+
+.form-table th {
+    background: #fff;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border-bottom: 1px solid #c0d3ff;
+}
+
+.form-table td {
+    padding: 9px;
+    border-bottom: 1px solid #efefef;
+    font-size: 14px;
+}
+
+.form-table tr:hover {
+    background: #f4faff;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table {
+    width: 100%;
+    min-width: 700px; 
+}
