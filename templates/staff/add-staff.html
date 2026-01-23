@@ -59,104 +59,166 @@
       <div class="col-sm-12">
         <div class="card">
           <div class="card-body">
-            <form method="POST" action="" enctype="multipart/form-data" >
+            <form method="POST" action="" enctype="multipart/form-data" class="needs-validation" novalidate>
               {% csrf_token %}
               <div class="row">
                 <div class="col-12">
                   <h5 class="form-title"><span>Staff Information</span></h5>
                 </div>
+
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
-                   <label for="first_name">First Name</label>
-                   <input type="text" name="first_name" class="form-control" id="first_name" required value="{{ staff.first_name|default:'' }}">
+                    <label for="first_name">First Name</label>
+                    <input type="text" 
+                          name="first_name" 
+                          class="form-control" 
+                          id="first_name" 
+                          required 
+                          value="{{ staff.first_name|default:'' }}">
+                    <div class="invalid-feedback">First name is required.</div>
                   </div>
                 </div>
+
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="last_name">Last Name</label>
-                    <input type="text" name="last_name" class="form-control" id="last_name" required value="{{ staff.last_name|default:'' }}">
+                    <input type="text" 
+                          name="last_name" 
+                          class="form-control" 
+                          id="last_name" 
+                          required 
+                          value="{{ staff.last_name|default:'' }}">
+                    <div class="invalid-feedback">Last name is required.</div>
                   </div>
                 </div>
+
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
-                    <label for="NRC">NRC</label>
-                    <input type="text" name="NRC" class="form-control" id="NRC" required value="{{ staff.NRC|default:'' }}">
+                    <label for="nrc">NRC</label>
+                    <input type="text" 
+                          name="NRC" 
+                          class="form-control" 
+                          id="nrc" 
+                          required 
+                          value="{{ staff.NRC|default:'' }}">
+                    <div class="invalid-feedback">NRC is required.</div>
                   </div>
                 </div>
+
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" name="email" class="form-control" id="email" required value="{{ staff.email|default:'' }}">
+                    <input type="email" 
+                          name="email" 
+                          class="form-control" 
+                          id="email" 
+                          required 
+                          value="{{ staff.email|default:'' }}">
+                    <div class="invalid-feedback">A valid email address is required.</div>
                   </div>
                 </div>
+
                 <div class="col-12">
                   <h5 class="form-title"><span>Staff Profile</span></h5>
                 </div>
+
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="gender">Gender</label>
-                    <select name="gender" class="form-select" id="gender">
-                    <option value="M" {% if staff_profile.gender|default:'' == 'M' %}selected{% endif %}>Male</option>
-                    <option value="F" {% if staff_profile.gender|default:'' == 'F' %}selected{% endif %}>Female</option>
+                    <select name="gender" class="form-select" id="gender" required>
+                      <option value="">------------</option>
+                      <option value="M" {% if staff_profile.gender|default:'' == 'M' %}selected{% endif %}>Male</option>
+                      <option value="F" {% if staff_profile.gender|default:'' == 'F' %}selected{% endif %}>Female</option>
                     </select>
+                    <div class="invalid-feedback">Please select a gender.</div>
                   </div>
                 </div>
+
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="phone_number">Phone Number</label>
-                    <input type="text" name="phone_number" class="form-control" id="phone_number" required value="{{ staff_profile.phone_number|default:'' }}">
+                    <input type="text" 
+                          name="phone_number" 
+                          class="form-control" 
+                          id="phone_number" 
+                          required 
+                          value="{{ staff_profile.phone_number|default:'' }}">
+                    <div class="invalid-feedback">Phone number is required.</div>
                   </div>
                 </div>
+
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
-                    <label for="emp_status">Employement Status</label>
-                    <select name="emp_status" class="form-select" id="emp_status">
-                    <option value="FullTime" {% if staff_profile.emp_status|default:'' == 'FullTime' %}selected{% endif %}>FullTime</option>
-                    <option value="PartTime" {% if staff_profile.emp_status|default:'' == 'PartTime' %}selected{% endif %}>PartTime</option>
+                    <label for="emp_status">Employment Status</label>
+                    <select name="emp_status" class="form-select" id="emp_status" required>
+                      <option value="">------------</option>
+                      <option value="FullTime" {% if staff_profile.emp_status|default:'' == 'FullTime' %}selected{% endif %}>FullTime</option>
+                      <option value="PartTime" {% if staff_profile.emp_status|default:'' == 'PartTime' %}selected{% endif %}>PartTime</option>
                     </select>
+                    <div class="invalid-feedback">Please select employment status.</div>
                   </div>
                 </div>
+
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="position">Position</label>
-                    <select name="position" class="form-select" id="emp_status">
+                    <select name="position" class="form-select" id="position" required>
+                      <option value="">------------</option>
                       <option value="Accountant">Accountant</option>
                       <option value="HOD">HOD</option>
                       <option value="Lecturer">Lecturer</option>
                     </select>
+                    <div class="invalid-feedback">Please select a position.</div>
                   </div>
                 </div>
 
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="department">Department</label>
-                    <select name="department_id" id="department" class="form-select">
-                    {% for department in departments %}
-                      <option value="{{ department.id }}" {% if staff_profile.department.id|default:'' == department.id %}selected{% endif %}>{{ department.department_name }}</option>
-                    {% endfor %}
+                    <select name="department_id" id="department" class="form-select" required>
+                      <option value="">------------</option>
+                      {% for department in departments %}
+                        <option value="{{ department.id }}" 
+                          {% if staff_profile.department.id|default:'' == department.id %}selected{% endif %}>
+                          {{ department.department_name }}
+                        </option>
+                      {% endfor %}
                     </select>
+                    <div class="invalid-feedback">Please select a department.</div>
                   </div>
                 </div>
-                <!--If Update operation hide profile_picture-->
-                {% if title %}
 
-                {% else %}
+                {% if not title %}
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="profile_pic">Profile Picture</label>
-                    <input type="file" name="profile_picture" class="form-control" id="profile_pic"  accept="image/*">
+                    <input type="file" 
+                          name="profile_picture" 
+                          class="form-control" 
+                          id="profile_pic"  
+                          accept="image/*">
+                    <div class="invalid-feedback">Please upload a valid image.</div>
                   </div>
                 </div>
                 {% endif %}
+
                 <div class="col-12 col-sm-6">
                   <div class="form-group">
                     <label for="address">Address</label>
-                    <textarea name="address" id="address" class="form-control" cols="10" rows="3">{{ staff_profile.address|default:'' }}</textarea>
+                    <textarea name="address" 
+                              id="address" 
+                              class="form-control" 
+                              cols="10" 
+                              rows="3"
+                              required>{{ staff_profile.address|default:'' }}</textarea>
+                    <div class="invalid-feedback">Address is required.</div>
                   </div>
                 </div>
-              <div class="col-12">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
+
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -164,4 +226,56 @@
     </div>
   </div>
 </div>
+<script>
+   (() => {
+      'use strict';
+
+      const form = document.querySelector('.needs-validation');
+      if (!form) return;
+
+      /* loading spinner on submit */
+      form.addEventListener('submit', function(e) {
+         const submitBtn = document.getElementById('submitBtn');
+         const btnText = document.getElementById('btnText');
+         const spinner = document.getElementById('spinner');
+
+         /*change submit button text*/
+         btnText.innerText = 'Submitting';
+
+         if (!form.checkValidity()) {
+            btnText.innerText = 'Submit';
+            e.preventDefault();
+            e.stopPropagation();
+            return; // Stop loading if validation fails
+         }
+
+         submitBtn.disabled = true;
+         btnText.style.display = 'none';
+         spinner.style.display = 'inline-block';
+      });
+
+      const sanitizers = {
+         nrc: (val) => val.replace(/[^0-9/]/g, '').slice(0, 20),
+         phone_number: (val) => val.replace(/[^0-9+-]/g, '').slice(0, 15),
+         first_name: (val) => val.slice(0, 24),
+         last_name: (val) => val.slice(0, 15)
+      };
+
+      form.addEventListener('submit', (e) => {
+         if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+         }
+         form.classList.add('was-validated');
+      });
+
+      form.addEventListener('input', (e) => {
+         const sanitizer = sanitizers[e.target.id];
+         if (sanitizer) {
+            e.target.value = sanitizer(e.target.value);
+         }
+      });
+   })();
+</script>
+
 {% endblock %}

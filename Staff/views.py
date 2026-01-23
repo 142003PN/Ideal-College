@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.http import *
 from django.contrib.auth.decorators import login_required
 from Departments.models import Department
+from datetime import datetime
 import os
 
 #------------Staff List-----------------
@@ -67,6 +68,11 @@ def add_staff(request):
         user_id=request.user.id
         added_by=CustomUser.objects.get(id=user_id)
 
+        #generate staff id from the last two digits of the current year and, 4 digits of NRC and count of staff
+        year = datetime.now().year
+        current_year = str(year)
+        staff_no = f"{current_year[-2:]}{NRC[:4]}{Staff.objects.count() + 1}"
+
         #validation can be added here
         if Staff.objects.filter(email=email).exists():
             return messages.error(request, "Email already exists")
@@ -82,6 +88,7 @@ def add_staff(request):
             return messages.error(request, "Email is required")
         else:
             staff=Staff.objects.create(
+                id=staff_no,
                 first_name=first_name,
                 last_name=last_name,
                 NRC=NRC,
@@ -112,14 +119,13 @@ def add_staff(request):
 @login_required(login_url='/auth/login')
 
 def edit_staff(request, pk):
-    if request.user.role=='ADMIN':
+    if request.user.role=='ADMIN' or request.user.role=='STAFF':
         staff=Staff.objects.get(pk=pk)
         staff_profile=StaffProfile.objects.get(staff_id=staff)
-        departments=Department.objects.all()
+        departments=Department.objects.filter(id=staff_profile.department.id) | Department.objects.exclude(id=staff_profile.department.id)
         title="Edit Staff"
-        if request.user.role != 'ADMIN':
-            messages.error(request, 'You are not authorized to edit staff details.')
-            return redirect('staff:staff-details', pk=staff.id)
+        if request.user.role=='STAFF' and request.user.id != staff.id:
+            return HttpResponse('<h1>Insufficient Privelleges</h1>')
         else:
             if request.method == 'POST':
                 staff.first_name=request.POST.get('first_name')
@@ -145,7 +151,7 @@ def edit_staff(request, pk):
         } 
     else:
         return HttpResponse('<h1>Insufficient Privelleges</h1>') 
-    return render(request, 'staff/add-staff.html', context)
+    return render(request, 'staff/edit-staff.html', context)
 
 
 #--------------Delete Staff together with associated media files

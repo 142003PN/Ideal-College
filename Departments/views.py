@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+
+from Students.models import StudentProfile
 from .models import Department
 from .forms import DepartmentForm
 from django.contrib import messages
@@ -76,6 +78,10 @@ def dashboard(request):
         programs = Programs.objects.filter(department_id=department)
         staff_members = StaffProfile.objects.filter(department=department)
 
+        #count students with programs in the department
+        student_count = 0
+        for program in programs:
+            student_count += StudentProfile.objects.filter(program=program).count()
         #-------Count Some data related to the department
         staff_count = StaffProfile.objects.filter(department=department).count()
         program_count = Programs.objects.filter(department_id=department).count()
@@ -86,6 +92,7 @@ def dashboard(request):
             'staff_members':staff_members,
             'staff_count': staff_count,
             'program_count': program_count,
+            'student_count': student_count,
         }
     else:
         HttpResponse('<h1>Insufficient Roles<h1/>')
