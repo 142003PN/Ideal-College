@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect
+from Programs.models import Programs
 from .forms import CourseForm
 from django.http import HttpResponse
 from .models import Courses
@@ -12,33 +13,70 @@ import xlwt
 import encodings
 from Users.models import CustomUser
 
-#add course
 @login_required(login_url='/auth/login')
 def add_course(request):
-    if request.user.role !='STUDENT':
-        user=request.user.id
-        added_by=CustomUser.objects.get(id=user)
-        if request.method == 'POST': 
+    user = request.user
+    added_by = user
+    if user.role == 'ADMIN':
+        if request.method == 'POST':
             form = CourseForm(request.POST)
             if form.is_valid():
                 course = form.save(commit=False)
-                course.added_by=added_by
+                course.added_by = added_by
                 course.save()
                 messages.success(request, 'Course added successfully')
                 return redirect('Courses:courses')
             else:
-                messages.error(request, 'The Course Code already exists')   
+                messages.error(request, 'The Course Code already exists')
         else:
             form = CourseForm()
+
+    # --------- HOD CAN ADD (BUT RESTRICT PROGRAM LIST) ---------
+    elif user.staff_profile.position == 'HOD':
+        hod_department = user.staff_profile.department
+        if request.method == 'POST':
+            form = CourseForm(request.POST)
+            # Restrict program selection to HOD's programs
+            form.fields['program_id'].queryset = Programs.objects.filter(department_id=hod_department)
+
+            if form.is_valid():
+                course = form.save(commit=False)
+                course.added_by = added_by
+                course.save()
+                messages.success(request, 'Course added successfully')
+                return redirect('Courses:courses')
+            else:
+                messages.error(request, 'The Course Code already exists')
+
+        else:
+            form = CourseForm()
+            form.fields['program_id'].queryset = Programs.objects.filter(department_id=hod_department)
     else:
         return HttpResponse("<h1>Insufficient Roles</h1>")
-    return render(request, 'courses/add-course.html', {'form':form})
 
-#course list
+    return render(request, 'courses/add-course.html', {'form': form})
+
+
+# COURSE LIST
 @login_required(login_url='/auth/login')
 def course_list(request):
-    courses = Courses.objects.all()
-    return render(request, 'courses/courses.html', {'courses':courses})
+
+    user = request.user
+
+    # ADMIN SEES EVERYTHING
+    if user.role == 'ADMIN':
+        courses = Courses.objects.all()
+
+    # HOD SEES COURSES FROM THEIR DEPARTMENT ONLY
+    elif hasattr(user, 'staff_profile') and user.staff_profile.position == 'HOD':
+        department = user.staff_profile.department.id
+        courses = Courses.objects.filter(program_id__department_id=department)
+
+    # ANY OTHER STAFF ROLE
+    else:
+        courses = Courses.objects.none()  # or 403 forbidden if you prefer
+
+    return render(request, 'courses/courses.html', {'courses': courses})
 
 #edit course
 @login_required(login_url='/auth/login')

@@ -60,13 +60,20 @@ def edit_programme(request, pk):
 #-----------------List programmes---------------
 @login_required(login_url='/auth/login')
 def programmes(request):
-    programmes = Programs.objects.all().order_by('date_added')
+    if request.user.role == 'ADMIN':
+        programmes = Programs.objects.all().order_by('date_added')
+    elif request.user.staff_profile.position == 'HOD':
+        hod_department = request.user.staff_profile.department
+        programmes = Programs.objects.filter(department_id=hod_department).order_by('date_added')
+    else:
+        return HttpResponse('<h1>Insufficient Roles</h1>')
     return render(request, 'programs/programs.html', {'programmes':programmes})
 #-----------------View Programme------------------
 @login_required(login_url='/auth/login')
 def view_programme(request, pk):
-    programme = Programs.objects.get(pk=pk)
-    courses = Courses.objects.filter(program_id=programme)
+    if request.user.role == 'ADMIN' or request.user.staff_profile.position == 'HOD':
+        programme = Programs.objects.get(pk=pk)
+        courses = Courses.objects.filter(program_id=programme)
     context = {
         'programme':programme,
         'courses':courses
@@ -74,6 +81,9 @@ def view_programme(request, pk):
     return render(request, 'programs/view-program.html', context)
 #--------------Delete Programme-------------------
 def delete_programme(request, pk):
+    if request.user.role != 'ADMIN':
+        messages.error(request, 'Only an admin can delete a program')
+        return redirect('Programs:programs')
     programme = Programs.objects.get(pk=pk)
     programme.delete()
     return redirect('Programs:programs')
@@ -81,6 +91,7 @@ def delete_programme(request, pk):
 #---------export programmes to excel-------------
 @login_required(login_url='/auth/login')
 def export_excel(request):
+
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition']='attachment; filename = Programmes'+str(datetime.datetime.now())+'.xls'
 
@@ -91,13 +102,13 @@ def export_excel(request):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['Programme', 'Date Added']
+    columns = ['Programme', 'department_id']
     #
     for col_num in range(len(columns)):
         ws.write(row_num,col_num, columns[col_num], font_style)
 
     font_style = xlwt.XFStyle()
-    rows = Programs.objects.all().values_list('program_title', 'date_added')
+    rows = Programs.objects.all().values_list('program_title', 'department_id__department_name')
 
     for row in rows:
         row_num += 1

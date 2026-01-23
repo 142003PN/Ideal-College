@@ -279,17 +279,11 @@
                     </ul>
                   </li>
                 {% elif request.user.staff_profile.position == "HOD" %}
-                  <li class="submenu">
-                    <a href="#">
-                      <i class="fas fa-book-reader"></i> <span> Programmes</span>
-                      <span class="menu-arrow"></span>
-                    </a>
-                    <ul>
-                      <li><a href="{% url "Programs:programs" %}">Programmes</a></li>
-                      <li>
-                        <a href="{% url "Programs:add" %}" class="active">Add Programe</a>
-                      </li>
-                    </ul>
+                  <li>
+                    <a href="{% url "Programs:programs" %}"><i class="fas fa-book-reader"></i> <span>Programmes</span></a>
+                  </li>
+                  <li>
+                    <a href="{% url "Courses:courses" %}"><i class="fas fa-book-reader"></i> <span>Courses</span></a>
                   </li>
                   <li>
                     <a href="{% url "Registration:recent" %}"><i class="fas fa-clock"></i> <span>Recent Registered</span></a>
