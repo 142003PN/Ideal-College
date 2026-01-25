@@ -78,6 +78,13 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <div class="form-group">
+                        <label for="semester">Semester</label>
+                        {{ form.semester }}
+                        {{form.semester.errors}}
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
                         {{ form.is_current_year.label_tag}}
                         {{ form.is_current_year }}
                     </div>

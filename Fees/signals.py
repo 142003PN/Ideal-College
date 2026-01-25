@@ -30,12 +30,12 @@ def invoice_post_save(sender, instance, created, **kwargs):
     amount = instance.amount
 
     # Description logic
-    if instance.description:
-        description = instance.description
-    elif instance.fee:
+    if instance.fee:
         description = f'{instance.fee.fee_type} Fee'
+    elif instance.description:
+        description = instance.description
     else:
-        description = 'Manual Charge'
+        description = instance.description
 
     with transaction.atomic():
         ledger, ledger_created = LedgerEntry.objects.get_or_create(
@@ -56,7 +56,7 @@ def invoice_post_save(sender, instance, created, **kwargs):
             if instance.fee:
                 AppliedFee.objects.get_or_create(
                     account=account,
-                    fee=instance.fee
+                    fee=instance.fee,
                 )
 
 
@@ -115,6 +115,7 @@ def registration_post_save(sender, instance, created, **kwargs):
     student = instance.student_id
     year = instance.year_of_study
     program = student.profile.program
+    semester = instance.semester
 
     # Get or create account
     account, _ = StudentAccount.objects.get_or_create(student=student)
@@ -133,7 +134,8 @@ def registration_post_save(sender, instance, created, **kwargs):
             if AppliedFee.objects.filter(
                 account=account,
                 fee=fee,
-                is_reversed=False
+                is_reversed=False,
+                semester=semester
             ).exists():
                 continue
 

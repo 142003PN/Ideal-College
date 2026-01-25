@@ -2,9 +2,17 @@ from django import forms
 from .models import *
 
 class SessionYearForm(forms.ModelForm):
+    semester = forms.ModelChoiceField(
+        queryset=Semester.objects.all(),
+        required=True,
+        error_messages={
+            'required':'Please Select Semester'
+        },
+        widget=forms.Select(attrs={'class':'form-control form-select',})
+    )
     class Meta:
         model = SessionYear
-        fields = ['year_title', 'intake','is_current_year']
+        fields = ['year_title', 'intake','is_current_year', 'semester']
         widgets = {
             'year_title': forms.TextInput(attrs={'class': 'form-control'}),
             'intake': forms.Select(attrs={'class': 'form-control form-select'}),
@@ -22,18 +30,12 @@ class YearOfStudyForm(forms.ModelForm):
 
 #--------Semester Form-----------------
 class SemesterForm(forms.ModelForm):
-    semester_name = forms.ModelChoiceField(
-        queryset=Semester.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-control form-select'}),
-        empty_label='Select Semester',
-        error_messages={
-            'required': 'Please select a semester.', 
-        }
-    )
-
     class Meta:
         model = Semester
         fields = ['semester_name']
+        widgets = {
+            'semester_name': forms.Select(attrs={'class': 'form-control form-select'}),
+        }
 
  #---------Intake Form-----------------       
 class IntakeForm(forms.ModelForm):

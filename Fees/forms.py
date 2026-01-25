@@ -51,6 +51,7 @@ class InvoiceForm(forms.ModelForm):
 
     fee = forms.ModelChoiceField(
         queryset=Fee.objects.all(),
+        required=False,
         error_messages={
             'required': 'Please select a fee.'
         },
@@ -62,10 +63,15 @@ class InvoiceForm(forms.ModelForm):
         },
         widget=forms.NumberInput(attrs={'class': 'form-control','step': '0.01','min': '0','id': 'id_amount'})
     )
-
+    description = forms.CharField(
+        widget = forms.TextInput(attrs={'class': 'form-control','id':'id_description'})
+    )
+    semester = forms.CharField(
+        widget = forms.TextInput(attrs={'class': 'form-control'})
+    )
     class Meta:
         model = Invoice
-        fields = ['account', 'fee', 'amount']
+        fields = ['account', 'fee', 'amount', 'semester']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

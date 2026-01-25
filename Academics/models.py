@@ -27,17 +27,8 @@ class Intake(models.Model):
 
     def __str__(self):
         return self.intake_name
-
-class SessionYear(models.Model):
-    year_title=models.CharField(max_length=20, null=True)
-    intake = models.ForeignKey(Intake, on_delete=models.CASCADE, null=True, related_name='intakes')
-    is_current_year=models.BooleanField(default=False)
-    date=models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.year_title
     
-#semesters
+#-----------Semesters---------------
 class Semester(models.Model):
     class SemesterChoices(models.TextChoices):
         Semester_1 = 'semester_1'
@@ -48,3 +39,14 @@ class Semester(models.Model):
 
     def __str__(self):  
         return self.semester_name
+
+#----------------SessionYear--------------------
+class SessionYear(models.Model):
+    year_title=models.CharField(max_length=20, null=True)
+    intake = models.ForeignKey(Intake, on_delete=models.CASCADE, null=True, related_name='intakes')
+    is_current_year=models.BooleanField(default=False)
+    semester = models.ForeignKey(Semester, on_delete=models.SET_NULL, null=True, blank=True, related_name='semester')
+    date=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.year_title

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from Registration.models import Registration
 from Fees.models import StudentAccount
+from Students.models import StudentProfile
 from .models import Results
 from Courses.models import Courses
 from Academics.models import SessionYear
@@ -14,7 +15,8 @@ def fetch_student(request):
     if request.user.role == 'ADMIN':
         if request.method == 'POST':
             student_id=request.POST.get('student_id')
-            session_year=SessionYear.objects.get(is_current_year=1)
+            profile = StudentProfile.objects.get(student_id=student_id)
+            session_year=SessionYear.objects.get(is_current_year=1, intake=profile.intake)
             try:
                 student=Results.objects.filter(student_id=student_id, session_year=session_year)
                 if student.exists():
@@ -36,7 +38,8 @@ def fetch_student(request):
 @login_required(login_url='/auth/login')
 def add_results(request):
     student_id=request.session.get('student_id')
-    session_year=SessionYear.objects.get(is_current_year=1)
+    intake = StudentProfile.objects.get(student_id=student_id).intake
+    session_year=SessionYear.objects.get(is_current_year=1, intake=intake)
     results=Results.objects.filter(student_id=student_id, session_year=session_year).exclude(grade__isnull=False)
     
     if results:

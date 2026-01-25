@@ -75,17 +75,23 @@ def add_staff(request):
 
         #validation can be added here
         if Staff.objects.filter(email=email).exists():
-            return messages.error(request, "Email already exists")
+            messages.error(request, "Email already exists")
+            redirect('Staff:add')
         elif Staff.objects.filter(NRC=NRC).exists():
-            return messages.error(request, "NRC already exists")
+            messages.error(request, "NRC already exists")
+            redirect('Staff:add')
         elif not first_name:
-            return messages.error(request, "First name is required")
+            messages.error(request, "First name is required")
+            redirect('Staff:add')
         elif not last_name:
-            return messages.error(request, "Last name is required")
+            messages.error(request, "Last name is required")
+            redirect('Staff:add')
         elif not NRC:
-            return messages.error(request, "NRC is required")
+            messages.error(request, "NRC is required")
+            redirect('Staff:add')
         elif not email:
-            return messages.error(request, "Email is required")
+            messages.error(request, "Email is required")
+            redirect('Staff:add')
         else:
             staff=Staff.objects.create(
                 id=staff_no,

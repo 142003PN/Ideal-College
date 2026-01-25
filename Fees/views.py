@@ -50,8 +50,15 @@ def add_invoice(request):
         if request.method == 'POST':
             form = InvoiceForm(request.POST)
             if form.is_valid():
+                description = form.cleaned_data['description']
+                fee = form.cleaned_data['fee']
                 with transaction.atomic():
-                    invoice = form.save()
+                    invoice = form.save(commit=False)
+                    if description and fee is None:
+                        invoice.description = description
+                    else:
+                        invoice.decription = fee
+                    invoice=form.save()
                     messages.success(
                         request,
                         f'Invoice created successfully.'

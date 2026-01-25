@@ -2,7 +2,7 @@ from django.db import models
 from decimal import Decimal
 from Students.models import Student
 from Programs.models import Programs
-from Academics.models import YearOfStudy
+from Academics.models import YearOfStudy, Semester
 import uuid
 
 # STUDENT ACCOUNT
@@ -110,7 +110,7 @@ class AppliedFee(models.Model):
     account = models.ForeignKey(StudentAccount, on_delete=models.CASCADE)
     fee = models.ForeignKey(Fee, on_delete=models.SET_NULL, null=True, blank=True)
     applied_on = models.DateTimeField(auto_now_add=True)
-
+    semester = models.ForeignKey(Semester, on_delete=models.SET_NULL, null=True, blank=True)
     is_reversed = models.BooleanField(default=False)
 
     class Meta:
