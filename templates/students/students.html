@@ -41,14 +41,14 @@
                         <tr>
                            <td>{{student.id}}</td>
                            <td>
-                              <h2 class="table-avatar">
+                              <div class="table-avatar">
                                  {% if student.profile.profile_picture %}
-                                 <a href="{% url "Students:details" student.id  %}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ student.profile.profile_picture.url}}" alt="User Image"></a>
+                                 <a href="{% url "Students:details" student.id  %}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ student.profile.profile_picture.url }}" alt="User Image"></a>
                                  {% else %}
-                                 <a href="{% url "Students:details" student.id  %}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{% static "img/default.png" %}" alt="User Image"></a>
+                                 <a href="{% url "Students:details" student.id  %}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{% static 'img/default.png' %}" alt="User Image"></a>
                                  {% endif %}
-                                 <a href="{% url "Students:details" student.id  %}">{{student.first_name}} {{student.last_name}}</a>
-                              </h2>
+                                 <h2><a href="{% url "Students:details" student.id  %}">{{ student.first_name }} {{ student.last_name }}</a></h2>
+                              </div>
                            </td>
                            <td>{{ student.profile.program }}</td>
                            <td>{{ student.profile.intake }}</td>

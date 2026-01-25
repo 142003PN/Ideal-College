@@ -29,7 +29,7 @@ class StudentProfile(models.Model):
     student_id = models.OneToOneField(Student, on_delete=models.CASCADE, related_name='profile')
     program = models.ForeignKey(Programs, on_delete=models.SET_NULL, null=True, blank=True)
     year_of_study = models.ForeignKey(YearOfStudy, on_delete=models.SET_NULL, null=True, blank=True)
-    profile_picture = models.ImageField(upload_to='student_profiles/', default='fallback.png', null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='student_profiles/', default='fallback.png', blank=True)
     gender = models.CharField(max_length=1, choices=GenderChoices.choices, null=True, blank=True)
     intake = models.ForeignKey(Intake, on_delete=models.SET_NULL, null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)

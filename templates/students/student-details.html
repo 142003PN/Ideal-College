@@ -57,7 +57,7 @@
             <div class="about-info">
               <h4>About Me</h4>
               <div class="media mt-3">
-                {% if student.profile.profile_picture %}
+                {% if profile.profile_picture %}
                 <a data-bs-toggle="modal" data-bs-target="#prifile_pic_Modal" >
                   <img style='border-radius: 10px; cursor: pointer;' data-bs-toggle="modal" data-bs-target="#prifile_pic_Modal" src="{{ student.profile.profile_picture.url }}"  class="mr-3" alt="Profile_picture" />
                 </a>

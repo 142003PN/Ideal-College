@@ -134,8 +134,14 @@ def add_student(request):
 def edit_student(request, pk):
     student = Student.objects.get(pk=pk)
     profile = StudentProfile.objects.get(student_id=student)
-    programs = Programs.objects.filter(id=profile.program.id) | Programs.objects.exclude(id=profile.program.id)
-    intakes = Intake.objects.all()
+    if not profile.program:
+        programs = Programs.objects.all()
+    else:
+        programs = Programs.objects.filter(id=profile.program.id) | Programs.objects.exclude(id=profile.program.id)
+    if not profile.intake:
+        intakes = Intake.objects.all()
+    else:
+        intakes = Intake.objects.filter(id=profile.intake.id) | Intake.objects.exclude(id=profile.intake.id)
 
     if request.method == 'POST':
         # Retrieve student data from form  
@@ -149,8 +155,11 @@ def edit_student(request, pk):
         date_of_birth = request.POST.get('date_of_birth')
         address = request.POST.get('address')
         phone_number = request.POST.get('phone_number')
+        intake_id = request.POST.get('intake')
         program_id = request.POST.get('programme')
-        program = Programs.objects.get(id=program_id)
+        if request.user.role == 'ADMIN':
+            program = Programs.objects.get(id=program_id)
+            intake_obj = Intake.objects.get(id=intake_id)
 
         if email != student.email and Student.objects.filter(email=email).exists():
             messages.error(request, "Student with this email already exists.")
@@ -168,18 +177,28 @@ def edit_student(request, pk):
         student.email = email
         student.NRC = NRC
         student.save()
-        
-        # Update profile
-        profile.gender = gender
-        profile.date_of_birth = date_of_birth
-        profile.address = address
-        profile.phone_number = phone_number
-        if program:
+        if request.user.role == 'ADMIN':
+            # Update profile
+            profile.gender = gender
+            profile.date_of_birth = date_of_birth
+            profile.address = address
+            profile.phone_number = phone_number
             profile.program = program
-        profile.save()
-        
-        messages.success(request, 'Student updated successfully')
-        return redirect('Students:details', student_id=pk)
+            profile.intake = intake_obj
+            profile.save()
+            
+            messages.success(request, 'Student updated successfully')
+            return redirect('Students:details', student_id=pk)
+        else:
+                # Update profile
+            profile.gender = gender
+            profile.date_of_birth = date_of_birth
+            profile.address = address
+            profile.phone_number = phone_number
+            profile.save()
+            
+            messages.success(request, 'Student updated successfully')
+            return redirect('Students:details', student_id=pk)
 
     context = {
         'student': student,
@@ -194,18 +213,21 @@ def edit_student(request, pk):
 def student_details(request, student_id):
     #-------Update Profile Picture-----------
     try:
-        student = Student.objects.get(pk=student_id)
-        student_profile = StudentProfile.objects.get(student_id=student)
-        profile_picture = request.FILES.get('profile_picture')
-        if profile_picture:
-            if student_profile.profile_picture and hasattr(student_profile.profile_picture, 'path'):
-                if os.path.isfile(student_profile.profile_picture.path):
-                    os.remove(student_profile.profile_picture.path)
-            student_profile.profile_picture = profile_picture
-            student_profile.save()
-            messages.success(request, 'Profile picture updated successfully.')
+        student = Student.objects.get(pk=student_id).id
+        student_profile = StudentProfile.objects.filter(student_id=student)
+        if student_profile.exists():
+            profile_picture = request.FILES.get('profile_picture')
+            if profile_picture:
+                if student_profile.profile_picture and hasattr(student_profile.profile_picture, 'path'):
+                    if os.path.isfile(student_profile.profile_picture.path):
+                        os.remove(student_profile.profile_picture.path)
+                student_profile.profile_picture = profile_picture
+                student_profile.save()
+                messages.success(request, 'Profile picture updated successfully.')
+        else:
+            return redirect('Students:add-profile', student_id=student )
     except StudentProfile.DoesNotExist:
-        pass
+        return redirect('error404')
     #------------End of profile pic update-------
     student = Student.objects.get(id=student_id)
     profile = student.profile
@@ -214,6 +236,68 @@ def student_details(request, student_id):
         'profile': profile,
     }
     return render(request, 'students/student-details.html', context)
+
+@login_required(login_url='/users/login/')
+def add_profile(request, student_id):
+    student_obj = Student.objects.get(id=student_id)
+    programmes=Programs.objects.all()
+    years = YearOfStudy.objects.all()
+    intakes = Intake.objects.all()
+
+    #get form data
+    gender = request.POST.get('gender')
+    date_of_birth = request.POST.get('date_of_birth')
+    address = request.POST.get('address')
+    phone_number = request.POST.get('phone_number')
+    intake_id = request.POST.get('intake')
+    program_id = request.POST.get('programme')
+    year_id = request.POST.get('year_of_study')
+    
+    if request.method == 'POST':
+        if request.user.role == 'ADMIN':
+            year_of_study = YearOfStudy.objects.get(id=year_id)
+            program_obj = Programs.objects.get(id=program_id)
+            intake_obj = Intake.objects.get(id=intake_id).id
+            StudentProfile.objects.create(
+                intake_id=intake_obj,
+                gender=gender,
+                date_of_birth=date_of_birth,
+                address=address,
+                program=program_obj,
+                phone_number=phone_number,
+                student_id=student_obj,
+                year_of_study=year_of_study
+            )
+            messages.success(request, 'Profile Added')
+            return redirect('Students:details', student_id=student_id)          
+        elif request.user.role == 'ADMIN' and StudentProfile.objects.filter(student_id=student_obj).exists():
+            messages.error(request, 'Profile already exists for this student')
+            return redirect('Students:details', student_id=student_id)
+        elif request.user.role == 'STUDENT' and str(request.user.id) == str(student_id):
+            year_of_study = YearOfStudy.objects.get(id=year_id)
+            intake_obj = Intake.objects.get(id=intake_id).id
+            StudentProfile.objects.create(
+                gender=gender,
+                date_of_birth=date_of_birth,
+                address=address,
+                phone_number=phone_number,
+                student_id=student_obj,
+                year_of_study=year_of_study,
+                intake=intake_obj,
+            )
+            messages.success(request, 'Profile Added')
+            return redirect('Students:details', student_id=student_id)
+        else:
+            messages.error(request, 'Insufficient Privelleges to add profile')
+            return redirect('Students:details', student_id=student_id)
+    context={
+        'intakes':intakes,
+        'programmes':programmes,
+        'years':years,
+        'student_id':student_id
+    }
+    return render(request, 'students/add-profile.html', context)
+
 
 #----------delete student media----------------
 def delete_student_media(student):

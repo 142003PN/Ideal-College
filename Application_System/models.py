@@ -20,16 +20,7 @@ class General_Information(models.Model):
     admission_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    date_of_birth = models.DateField(validators=[
-        validators.MinValueValidator(
-            limit_value=datetime.date.today() - datetime.timedelta(days=365.25*100),
-            message='Date of birth cannot be more than 100 years ago'
-        ),
-        validators.MaxValueValidator(
-            limit_value=datetime.date.today() - datetime.timedelta(days=365.25*16),
-            message='Must be at least 16 years old'
-        )
-    ])
+    date_of_birth = models.DateField()
     NRC = models.CharField(max_length=20, unique=True)
     NRC_scan = models.FileField(upload_to='nrc_scans/', null=True, blank=True)
     marital_status = models.CharField(max_length=30, null=True, blank=True)

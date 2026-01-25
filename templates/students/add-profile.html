@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+<title>{% block title %}Add Profile{% endblock %}</title>
+{% block  content %}
+<div class="page-wrapper">
+   <div class="content container-fluid">
+      <div class="page-header">
+         <div class="row align-items-center">
+            <div class="col">
+               <h3 class="page-title">Add Profile</h3>
+               <ul class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url "Students:list" %}">Students</a></li>
+                  <li class="breadcrumb-item active">Add Profile</li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-sm-12">
+            <div class="card">
+               <!--Messages-->
+               {% for message in messages %}
+               {% if 'error' in message.tags %}
+               <script>
+                  document.addEventListener("DOMContentLoaded", function () {
+                  Swal.fire({
+                     icon: "error",
+                     title: "Error",
+                     text: "{{ message|escapejs }} ",
+                     confirmButtonText: "OK",
+                  });
+                  });
+               </script>
+               {% else %}
+               <script>
+                  document.addEventListener("DOMContentLoaded", function () {
+                  Swal.fire({
+                     icon: "success",
+                     title: "Success",
+                     text: "{{ message|escapejs }} ",
+                     confirmButtonText: "OK",
+                  });
+                  });
+               </script>
+               {% endif %}
+               {% endfor %}
+               <!--Messages-->
+               <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" id="studentform" class="needs-validation" novalidate>
+                      {% csrf_token %}
+                       <div class="row">
+                        <div class="col-12">
+                           <h5 class="form-title"><span>Profile Information</span></h5>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                            <label>Gender <small class="text-danger">*</small></label>
+                            <select class="form-control" name="gender" id="gender" required>
+                              <option value="">Select Gender</option>
+                              <option value="F">Female</option>
+                              <option value="M">Male</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a gender.</div>
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                            <label>Date of Birth <small class="text-danger">*</small></label>
+                            <div>
+                              <input type="date" name="date_of_birth" id="date_of_birth" class="form-control" required>
+                              <div class="invalid-feedback">Please provide a date of birth.</div>
+                            </div>
+                           </div>
+                        </div>
+                        {% if request.user.role == 'ADMIN' %}
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                            <label id="programme">Programme <small class="text-danger">*</small></label>
+                            <select name="programme" id="programme" class="form-control" required>
+                             <option value="">Select Programme</option>
+                             {% for programme in programmes %}
+                              <option value="{{programme.id}}">{{programme.program_title}}</option>
+                              {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">Please select a programme.</div>
+                           </div>
+                        </div>
+                        {% endif %}
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                            <label>Year of Study <small class="text-danger">*</small></label>
+                            <select name="year_of_study" id="year_of_study" class="form-control" required>
+                              <option value="">Select Year of Study</option>
+                              {% for year in years %}
+                               <option value="{{year.id}}">{{year.year_title}}</option>
+                              {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">Please select a year of study.</div>
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                            <label>Intake <small class="text-danger">*</small></label>
+                            <select name="intake" id="intake" class="form-control" required>
+                              <option value="">Select Intake</option>
+                             {% for intake in intakes %}
+                              <option value="{{intake.id}}">{{intake.intake_name}}</option>
+                              {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">Please select an intake.</div>
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                            <label>Address <small class="text-danger">*</small></label>
+                            <textarea class="form-control" name="address" id="address" cols="10" rows="3" required></textarea>
+                            <div class="invalid-feedback">Address is required.</div>
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                            <label>Mobile Number <small class="text-danger">*</small></label>
+                            <input type="tel" name="phone_number" id="phone_number" class="form-control" required>
+                            <div class="invalid-feedback">Mobile number is required.</div>
+                           </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <div class="form-group">
+                            <label>Profile Picture</label>
+                            <input type="file" name="profile_picture" id="profile_picture" class="form-control">
+                           </div>
+                        </div>
+                        <div class="col-12">
+                           <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span id="btnText">Submit</span>
+                            <span id="spinner" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true" style="display: none;"></span>
+                           </button>
+                        </div>
+                       </div>
+                    </form>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<script>
+   (() => {
+      'use strict';
+
+      const form = document.getElementById('studentform');
+      if (!form) return;
+
+      /* loading spinner on submit */
+      form.addEventListener('submit', function(e) {
+         const submitBtn = document.getElementById('submitBtn');
+         const btnText = document.getElementById('btnText');
+         const spinner = document.getElementById('spinner');
+
+         /*change submit button text*/
+         btnText.innerText = 'Submitting';
+
+         if (!form.checkValidity()) {
+            btnText.innerText = 'Submit';
+            e.preventDefault();
+            e.stopPropagation();
+            return; // Stop loading if validation fails
+         }
+
+         submitBtn.disabled = true;
+         btnText.style.display = 'none';
+         spinner.style.display = 'inline-block';
+      });
+
+      const sanitizers = {
+         nrc: (val) => val.replace(/[^0-9/]/g, '').slice(0, 20),
+         phone_number: (val) => val.replace(/[^0-9+-]/g, '').slice(0, 15),
+         first_name: (val) => val.slice(0, 24),
+         last_name: (val) => val.slice(0, 15)
+      };
+
+      form.addEventListener('submit', (e) => {
+         if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+         }
+         form.classList.add('was-validated');
+      });
+
+      form.addEventListener('input', (e) => {
+         const sanitizer = sanitizers[e.target.id];
+         if (sanitizer) {
+            e.target.value = sanitizer(e.target.value);
+         }
+      });
+   })();
+</script>
+
+{% endblock  %}
