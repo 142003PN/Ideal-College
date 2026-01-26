@@ -59,6 +59,7 @@
                     <th>Code</th>
                     <th>Course Title</th>
                     <th>Class</th>
+                    <th>Semester</th>
                     <th>Programme</th>
                     <th class="text-right">Action</th>
                   </tr>
@@ -73,6 +74,7 @@
                       </h2>
                     </td>
                     <td>{{ course.year_of_study }}</td>
+                    <td>{% if course.semester.semester_name == 'semester_1' %}Semester 1 {% else %}Semester 2{% endif %}</td>
                     <td>{{ course.program_id }}</td>
                     <td class="text-right">
                       <div class="actions">

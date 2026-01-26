@@ -66,12 +66,9 @@ class InvoiceForm(forms.ModelForm):
     description = forms.CharField(
         widget = forms.TextInput(attrs={'class': 'form-control','id':'id_description'})
     )
-    semester = forms.CharField(
-        widget = forms.TextInput(attrs={'class': 'form-control'})
-    )
     class Meta:
         model = Invoice
-        fields = ['account', 'fee', 'amount', 'semester']
+        fields = ['account', 'fee', 'amount', 'description']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

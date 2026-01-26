@@ -127,17 +127,45 @@
 document.addEventListener("DOMContentLoaded", function () {
     const feeSelect = document.getElementById("id_fee");
     const amountInput = document.getElementById("id_amount");
+    const descriptionInput = document.getElementById("id_description");
 
-    feeSelect.addEventListener("change", function () {
-        const selectedOption = this.options[this.selectedIndex];
-        const amount = selectedOption.getAttribute("data-amount");
+    if (!feeSelect || !amountInput || !descriptionInput) return;
 
-        if (amount) {
-            amountInput.value = amount;
+    function toggleAndFill() {
+        const selectedOption = feeSelect.options[feeSelect.selectedIndex];
+
+        // Auto-fill amount from data-amount attribute or text
+        if (feeSelect.value) {
+            descriptionInput.disabled = true;
+
+            const amount = selectedOption.getAttribute("data-amount");
+            if (amount) {
+                amountInput.value = amount;
+            } else {
+                const match = selectedOption.text.match(/K([\d.]+)/);
+                if (match) {
+                    amountInput.value = match[1];
+                }
+            }
         } else {
+            descriptionInput.disabled = false;
             amountInput.value = "";
         }
-    });
+
+        // Disable fee if description is typed
+        if (descriptionInput.value.trim() !== "") {
+            feeSelect.disabled = true;
+        } else {
+            feeSelect.disabled = false;
+        }
+    }
+
+    feeSelect.addEventListener("change", toggleAndFill);
+    descriptionInput.addEventListener("input", toggleAndFill);
+
+    // Run once on load
+    toggleAndFill();
 });
+
 </script>
 {% endblock %}

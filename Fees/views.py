@@ -46,29 +46,30 @@ def invoices(request):
 
 #-----------ADD INVOICE -------------------
 def add_invoice(request):
-    if request.user.staff_profile.position == "Accountant":
-        if request.method == 'POST':
-            form = InvoiceForm(request.POST)
-            if form.is_valid():
-                description = form.cleaned_data['description']
-                fee = form.cleaned_data['fee']
-                with transaction.atomic():
-                    invoice = form.save(commit=False)
-                    if description and fee is None:
-                        invoice.description = description
-                    else:
-                        invoice.decription = fee
-                    invoice=form.save()
-                    messages.success(
-                        request,
-                        f'Invoice created successfully.'
-                    )
-        else:
-            form = InvoiceForm()
-    else:
+    if request.user.staff_profile.position != "Accountant":
         return redirect('error404')
 
+    if request.method == 'POST':
+        form = InvoiceForm(request.POST)
+        if form.is_valid():
+            with transaction.atomic():
+                invoice = form.save(commit=False)
+
+                # If fee selected, use fee name as description
+                if invoice.fee:
+                    invoice.description = str(invoice.fee)
+                else:
+                    invoice.description = form.cleaned_data.get('description')
+
+                invoice.save()
+
+                messages.success(request, 'Invoice created successfully.')
+                return redirect('Fees:add-invoice')
+    else:
+        form = InvoiceForm()
+
     return render(request, 'fees/add-invoice.html', {'form': form})
+
 
 #----------------INVOICE MANY OR A GROUP OF STUDENTS -------------------
 def bulk_invoice_view(request):

@@ -79,13 +79,14 @@
 }
 .title{
     margin: 1rem 0;
+    font-size: clamp(1.2rem, 5vw, 2rem);
     text-align: center;
     color: var(--base-clr);
 }
 /* Vision and Mission */
 .vision-mission{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 500px));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 450px));
     column-gap: 3em;
     row-gap: 3em;
     justify-content: center;
@@ -101,7 +102,7 @@
     gap: 0;
 }
 .card-title{
-    font-size: 1.2rem;
+    font-size: clamp(0.9rem, 4vw, 1.2em);
     font-weight: 600;
     color: var(--base-clr);
 }
@@ -180,6 +181,9 @@ footer {
 
 /*---Responsive design */
 @media (max-width: 768px) {
+    .programs, .vision-mission{
+        margin: 1rem 1rem;
+    }
     table {
         font-size: 0.9rem;
     }
