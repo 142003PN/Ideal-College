@@ -21,7 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 ".dropdown-menu", 
                 ".dropdown-toggle",
                 ".nav-link",
-                ".submenu a"
+                ".submenu a",
+                ".delete-btn",
+                ".sweet-alert",
             ];
 
             function isInsideSafeArea(el) {

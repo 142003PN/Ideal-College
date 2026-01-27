@@ -111,33 +111,43 @@ def session_years(request):
 #---------- Add Session Year View -------------
 @login_required(login_url='/auth/login')
 def add_session_year(request):
-    if request.user.role == 'ADMIN':
-        form = SessionYearForm()
-        if request.method == 'POST':
-            form = SessionYearForm(request.POST)
-            if form.is_valid():
-                #same intakes should not be current year
-                intake = form.cleaned_data['intake']
-                is_current_year = form.cleaned_data['is_current_year']
-                semester = form.cleaned_data['semester']
-                if is_current_year:
-                    SessionYear.objects.filter(intake=intake, is_current_year=True).update(is_current_year=False)
-                #Intake and semester of session year should be unique
-                if SessionYear.objects.filter(intake=intake, semester=semester).exists():
-                    messages.error(request, 'Session Year with this semester and intake already exists.')
-                    return redirect('Academics:add-session-year')
-                else:
-                    session_year = form.save(commit=False)
-                    form.save()
-                    messages.success(request, 'Session Year Added Successfully')
-                    return redirect('Academics:add-session-year')
-            else:
-                return messages.error(request, 'Failed to Add Session Year. Please Try Again')
-        else:
-            form = SessionYearForm()
-            return render(request, 'academics/add-session-year.html', {'form': form})
-    else:
+    if request.user.role != 'ADMIN':
         return HttpResponse('<h1>Insufficient Roles</h1>')
+
+    if request.method == 'POST':
+        form = SessionYearForm(request.POST)
+        if form.is_valid():
+
+            intake = form.cleaned_data['intake']
+            is_current_year = form.cleaned_data['is_current_year']
+            semester = form.cleaned_data['semester']
+            year_title = form.cleaned_data['year_title']
+            # (1) Prevent duplicate Intake + Semester
+            if SessionYear.objects.filter(intake=intake, year_title=year_title, semester=semester).exists():
+                messages.error(request, 'Session Year with this semester and intake already exists.')
+                return redirect('Academics:add-session-year')
+
+            # (2) If marked as current year → turn off others for same intake
+            if is_current_year:
+                SessionYear.objects.filter(
+                    intake=intake,
+                    is_current_year=True
+                ).update(is_current_year=False)
+
+            # (3) Save the new session year properly
+            session_year = form.save()
+
+            messages.success(request, 'Session Year Added Successfully')
+            return redirect('Academics:add-session-year')
+
+        # Form invalid
+        messages.error(request, 'Failed to Add Session Year. Please Try Again')
+        return redirect('Academics:add-session-year')
+
+    else:
+        form = SessionYearForm()
+        return render(request, 'academics/add-session-year.html', {'form': form})
+
 
 #---------- Edit Session Year View -------------
 @login_required(login_url='/auth/login')
@@ -151,12 +161,24 @@ def edit_session_year(request, pk):
                 intake = form.cleaned_data['intake']
                 is_current_year = form.cleaned_data['is_current_year']
                 semester = form.cleaned_data['semester']
-                if is_current_year:
-                    SessionYear.objects.filter(intake=intake, is_current_year=True).update(is_current_year=False)
-                #Intake and semester of session year should be unique
-                if SessionYear.objects.filter(intake=intake, semester=semester).exists():
+                year_title = form.cleaned_data['year_title']
+                # (1) Prevent duplicate Intake + Semester
+                if SessionYear.objects.filter(intake=intake, year_title=year_title, semester=semester).exists():
                     messages.error(request, 'Session Year with this semester and intake already exists.')
                     return redirect('Academics:add-session-year')
+                # (2) If marked as current year → turn off others for same intake
+                if is_current_year:
+                    SessionYear.objects.filter(
+                        intake=intake,
+                        is_current_year=True
+                    ).update(is_current_year=False)
+
+                # (3) Save the new session year properly
+                session_year = form.save()
+
+                messages.success(request, 'Session Year Added Successfully')
+                return redirect('Academics:add-session-year')
+
             else:
                 return messages.error(request, 'Failed to Update Session Year. Please Try Again')
         else:

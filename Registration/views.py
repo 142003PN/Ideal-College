@@ -23,6 +23,7 @@ import os
 """
 
 #1. ----------Register for Courses-------------
+@login_required(login_url='/auth/login')
 def register(request):
     sid = request.user
     program = request.user.profile.program
@@ -78,11 +79,13 @@ def register(request):
     return render(request, 'registration/register.html', context)
 
 #2. ----------------View Recent Registrations-----------------
+@login_required(login_url='/auth/login')
 def recent_registrations(request):
     registrations = Registration.objects.all().order_by('-registration_date')
     return render(request, 'registration/recently_registered.html', {'registrations': registrations})
 
 #3. ------------------Approve Course Registration----------------------------
+@login_required(login_url='/auth/login')
 def approve_registration(request, pk):
     if request.user.role != 'STAFF' and request.user.role != 'ADMIN':
         messages.error(request, "You do not have permission to approve registrations.")
@@ -101,6 +104,7 @@ def approve_registration(request, pk):
     return render(request, 'registration/recently_registered.html')
 
 #4. --------------------View Submitted Courses-------------
+@login_required(login_url='/auth/login')
 def view_submitted_courses(request, pk):
     if request.user.role=='ADMIN':
         try:
@@ -115,6 +119,7 @@ def view_submitted_courses(request, pk):
     return render(request, 'registration/view-registered.html')
 
 #5. ----------------Print Confirmation Slip-----------------
+@login_required(login_url='/auth/login')
 def print_confirmation_slip(request, student_id):
     intake = StudentProfile.objects.get(student_id=student_id).intake
 
@@ -183,6 +188,7 @@ def print_confirmation_slip(request, student_id):
     return render(request, 'registration/confirmation-slip.html', context)
 
 #6. ----------------Delete Registration-----------------
+@login_required(login_url='/auth/login')
 def delete_qrcode_media(registration):
     try:
         if registration.qr_code and hasattr(registration.qr_code, 'path'):
@@ -191,6 +197,7 @@ def delete_qrcode_media(registration):
     except (AttributeError, OSError):
         pass
 #7. ---------------------------Deregister--------------------------------
+@login_required(login_url='/auth/login')
 def delete_registration(request, pk):
     if request.user.role != 'ADMIN':
         messages.error(request, "You do not have permission to delete registrations.")

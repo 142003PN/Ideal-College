@@ -42,7 +42,16 @@
         </script>
         {% endif %} 
         {% endfor %}
-
+        <div class="text-center mb-3">
+            <p>An Amount oF K150 for Application should be dopsited in Zanaco Account No: <b>5758710500284</b>
+                The Receipt should Bare The Applicant's Full Name 
+                <button type="button" class="btn btn-outline-primary" id="shareBtn">
+                    <i class="bi bi-share"></i> Share Link
+                </button>
+            </p>
+            <p class="lead text-muted">You are required to use accurate details  
+            </p>
+        </div>
         <!-- Form Section -->
         <div class="row justify-content-center">
             <div class="col-lg-8 col-xl-7">
@@ -157,7 +166,7 @@
                                 <input type="file" id='passport_photo' name="passport_photo" class="form-control" accept="image/*" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-500" for='deposit_slip'>Deposit Slip <small class="text-danger">* (Image or PDF allowed)</small></label>
+                                <label class="form-label fw-500" for='deposit_slip'>Application Fee Receipt <small class="text-danger">* (Image or PDF allowed)</small></label>
                                 <input type="file" id='deposit_slip' name="deposit_slip" class="form-control" accept="application/pdf,image/*" required>
                             </div>
                         </div>
@@ -178,14 +187,9 @@
                             </div>
                         </div>
                         <!-- Actions -->
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-primary d-flex align-items-center" type="submit" id="nextBtn">
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-primary" type="submit" id="nextBtn">
                                 <span id="btnText">Next</span>
-                                <span id="btnSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status"></span>
-                            </button>
-
-                            <button type="button" class="btn btn-outline-secondary" id="shareBtn">
-                                <i class="bi bi-share"></i> Share Link
                             </button>
                         </div>
 
@@ -206,8 +210,6 @@
         if (!form) return;
 
         const nextBtn = document.getElementById('nextBtn');
-        const btnSpinner = document.getElementById('btnSpinner');
-        const btnText = document.getElementById('btnText');
         const shareBtn = document.getElementById('shareBtn');
 
         /* ===== SHARE CURRENT PAGE LINK ===== */
@@ -241,8 +243,6 @@
                 e.stopPropagation();
             } else {
                 nextBtn.disabled = true;
-                btnSpinner.classList.remove('d-none');
-                btnText.textContent = 'Processing...';
             }
             form.classList.add('was-validated');
         });

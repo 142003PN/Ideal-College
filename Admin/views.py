@@ -1,10 +1,11 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from Courses.models import *
 from Academics.models import *
 from Users.models import CustomUser
 
 # Create your views here.
-
+@login_required(login_url='/auth/login')
 def dashboard(request):
     if request.user.role == 'ADMIN':
         years = YearOfStudy.objects.all()

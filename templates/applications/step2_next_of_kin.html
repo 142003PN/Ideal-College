@@ -56,7 +56,6 @@
                                 <a href="{% url 'Application:apply' %}" class="btn btn-secondary">Back</a>
                                 <button class="btn btn-primary" type="submit">
                                     <span id="btnText">Next</span>
-                                    <span id="btnSpinner" class="spinner-border spinner-border-sm ms-2 d-none"role="status" aria-hidden="true"></span>
                                 </button>
                             </div>
                         </div>
@@ -76,8 +75,6 @@
 
                 /* ===== SPINNER ELEMENTS ===== */
                 const nextBtn = document.getElementById('nextBtn');
-                const btnSpinner = document.getElementById('btnSpinner');
-                const btnText = document.getElementById('btnText');
 
                 /* ===== LIGHT INPUT SANITIZATION ===== */
                 form.addEventListener('input', (e) => {
@@ -102,8 +99,6 @@
                         e.stopPropagation();
                     } else {
                         nextBtn.disabled = true;
-                        btnSpinner.classList.remove('d-none');
-                        btnText.textContent = 'Processing...';
                     }
 
                     form.classList.add('was-validated');

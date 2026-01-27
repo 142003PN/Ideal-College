@@ -72,7 +72,7 @@
                                 <td>{{ledger.is_reversal}}</td>
                                 <td class="text-right">
                                     {% if ledger.is_reversal == 0 %}
-                                        <a href="{% url "Fees:reverse" ledger.id %}" class="btn btn-primary btn-sm"
+                                        <a href="{% url "Fees:reverse" ledger.id %}" class="btn btn-primary btn-sm sweet-alert"
                                             onclick="event.preventDefault();
                                             const url = this.href;
                                             Swal.fire({

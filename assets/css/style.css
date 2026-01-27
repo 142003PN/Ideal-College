@@ -249,6 +249,8 @@ table.table td h2 span {
 .card-table .table td, .card-table .table th {
     border-top: 1px solid #e2e5e8;
     padding: 1rem 0.75rem;
+	color: #0B1F3A;
+	font-weight: 400;
     white-space: nowrap;
 }
 .table .thead-light th {
@@ -257,7 +259,7 @@ table.table td h2 span {
     border-color: #eff2f7;
 }
 .table tbody td{
-	font-weight: 200;
+	font-weight: 400;
 	color: #0B1F3A;
 }
 

@@ -1,7 +1,9 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from Fees.models import *
 # Create your views here.
 
+@login_required(login_url='/auth/login')
 def dashboard(request):
     if request.user.staff_profile.position == "Accountant":
         fees = Fee.objects.all()

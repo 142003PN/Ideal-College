@@ -128,6 +128,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ideal College</title>
+    <link rel="icon" href="{% static "img/logo.png" %}" type="image/png" sizes="32x32">
     <link rel="stylesheet" href="{% static "css/home.css" %}">
     {% block extra_css %}{% endblock %}
     <style>
@@ -192,11 +193,13 @@
 {% endblock  %}
 <!-- Footer -->
 <footer id="contact">
-    <p>&copy; 2025 Ideal College. All rights reserved.</p>
-    <p>📧 Email: info@idealcollege.edu | 📞 Phone: +1 (555) 123-4567</p>
+    <p>Location Chingola Zambia</p>
+    <p>&copy; <span id="currentYear"></span> Ideal College. All rights reserved.</p>
+    <p>📧 Email: idealcollege2020@gmail.com | 📞 Phone: +260967864099</p>
 </footer>
 <script src="{% static "js/pre-loader.js" %}"></script>
 <script >
+    document.getElementById("currentYear").innerText = new Date().getFullYear();
     const hamburger = document.getElementById("hamburger");
     const navLinks = document.getElementById("navLinks");
 

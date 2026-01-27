@@ -77,7 +77,7 @@
                            <td class="text-right">
                               <a href="{% url "Registration:view_courses" registration.id %}" class="btn btn-sm btn-primary mr-2">View</a>
                               {% if request.user.role == 'ADMIN' %}
-                              <a href="{% url "Registration:delete" registration.id %}" class="btn btn-sm btn-danger"
+                              <a href="{% url "Registration:delete" registration.id %}" class="btn btn-sm btn-danger delete-btn"
                                  onclick="event.preventDefault();
                                     const url = this.href;
                                     Swal.fire({
