@@ -109,12 +109,12 @@ class LedgerEntry(models.Model):
 class AppliedFee(models.Model):
     account = models.ForeignKey(StudentAccount, on_delete=models.CASCADE)
     fee = models.ForeignKey(Fee, on_delete=models.SET_NULL, null=True, blank=True)
-    applied_on = models.DateTimeField(auto_now_add=True)
     semester = models.ForeignKey(Semester, on_delete=models.SET_NULL, null=True, blank=True)
+    applied_on = models.DateTimeField(auto_now_add=True)
     is_reversed = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('account', 'fee', 'is_reversed')
+        unique_together = ('account', 'fee', 'semester', 'is_reversed')  # include semester
 
     def __str__(self):
         status = "REVERSED" if self.is_reversed else "ACTIVE"

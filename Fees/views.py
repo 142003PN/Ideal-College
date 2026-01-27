@@ -3,6 +3,7 @@ from .forms import *
 from .models import Fee
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
@@ -12,12 +13,14 @@ from django.db import transaction
 # Create your views here.
 
 #---------------student accounts ---------------
+@login_required(login_url='/auth/login')
 def student_acoounts(request):
     if request.user.staff_profile.position == 'Accountant':
         accounts = get_object_or_404(StudentAccount)
     return render(request, 'fees/accounts.html')
 
 #------------ADD FEES---------
+@login_required(login_url='/auth/login')
 def add_fees(request):
     if request.user.staff_profile.position == "Accountant":
         if request.method =='POST':
@@ -33,18 +36,21 @@ def add_fees(request):
     return render(request, 'fees/add-fees.html', {'form':form})
 
 #----------FETCH FEES -------------------
+@login_required(login_url='/auth/login')
 def fees(request):
     if request.user.role != 'STUDENT':
         fees = Fee.objects.all()
     return render(request, 'fees/fees.html', {'fees':fees})
 
 #------------------VIEW INVOICES -------------------
+@login_required(login_url='/auth/login')
 def invoices(request):
     if request.user.staff_profile.position == "Accountant":
         invoices = Invoice.objects.all().order_by('-id')
     return render(request, 'fees/invoices.html', {'invoices':invoices})
 
 #-----------ADD INVOICE -------------------
+@login_required(login_url='/auth/login')
 def add_invoice(request):
     if request.user.staff_profile.position != "Accountant":
         return redirect('error404')
@@ -72,6 +78,7 @@ def add_invoice(request):
 
 
 #----------------INVOICE MANY OR A GROUP OF STUDENTS -------------------
+@login_required(login_url='/auth/login')
 def bulk_invoice_view(request):
     if request.user.staff_profile.position != "Accountant":
         return redirect('error404')
@@ -122,6 +129,7 @@ def bulk_invoice_view(request):
     })
 
 #---------------------VIEW LEDGER ENTRIES--------------
+@login_required(login_url='/auth/login')
 def ledger(request):
     if request.user.staff_profile.position == "Accountant":
         ledgers = LedgerEntry.objects.all().order_by('-id')
@@ -139,6 +147,7 @@ def ledger(request):
     return render(request, 'fees/ledger.html', context)
 
 #---------------REVERSE TRANSACTION ---------------
+@login_required(login_url='/auth/login')
 def reverse_transaction_view(request, ledger_id):
     if request.user.staff_profile.position == "Accountant":
         entry = get_object_or_404(LedgerEntry, id=ledger_id)
@@ -179,6 +188,7 @@ def reverse_transaction_view(request, ledger_id):
     return redirect('Fees:ledger')
 
 #-----------------ADD PAYMENTS -------------------------
+@login_required(login_url='/auth/login')
 def add_payment(request):
     if request.user.staff_profile.position == "Accountant":
         if request.method == 'POST':
@@ -192,6 +202,7 @@ def add_payment(request):
     return render(request, 'Fees/add-payment.html', {'form':form})
 
 #-----------------RECENT PAYMENTS-----------------
+@login_required(login_url='/auth/login')
 def payment_history(request):
     if request.user.staff_profile.position == "Accountant":
         payments = Payment.objects.all().order_by('-id')
@@ -200,6 +211,7 @@ def payment_history(request):
 
 #-------------------VIEW STUDENT LEDGER ---------------------
 from django.shortcuts import render, get_object_or_404
+@login_required(login_url='/auth/login')
 def student_fees_ledger(request, account_id):
     account = get_object_or_404(StudentAccount, id=account_id)
     student_id = get_object_or_404(Student, id=account_id)
@@ -240,6 +252,7 @@ def student_fees_ledger(request, account_id):
     return render(request, 'fees/student-ledger.html', context)
 
 #------------------PRINT STUDENT LEDGER ---------
+@login_required(login_url='/auth/login')
 def student_statement_pdf_view(request, account_id):
     account = get_object_or_404(StudentAccount, id=account_id)
     entries = LedgerEntry.objects.filter(account=account).order_by('created_at')

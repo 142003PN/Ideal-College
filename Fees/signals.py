@@ -1,26 +1,19 @@
-from decimal import Decimal
-from django.db import transaction
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
-from Registration.models import Registration
-from Students.models import Student
-from .models import (
-    StudentAccount,
-    Invoice,
-    Payment,
-    LedgerEntry,
-    AppliedFee,
-    Fee,
-)
+from django.db import transaction
+import uuid
 
-#create a student account when a student is created
+from .models import Student, StudentAccount, Fee, Invoice, LedgerEntry, AppliedFee, Payment
+from Registration.models import Registration
+
+# CREATE STUDENT ACCOUNT
 @receiver(post_save, sender=Student)
 def create_student_account(sender, instance, created, **kwargs):
     if created:
-        StudentAccount.objects.create(id=instance.id, student=instance)
+        StudentAccount.objects.create(student=instance)
 
 
-# INVOICE SIGNAL → DEBIT ACCOUNT (CHARGE STUDENT)
+# INVOICE SIGNAL → DEBIT ACCOUNT
 @receiver(post_save, sender=Invoice)
 def invoice_post_save(sender, instance, created, **kwargs):
     if not created:
@@ -29,15 +22,16 @@ def invoice_post_save(sender, instance, created, **kwargs):
     account = instance.account
     amount = instance.amount
 
-    # Description logic
+    # Use fee type or description for ledger
     if instance.fee:
         description = f'{instance.fee.fee_type} Fee'
     elif instance.description:
         description = instance.description
     else:
-        description = instance.description
+        description = "Invoice"
 
     with transaction.atomic():
+        # Create ledger entry
         ledger, ledger_created = LedgerEntry.objects.get_or_create(
             invoice=instance,
             defaults={
@@ -49,14 +43,16 @@ def invoice_post_save(sender, instance, created, **kwargs):
         )
 
         if ledger_created:
+            # Update account balance
             account.balance += amount
             account.save(update_fields=['balance'])
 
-            # Only create AppliedFee when fee exists
-            if instance.fee:
+            # Track applied fee to prevent duplicates (semester-aware)
+            if instance.fee and hasattr(instance, 'semester'):
                 AppliedFee.objects.get_or_create(
                     account=account,
                     fee=instance.fee,
+                    semester=instance.semester
                 )
 
 
@@ -103,12 +99,13 @@ def ledger_reversal_post_save(sender, instance, created, **kwargs):
 
         account.save(update_fields=['balance'])
 
-#Invoice a student automatically when the submmited courses are approved
+
+# AUTO-INVOICE TUITION ON COURSE APPROVAL
 @receiver(post_save, sender=Registration)
 def registration_post_save(sender, instance, created, **kwargs):
     previous_status = getattr(instance, '_previous_status', None)
 
-    # Fire ONLY when status changes to Approved
+    # Only fire when status changes to Approved
     if previous_status == instance.status or instance.status != 'Approved':
         return
 
@@ -117,10 +114,10 @@ def registration_post_save(sender, instance, created, **kwargs):
     program = student.profile.program
     semester = instance.semester
 
-    # Get or create account
+    # Get or create student account
     account, _ = StudentAccount.objects.get_or_create(student=student)
 
-    # Fetch applicable tuition fees
+    # Fetch tuition fees for this program & year
     tuition_fees = Fee.objects.filter(
         fee_type=Fee.FeeType.TUITION,
         Programs=program,
@@ -129,19 +126,21 @@ def registration_post_save(sender, instance, created, **kwargs):
 
     with transaction.atomic():
         for fee in tuition_fees:
-
-            # Prevent duplicate unless reversed
+            # Skip if already applied for this semester and not reversed
             if AppliedFee.objects.filter(
                 account=account,
                 fee=fee,
-                is_reversed=False,
-                semester=semester
+                semester=semester,
+                is_reversed=False
             ).exists():
                 continue
 
-            # Create invoice ONLY (ledger + balance handled by signals)
-            Invoice.objects.create(
+            # Create invoice, attach semester so AppliedFee works
+            invoice = Invoice.objects.create(
                 account=account,
                 fee=fee,
-                amount=fee.amount
+                amount=fee.amount,
             )
+            # Attach semester dynamically for signals to use
+            invoice.semester = semester
+            invoice.save(update_fields=[])
