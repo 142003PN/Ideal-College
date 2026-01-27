@@ -9,51 +9,9 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- GLOBAL PRELOADER STYLES -->
-    <style>
-        #preloader {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(255,255,255,0.95);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 5000; /* reduced from 9999 */
-          opacity: 1;
-          transition: opacity 0.3s ease;
-        }
-
-        #preloader.hidden {
-          opacity: 0;
-          pointer-events: none;
-        }
-
-        .spinner {
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
-          background-image: url("{% static 'img/logo.png' %}");
-          background-size: cover;
-          animation: pulse 1.2s infinite ease-in-out;
-        }
-
-        @keyframes pulse {
-          0% { transform: scale(0.9); opacity: 0.8; }
-          50% { transform: scale(1); opacity: 1; }
-          100% { transform: scale(0.9); opacity: 0.8; }
-        }
-      </style>
-{% endblock  %}
+   {% endblock %}
 
 {% block content %}
-
-<!-- PRELOADER WITH LOGO -->
-<div id="preloader">
-   <div class="spinner"></div>
-</div>
-
 <div class="main-wrapper login-body">
    <div class="login-wrapper">
       <div class="container">
@@ -125,60 +83,4 @@
       </div>
    </div>
 </div>
-<script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const loader = document.getElementById("preloader");
-
-            /* Hide on normal load */
-            window.addEventListener("load", () => {
-                loader.classList.add("hidden");
-                setTimeout(() => loader.style.display = "none", 300);
-            });
-
-            /* Back button fix */
-            window.addEventListener("pageshow", (event) => {
-                if (event.persisted) {
-                    loader.style.display = "none";
-                    loader.classList.add("hidden");
-                }
-            });
-
-            /* Show only on REAL navigation */
-            const safeAreas = [
-                ".sidebar", 
-                ".dropdown-menu", 
-                ".dropdown-toggle",
-                ".nav-link",
-                ".submenu a"
-            ];
-
-            function isInsideSafeArea(el) {
-                return safeAreas.some(selector => el.closest(selector));
-            }
-
-            /* LINKS */
-            document.querySelectorAll("a:not([target='_blank'])").forEach(link => {
-                link.addEventListener("click", (e) => {
-                    const href = link.getAttribute("href");
-
-                    // Skip JS links, anchors, empty links, or sidebar/dropdown
-                    if (!href || href.startsWith("#") || href.startsWith("javascript")) return;
-
-                    if (isInsideSafeArea(link)) return;
-
-                    loader.style.display = "flex";
-                    loader.classList.remove("hidden");
-                });
-            });
-
-            /* FORMS */
-            document.querySelectorAll("form").forEach(form => {
-                form.addEventListener("submit", () => {
-                    loader.style.display = "flex";
-                    loader.classList.remove("hidden");
-                });
-            });
-
-        });
-      </script>
 {% endblock %}

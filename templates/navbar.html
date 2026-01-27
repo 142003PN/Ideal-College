@@ -130,9 +130,40 @@
     <title>Ideal College</title>
     <link rel="stylesheet" href="{% static "css/home.css" %}">
     {% block extra_css %}{% endblock %}
+    <style>
+        #preloader {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: #fff;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+        }
+
+        .spinner {
+          width: 50px;
+          height: 50px;
+          border: 6px solid #ddd;
+          border-top-color: #3498db;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          to {
+              transform: rotate(360deg);
+          }
+        }
+      </style>
 </head>
 <body>
-
+<div id="preloader">
+    <div class="spinner"></div>
+  </div>
 <header class="navbar">
     <a href="{% url "index" %}" class="logo">
         <img src="{% static "img/logo.png" %}" alt="">
@@ -169,6 +200,62 @@
     hamburger.addEventListener("click", () => {
         navLinks.classList.toggle("active");
     });
+
+    //PRELOADER
+    document.addEventListener("DOMContentLoaded", () => {
+            const loader = document.getElementById("preloader");
+
+            /* Hide on normal load */
+            window.addEventListener("load", () => {
+                loader.classList.add("hidden");
+                setTimeout(() => loader.style.display = "none", 300);
+            });
+
+            /* Back button fix */
+            window.addEventListener("pageshow", (event) => {
+                if (event.persisted) {
+                    loader.style.display = "none";
+                    loader.classList.add("hidden");
+                }
+            });
+
+            /* Show only on REAL navigation */
+            const safeAreas = [
+                ".sidebar", 
+                ".dropdown-menu", 
+                ".dropdown-toggle",
+                ".nav-link",
+                ".submenu a"
+            ];
+
+            function isInsideSafeArea(el) {
+                return safeAreas.some(selector => el.closest(selector));
+            }
+
+            /* LINKS */
+            document.querySelectorAll("a:not([target='_blank'])").forEach(link => {
+                link.addEventListener("click", (e) => {
+                    const href = link.getAttribute("href");
+
+                    // Skip JS links, anchors, empty links, or sidebar/dropdown
+                    if (!href || href.startsWith("#") || href.startsWith("javascript")) return;
+
+                    if (isInsideSafeArea(link)) return;
+
+                    loader.style.display = "flex";
+                    loader.classList.remove("hidden");
+                });
+            });
+
+            /* FORMS */
+            document.querySelectorAll("form").forEach(form => {
+                form.addEventListener("submit", () => {
+                    loader.style.display = "flex";
+                    loader.classList.remove("hidden");
+                });
+             });
+
+        });
 </script>
 </body>
 </html>
