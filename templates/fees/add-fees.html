@@ -13,7 +13,11 @@
         {% endif %}
         <ul class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url "Fees:fees" %}">Fees</a></li>
+            {% if title %}
+            <li class="breadcrumb-item active">{{title}}</li>
+            {% else %}
             <li class="breadcrumb-item active">Add Fees</li>
+            {% endif %}
         </ul>
         </div>
     </div>

@@ -6,6 +6,7 @@ app_name = 'Fees'
 urlpatterns = [
     path('', views.fees, name='fees'),
     path('add', views.add_fees, name='add'),
+    path('edit/<str:id>', views.edit_fees, name='edit-fee'),
     path('add-invoice', views.add_invoice, name='add-invoice'),
     path('ledger', views.ledger, name='ledger'),
     path('reverse/<str:ledger_id>', views.reverse_transaction_view, name='reverse'),

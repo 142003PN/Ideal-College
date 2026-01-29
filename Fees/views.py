@@ -26,7 +26,13 @@ def add_fees(request):
         if request.method =='POST':
             form = FeesForm(request.POST)
             if form.is_valid():
-                form.save(commit=False)
+                fee_type = form.cleaned_data['fee_type']
+                if fee_type == 'Tuition':
+                    yos = form.cleaned_data['year_of_study']
+                    program = form.cleaned_data['Programs']
+                    if Fee.objects.filter(fee_type=fee_type, Programs=program, year_of_study=yos).exists():
+                        messages.error(request, "that tuition fee already exist")
+                        return redirect('Fees:add')
                 form.save()
                 messages.success(request, 'Fee added successfully.')
             else:
@@ -34,6 +40,31 @@ def add_fees(request):
         else:
             form = FeesForm()
     return render(request, 'fees/add-fees.html', {'form':form})
+@login_required(login_url='/auth/login')
+def edit_fees(request, id):
+    if request.user.staff_profile.position == "Accountant":
+        fee = Fee.objects.get(id=id)
+        if request.method =='POST':
+            form = FeesForm(request.POST)
+            if form.is_valid():
+                fee_type = form.cleaned_data['fee_type']
+                if fee_type == 'Tuition' != fee.id==id:
+                    yos = form.cleaned_data['year_of_study']
+                    program = form.cleaned_data['Programs']
+                    if Fee.objects.filter(fee_type=fee_type, Programs=program, year_of_study=yos).first():
+                        messages.error(request, "that tuition fee already exist")
+                        return redirect('Fees:edit-fee', id=id)
+                form.save()
+                messages.success(request, 'Fee added successfully.')
+            else:
+                pass
+        else:
+            form = FeesForm(instance=fee)
+        context ={
+            'form':form,
+            'title': 'Edit fee'
+        }
+    return render(request, 'fees/add-fees.html', context)
 
 #----------FETCH FEES -------------------
 @login_required(login_url='/auth/login')

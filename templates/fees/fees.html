@@ -6,7 +6,11 @@
     <div class="page-header">
       <div class="row align-items-center">
         <div class="col">
+          {% if title %}
+          <h3 class="page-title">{{title}}</h3>
+          {% else %}
           <h3 class="page-title">Fees</h3>
+          {% endif %}
           <ul class="breadcrumb">
             <li class="breadcrumb-item">
               <a href="index.html">Dashboard</a>
@@ -59,7 +63,7 @@
                     <td>{{fee.year_of_study}}</td>
                     <td class="text-right">
                       <div class="actions">
-                        <a href="" class="btn btn-sm bg-success-light mr-2">
+                        <a href="{% url "Fees:edit-fee" fee.id %}" class="btn btn-sm bg-success-light mr-2">
                           <i class="fas fa-pen"></i>
                         </a>
                       </div>
@@ -74,9 +78,5 @@
       </div>
     </div>
   </div>
-
-  <footer>
-    <p>Copyright © 2020 Dreamguys.</p>
-  </footer>
 </div>
 {% endblock %}
