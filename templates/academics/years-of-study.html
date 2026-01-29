@@ -30,17 +30,12 @@
                 <thead class="thead-light">
                   <tr>
                     <th class="text-nowrap">Year Title</th>
-                    <th class="text-left">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                 {% for year in years %}
                   <tr>
                     <td class="text-nowrap">{{year.year_title}}</td>
-                    <td class="text-left">
-                      <div><a href="#" class="btn btn-primary btn-sm">Edit</a></div>
-                    </td>
-                  </tr>
                 {% endfor %}
                 </tbody>
               </table>
