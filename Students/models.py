@@ -4,6 +4,9 @@ from Programs.models import Programs
 from Academics.models import YearOfStudy, Intake
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import qrcode
+from io import BytesIO
+from django.core.files import File
 
 class StudentManager(CustomUserManager):
     def get_queryset(self, *args, **kwargs):
@@ -35,6 +38,17 @@ class StudentProfile(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
+    qr_code = models.ImageField(upload_to='qrcodes/', blank=True, null=True, unique=True)
+
+    def save(self, *args, **kwargs):
+        if not self.qr_code:
+            qr = qrcode.make(f"https://http://sis-ichas.com/results/print/{self.student_id}/")
+            buffer = BytesIO()
+            qr.save(buffer, format='PNG')
+            filename = f'student_{self.id}_qr.png'
+            self.qr_code.save(filename, File(buffer), save=False)
+        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f"{self.student_id.first_name}'s Profile"
