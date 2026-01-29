@@ -8,6 +8,7 @@ from Courses.models import Courses
 from Academics.models import SessionYear
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from Fees.models import StudentAccount
 # Create your views here.
 
 @login_required(login_url='/auth/login')
@@ -67,20 +68,23 @@ def add_results(request):
  
 @login_required(login_url='/auth/login')
 def view_results(request, student_id):
-    account = get_object_or_404(StudentAccount, id=student_id)
-    grade='F'
-    years=Registration.objects.filter(student_id=student_id)
-    results=Results.objects.filter(student_id=student_id)
+    student = Student.objects.get(id=student_id)
 
-    count = Results.objects.filter(student_id=student_id)
-    repeat_courses=Results.objects.filter(student_id=student_id, grade=grade)
+    balance = StudentAccount.objects.get(student=student_id).balance
+    if balance > 0:
+        has_balance = f"You cant View Results you have a balance of {balance}"
+    years = Registration.objects.filter(student_id=student)
+    results = Results.objects.filter(student_id=student)
 
-    context={
-        'results':results,
-        'years':years,
-        'repeat_courses': repeat_courses,
+    context = {
+        'student_id': student,
+        'years': years,
+        'results': results,
+        'has_balance':has_balance
     }
+
     return render(request, 'results/view-results.html', context)
+
 
 #------------------Fetch Student for Edit Results----------------------------
 @login_required(login_url='/auth/login')
@@ -162,136 +166,39 @@ def edit_result(request, result_id):
 from django.shortcuts import render, get_object_or_404
 
 def print_results(request, student_id):
-    student = get_object_or_404(Student, id=student_id)
+    student_id = get_object_or_404(Student, id=student_id)
+    years = Registration.objects.filter(student_id=student_id)
+    results = Results.objects.filter(student_id=student_id)
 
-    # Fetch all results & order properly
-    results = Results.objects.filter(student_id=student).select_related(
-        'session_year', 'registraion_id'
-    ).order_by(
-        'session_year__session_years',
-        'session_year__session_years',
-        'registraion_id__semester__id',
-        'course__course_code'
-    )
+    # Build a year-wise remark dictionary
+    year_remarks = {}
+    year_repeat_courses = {}
 
-    # Group results: { session_year: { semester: [results] } }
-    grouped = {}
-    for r in results:
-        session = r.session_year
-        semester = r.registraion_id.semester
+    balance = StudentAccount.objects.get(student=student_id).balance
+    if balance > 0:
+        has_balance = f"You cant View Results you have a balance of {balance}"
+    for year in years:
+        # Get results for this specific year
+        year_results = results.filter(session_year=year.session_year)
 
-        if session not in grouped:
-            grouped[session] = {}
+        # Check if any repeat courses (grade F) exist in this year
+        repeat_courses = year_results.filter(grade='F')
 
-        if semester not in grouped[session]:
-            grouped[session][semester] = []
+        if repeat_courses.exists():
+            remark = 'Repeat'
+        else:
+            remark = 'Clear Pass'
 
-        grouped[session][semester].append(r)
+        # Store per-year data
+        year_remarks[year.session_year] = remark
+        year_repeat_courses[year.session_year] = repeat_courses
 
     context = {
-        'student': student,
-        'grouped': grouped,
+        'results': results,
+        'years': years,
+        'year_repeat_courses': year_repeat_courses,
+        'student_id': student_id,
+        'year_remarks': year_remarks,
+        'has_balance':has_balance,
     }
     return render(request, "results/print-results.html", context)
-
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib import colors
-from reportlab.lib.units import inch
-from .models import Results, Student
-
-def download_results_pdf(request, student_id):
-    student = get_object_or_404(Student, id=student_id)
-
-    # Get results sorted properly
-    results = Results.objects.filter(student_id=student).select_related(
-        'session_year', 'registraion_id'
-    ).order_by(
-        'session_year__session_years',
-        'session_year__session_years',
-        'registraion_id__semester__id',
-        'course__course_code'
-    )
-
-    # Prepare HTTP Response for PDF
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{student.first_name}_{student.last_name}_results.pdf"'
-
-    pdf = SimpleDocTemplate(response, pagesize=A4)
-    styles = getSampleStyleSheet()
-    flow = []
-
-    # ---------------- HEADER ----------------
-    try:
-        logo_path = "static/img/logo.png"     # adjust path
-        logo = Image(logo_path, width=80, height=80)
-        flow.append(logo)
-    except:
-        pass
-
-    school_name = "<b><font size=16>YOUR SCHOOL NAME HERE</font></b>"
-    flow.append(Paragraph(school_name, styles["Title"]))
-
-    school_addr = "P.O. Box 123 • City, Country • Tel: +260 XXXXXXXX"
-    flow.append(Paragraph(school_addr, styles["Normal"]))
-    flow.append(Spacer(1, 15))
-
-    title = f"<b>Student Academic Results</b>"
-    flow.append(Paragraph(title, styles["Heading2"]))
-
-    student_info = f"""
-        <b>Name:</b> {student.first_name} {student.last_name}<br/>
-        <b>Student No:</b> {student}
-    """
-    flow.append(Paragraph(student_info, styles["Normal"]))
-    flow.append(Spacer(1, 15))
-
-    # -------------- GROUP RESULTS ----------------
-    grouped = {}
-    for r in results:
-        session = r.session_year
-        semester = r.registraion_id.semester
-
-        if session not in grouped:
-            grouped[session] = {}
-        if semester not in grouped[session]:
-            grouped[session][semester] = []
-        grouped[session][semester].append(r)
-
-    # --------------- TABLES -----------------------
-    for session, semesters in grouped.items():
-        session_title = f"<b>Session Year:</b>"
-        flow.append(Paragraph(session_title, styles["Heading3"]))
-
-        for semester, items in semesters.items():
-            sem_title = f"<b>Semester:</b> {semester.semester_name}"
-            flow.append(Paragraph(sem_title, styles["Heading4"]))
-
-            table_data = [["Course", "Mark", "Grade", "Date Recorded"]]
-
-            for r in items:
-                table_data.append([
-                    r.course.course_title,
-                    str(r.mark),
-                    r.grade,
-                    r.date_recorded.strftime("%d %b, %Y")
-                ])
-
-            table = Table(table_data, colWidths=[200, 60, 60, 100])
-            table.setStyle(TableStyle([
-                ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
-                ("GRID", (0, 0), (-1, -1), 1, colors.black),
-                ("FONT", (0, 0), (-1, 0), "Helvetica-Bold"),
-                ("ALIGN", (1, 1), (-1, -1), "CENTER"),
-                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-            ]))
-            flow.append(table)
-            flow.append(Spacer(1, 10))
-
-        flow.append(Spacer(1, 15))
-
-    pdf.build(flow)
-    return response

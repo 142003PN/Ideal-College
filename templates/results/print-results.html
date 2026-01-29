@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results Slip</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+            line-height: 1.2;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            margin-top: 0;
+            background-color: white;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Header Section */
+        .header {
+            position: relative;
+            text-align: center;
+            padding-bottom: 20px;
+        }
+
+        .header-left {
+            width: 100%;
+        }
+
+        .header-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 10px auto;
+        }
+
+        .university-name {
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .slip-title {
+            text-align: center;
+        }
+
+
+        .print-date {
+            font-size: 11px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .header-right {
+            text-align: center;
+            margin-left: 30px;
+        }
+
+        .qr-code {
+            width: 120px;
+            height: 120px;
+        }
+
+        .qr-code-text {
+            font-size: 10px;
+            font-family: 'Courier New', monospace;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* Program Info Section */
+        .program-info {
+            margin-bottom: 30px;
+        }
+
+        .program-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .program-code {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .courses-section {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        /* Financial Statement Section */
+        .results-section {
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+
+        .financial-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .student-details{
+            display:flex;
+            gap: 5px;
+        }
+
+        /* Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border: none;
+            font-size: 12px;
+        }
+
+        thead {
+            background-color: #f0f0f0;
+        }
+
+        th {
+            border: 1px solid #999;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+        }
+        th, td{
+            width: 33.33%;
+            text-align: left;
+            padding-left: 16px;
+            font-size: 14px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+        .remark{
+            display: flex;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .remark-text{
+            font-size: 14px;
+        }
+        /* Print Styles */
+        @media print {
+            body {
+                background-color: inherit;
+                padding: 0;
+                margin: 0;
+            }
+            .container {
+                margin-top: 0;
+                box-shadow: none;
+                max-width: 100%;
+            }
+            thead {
+                background-color: #f0f0f0;
+            }
+            .print-button {
+                display: none;
+            }
+        }
+        @media print {
+            @page {
+                margin: 0;
+            }
+
+            body {
+                margin: 1cm;
+            }
+        }
+        .print-button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 20px;
+            margin-left: 0;
+        }
+
+        .print-button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <img src="{% static "img/logo.png" %}" width="100" height="100" alt="">
+                </div>
+                <div class="university-name">Ideal College of Health and Applied Sciences</div>
+                <div class="slip-title">RESULTS SLIP</div>
+            </div>
+            <div class="header-right">
+                <div class="qr-code" id="qrCode">
+                    <img src="" width="100" height="100" alt="QR Code">
+                </div>
+            </div>
+        </div>
+        <hr>
+        <!-- Program Information -->
+         <br>
+        <div class="student-details">
+            <h4 class="mb-0">Student ID:</h4> 
+            <p class="mb-0">{{ student_id.id }}</p>
+        </div>
+
+        <div class="student-details">
+            <h4 class="mb-0">Full Name:</h4>
+            <p class="mb-0">{{ student_id.first_name }} {{ student_id.last_name }}</p>
+        </div>
+
+        <div class="student-details">
+            <h4 class="mb-0">Programme:</h4>
+            <p class="mb-0">{{ student_id.profile.program }}</p>
+        </div>
+        <br>
+        <hr>
+        {% if has_balance %}
+            <p>{{has_balance}}</p>
+        <!-- Financial Statement Section -->
+        {% else %}
+        <div class="results-section">
+            <!-- Financial Table -->
+            {% for year in years %}
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Year of Study {{year.session_year}}</th>
+                            <th>Course</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in results %}
+                            {% if r.session_year == year.session_year %}
+                            <tr>
+                                <td>{{r.course.course_code}}</td>
+                                <td>{{r.course.course_title}}</td>
+                                <td>{{r.grade}}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+                <div class="remark">
+                  <strong class="remark-text">REMARK: </strong>
+                  {% for result in results %}
+                      {% if result.session_year == year.session_year %}
+                        {% if result.grade == 'F' %}
+                          <p class="remark-text"> {{result.course.course_code}}</p>,
+                        {% else %}
+                        {% endif %}
+                      {% endif %}
+                  {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        <h4 style='margin-top: 30px;'>PLEASE KEEP THIS DOCUMENT FOR FUTURE REFERENCE</h4>
+        <button class="print-button" onclick="window.print()">Print Registration Slip</button>
+        {% endif %}
+    </div>
+
+</body>
+</html>

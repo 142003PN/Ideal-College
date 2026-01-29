@@ -32,105 +32,93 @@
     <div class="col-sm-12">
         <div class="card">
         <div class="card-body">
-            <form method='post'>
+            <form method="post">
+                {% csrf_token %}
+
                 <div class="row">
-                    {% csrf_token %}
-                    <div class="col-12 col-sm-5">
-                        <div class="form-group">
-                            <label>Course</label>
-                            <select name="course" class='form-select' id="CourseInput">
-                                {% for result in results %}
-                                    <option value="{{ result.course.id }}">{{ result.course }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                    <div class="col-sm-5">
+                        <label>Course</label>
+                        <select id="CourseInput" class="form-select">
+                            {% for result in results %}
+                                <option value="{{ result.result_id }}">{{result.course}}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    <div class="col-12 col-sm-5">
-                        <div class="form-group">
-                            <label>Marks Obtained</label>
-                            <input type="number" id="MarkInput" name="marks" class="form-control" />
-                        </div>
+
+                    <div class="col-sm-5">
+                        <label>Marks</label>
+                        <input type="number" id="MarkInput" class="form-control">
                     </div>
-                    <div class="col col-sm-2 mb-6">
-                        <div class="form-group">
-                            <button type="button" class="btn btn-primary" onclick="addSubject()">Add</button>
-                        </div>
+
+                    <div class="col-sm-2 mt-4">
+                        <button type="button" class="btn btn-primary" onclick="addResult()">Add</button>
                     </div>
                 </div>
-                <div class="col-12 mt-3">
-                    <table id="coursTable" border="1" class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">Subject</th>
-                                <th scope="col">Grade</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                    <script>
-                    const subjects = [];
 
-                    function addSubject() {
-                        const subject = document
-                        .getElementById("CourseInput")
-                        .value.trim()
-                        .toLowerCase();
-                        const grade = parseInt(document.getElementById("MarkInput").value);
+                <table class="table mt-3" id="notesTable">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Marks</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <script>
+                    let updates = [];
 
-                        if (!subject || isNaN(grade)) {
-                        alert("Please enter a valid subject and grade.");
-                        return;
+                    function addResult() {
+                        const select = document.getElementById("CourseInput");
+                        const marks = document.getElementById("MarkInput").value;
+
+                        if (!marks) {
+                            alert("Enter marks");
+                            return;
                         }
 
-                        // ✅ Prevent adding the same subject twice
-                        const duplicate = subjects.some((item) => item.subject === subject);
-                        if (duplicate) {
-                        alert("This subject has already been added!");
-                        return;
-                        }
+                        const resultId = select.value;
+                        const courseName = select.options[select.selectedIndex].text;
 
-                        subjects.push({ subject, grade });
+                        updates.push({ resultId, courseName, marks });
+
+                        // remove from dropdown
+                        select.remove(select.selectedIndex);
+                        document.getElementById("MarkInput").value = "";
+
                         renderTable();
-                        clearInputs();
                     }
 
                     function renderTable() {
-                        const tbody = document.querySelector("#coursTable tbody");
+                        const tbody = document.querySelector("#notesTable tbody");
                         tbody.innerHTML = "";
 
-                        subjects.forEach((item, index) => {
-                        const row = `
+                        updates.forEach((item, index) => {
+                            tbody.innerHTML += `
                             <tr>
-                            <td>${capitalize(item.subject)}</td>
-                            <td>${item.grade}</td>
-                            <td>
-                                <button style="border-radius: 50%"; type="button" class="bg-danger"  onclick="removeSubject(${index})"><i class="fas fa-times"></i></button>
-                            </td>
+                                <td>${item.courseName}</td>
+                                <td>${item.marks}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(${index})">×</button>
+                                </td>
 
-                            <!-- Hidden inputs so Django receives the data -->
-                            <input type="hidden" name="subject" value="${item.subject}">
-                            <input type="hidden" name="grade" value="${item.grade}">
+                                <input type="hidden" name="result_ids[]" value="${item.resultId}">
+                                <input type="hidden" name="marks[]" value="${item.marks}">
                             </tr>
-                        `;
-                        tbody.innerHTML += row;
+                            `;
                         });
                     }
 
-                    function removeSubject(index) {
-                        subjects.splice(index, 1);
+                    function removeRow(index) {
+                        const removed = updates.splice(index, 1)[0];
+
+                        const select = document.getElementById("CourseInput");
+                        select.add(new Option(removed.courseName, removed.resultId));
+
                         renderTable();
                     }
-
-
-                    function capitalize(str) {
-                        return str.charAt(0).toUpperCase() + str.slice(1);
-                    }
-                    </script>
-                </div>
-                <div class="col col-sm-6 mt-3">
-                    <button type="submit" class="btn btn-success">Add Results</button>
-                </div>
+                </script>
+                <button type="submit" class="btn btn-success">Save Updates</button>
             </form>
         </div>
         </div>

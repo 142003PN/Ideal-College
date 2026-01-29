@@ -26,50 +26,56 @@
       <div class="col-sm-12">
         <div class="card card-table">
           <div class="card-body">
+            {% if has_balance %}
+            <p>{{has_balance}}</p>
+            {% else %}
+            <a href="{% url "Results:print" request.user.id %}" class="btn btn-success">Print</a>
+
             <div class="table-responsive">
               {% for year in years %}
-              <div class="text mt-1">
-                <h5 style="font-weight: 500;">Year: {{year.session_year}}</h5>
-              </div>
-              <table class="table table-hover table-center">
-                <thead class="thead-light">
-                  <tr>
-                    <th>Code</th>
-                    <th>Course Title</th>
-                    <th>Grade</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for result in results %}
-                    {% if result.session_year == year.session_year %}
+                <div class="text mt-1">
+                  <h5 style="font-weight: 500;">Year: {{year.session_year}}</h5>
+                </div>
+                <table class="table table-hover table-center">
+                  <thead class="thead-light">
                     <tr>
-                      <td>
-                        <div>{{result.course}} </div>
-                      </td>
-                      <td >
-                        <div>{{result.course.course_title}}</div>
-                      </td>
-                      <td>
-                        {{result.grade}}
-                      </td>
+                      <th>Code</th>
+                      <th>Course Title</th>
+                      <th>Grade</th>
                     </tr>
-                    {% endif %}
-                  {% endfor %}
-                </tbody>
-              </table>
-              <div class="remark d-flex g-1 mt-3">
-                <strong>PROCCED: </strong>
-                {% for result in results %}
-                    {% if result.session_year == year.session_year %}
-                      {% if result.grade == 'F' %}
-                        <p>{{result.course.course_code}}</p>,
-                      {% else %}
+                  </thead>
+                  <tbody>
+                    {% for result in results %}
+                      {% if result.session_year == year.session_year %}
+                      <tr>
+                        <td>
+                          <div>{{result.course}} </div>
+                        </td>
+                        <td >
+                          <div>{{result.course.course_title}}</div>
+                        </td>
+                        <td>
+                          {{result.grade}}
+                        </td>
+                      </tr>
                       {% endif %}
-                    {% endif %}
-                {% endfor %}
-                {% endfor %}
-              </div>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                <div class="remark d-flex g-1 mt-3">
+                  <strong>REMARK: </strong>
+                  {% for result in results %}
+                      {% if result.session_year == year.session_year %}
+                        {% if result.grade == 'F' %}
+                          <p> {{result.course.course_code}}</p>,
+                        {% else %}
+                        {% endif %}
+                      {% endif %}
+                  {% endfor %}
+                </div>
+              {% endfor %}
             </div>
+            {% endif %}
           </div>
         </div>
       </div>

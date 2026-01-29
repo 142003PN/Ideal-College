@@ -9,7 +9,5 @@ urlpatterns = [
     path('edit-results/', edit_results, name='edit-results'),
     path('fetch-student-edit/', fetch_student_edit, name='fetch-student-edit'),
     path('edit-result/<str:result_id>/', edit_result, name='edit-result'),
-    path('print/<str:student_id>', print_results, name='print'),
-    path("results/pdf/<int:student_id>/", download_results_pdf, name="download_pdf"),
-    
+    path('print/<str:student_id>', print_results, name='print')
 ]
