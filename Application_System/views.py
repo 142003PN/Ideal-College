@@ -207,7 +207,7 @@ def step4_certificate(request):
 def success(request):
     return render(request, 'Applications/success.html')
 
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def accept(request, pk):
     user_id=request.user.id
     accepted_by=CustomUser.objects.get(id=user_id)
@@ -237,7 +237,7 @@ def accept(request, pk):
     return redirect("Application:recent")
 
 # --------------Recent Applications
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def recent_applications(request):
     if request.user.role == 'ADMIN':
         applications =General_Information.objects.all().order_by('-date_of_application')
@@ -258,7 +258,7 @@ def accepted_students(request):
     return render(request, 'applications/accepted_students.html', context)
 
 #----------View Application Details----------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def view_application(request, admission_id):
     if request.user.role == 'ADMIN':
         application = General_Information.objects.get(admission_id=admission_id)
@@ -295,7 +295,7 @@ def delete_files(application):
         if cert.certificate and os.path.isfile(cert.certificate.path):
             os.remove(cert.certificate.path)
 #def reject application
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def reject(request, pk):
     admission_id = General_Information.objects.get(pk=pk)
     app_status = Application_Status.objects.get(application=admission_id)
@@ -306,7 +306,7 @@ def reject(request, pk):
     return redirect("Application:recent")
 
 #---- delete application if status is rejected
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def delete_application(request, pk):
     admission_id = General_Information.objects.get(pk=pk)
     app_status = Application_Status.objects.get(application=admission_id)

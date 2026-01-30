@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 import os
 
 #---------List Students-----------
-@login_required(login_url='/users/login/')
+@login_required(login_url='/')
 def list_students(request):
     if request.user.role == 'ADMIN':
         students = Student.objects.filter(role="STUDENT").order_by('date_joined')
@@ -24,7 +24,7 @@ def list_students(request):
     return render(request, 'students/students.html', context)
 
 #A----------Add student view---------------
-@login_required(login_url='/users/login/')
+@login_required(login_url='/')
 def add_student(request):
     programmes=Programs.objects.all()
     years = YearOfStudy.objects.all()
@@ -130,7 +130,7 @@ def add_student(request):
     return render(request, 'students/add-student.html', context)
 
 #-------------edit student view----------------
-@login_required(login_url='/users/login/')
+@login_required(login_url='/')
 def edit_student(request, pk):
     student = Student.objects.get(pk=pk)
     profile = StudentProfile.objects.get(student_id=student)
@@ -209,7 +209,7 @@ def edit_student(request, pk):
     return render(request, 'students/edit-student.html', context)
 
 #-------------student details view-----------------
-@login_required(login_url='/users/login/')
+@login_required(login_url='/')
 def student_details(request, student_id):
     #-------Update Profile Picture-----------
     try:
@@ -237,7 +237,7 @@ def student_details(request, student_id):
     }
     return render(request, 'students/student-details.html', context)
 
-@login_required(login_url='/users/login/')
+@login_required(login_url='/')
 def add_profile(request, student_id):
     student_obj = Student.objects.get(id=student_id)
     programmes=Programs.objects.all()
@@ -309,7 +309,7 @@ def delete_student_media(student):
     except:
         pass
 #----------Delete Student------------
-@login_required(login_url='/users/login/')
+@login_required(login_url='/')
 def delete_student(request, pk):
     if request.user.role == 'ADMIN':
         try:
@@ -323,7 +323,7 @@ def delete_student(request, pk):
         return HttpResponse("<h1>Insufficient Privelleges </h1>")
     
 # Student dashboard view
-@login_required(login_url='/users/login/')
+@login_required(login_url='/')
 def student_dashboard(request):
     student = request.user
 

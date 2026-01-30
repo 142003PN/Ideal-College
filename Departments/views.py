@@ -10,7 +10,7 @@ from Staff.models import *
 from Courses.models import Courses
 from Programs.models import Programs
 # ---------List departments------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def departments(request):
     if request.user.role=='ADMIN':
         departments = Department.objects.all().order_by('-date_added')
@@ -18,7 +18,7 @@ def departments(request):
         return HttpResponse('<h1>You can not View Departments</h1>')
     return render(request, 'departments/departments.html', {'departments':departments})
 #-------------add department------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def add_department(request):
     if request.user.role=='ADMIN':
         if request.method == 'POST':
@@ -41,7 +41,7 @@ def add_department(request):
     return render(request, 'departments/add-department.html', {'form':form})
 
 #-----------edit department-------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def edit_department(request, pk):
     if request.user.role=='ADMIN':
         department = Department.objects.get(id=pk)
@@ -60,7 +60,7 @@ def edit_department(request, pk):
     return render(request, 'departments/edit-department.html', {'form':form})
 
 #-----------delete department-----------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def delete_department(request, pk):
     if request.user.role=='ADMIN':
         department = Department.objects.get(id=pk)

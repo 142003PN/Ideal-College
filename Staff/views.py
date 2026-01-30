@@ -10,7 +10,7 @@ from datetime import datetime
 import os
 
 #------------Staff List-----------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def staff_list(request):
     staffs=Staff.objects.filter(role="STAFF")
     profile = StaffProfile.objects.all()
@@ -19,7 +19,7 @@ def staff_list(request):
     return render(request, 'staff/staff-list.html', context)
 
 #--------------Staff Details----------------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def staff_details(request, pk):
     #----------UPDATE profile picture
     if request.method == 'POST':
@@ -46,7 +46,7 @@ def staff_details(request, pk):
     }
     return render(request, 'staff/staff-details.html', context)
 #---------------add staff member-------------------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def add_staff(request):
 #    if request.user.id == 'ADMIN':
     departments=Department.objects.all()
@@ -122,7 +122,7 @@ def add_staff(request):
     return render(request, 'staff/add-staff.html', context)
 
 #------------Edit Staff ----------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 
 def edit_staff(request, pk):
     if request.user.role=='ADMIN' or request.user.role=='STAFF':
@@ -169,7 +169,7 @@ def delete_staff_media(staff):
                 os.remove(profile.profile_picture.path)
     except StaffProfile.DoesNotExist:
         pass
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def delete_staff(request, pk):
     if request.user.role=='ADMIN':
         staff=Staff.objects.get(pk=pk)

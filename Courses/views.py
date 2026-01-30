@@ -13,7 +13,7 @@ import xlwt
 import encodings
 from Users.models import CustomUser
 
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def add_course(request):
     user = request.user
     added_by = user
@@ -58,7 +58,7 @@ def add_course(request):
 
 
 # COURSE LIST
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def course_list(request):
 
     user = request.user
@@ -79,7 +79,7 @@ def course_list(request):
     return render(request, 'courses/courses.html', {'courses': courses})
 
 #edit course
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def edit_course(request, pk):
     title = "Edit Course"
     course_id = Courses.objects.get(pk=pk)
@@ -99,7 +99,7 @@ def edit_course(request, pk):
     }
     return render(request, 'courses/add-course.html', context)
 #delete course
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def delete(request, pk):
     if request.user.role == 'ADMIN':
         course_id = Courses.objects.get(pk=pk)
@@ -108,7 +108,7 @@ def delete(request, pk):
     else:
         return HttpResponse("<h1>You cannot delete a course<\h1>")
 
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def export_excel(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition']='attachment; filename=Courses'+ str(datetime.datetime.now())+'.xls'

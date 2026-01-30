@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from Fees.models import StudentAccount
 # Create your views here.
 
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def fetch_student(request):
     if request.user.role == 'ADMIN' and request.method == 'POST':
         student_id = request.POST.get('student_id')
@@ -32,7 +32,7 @@ def fetch_student(request):
             messages.error(request, 'Student does not exist.')
 
     return render(request, 'results/fetch-student.html')
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def add_results(request):
     student_id = request.session.get('student_id')
     if not student_id:
@@ -66,7 +66,7 @@ def add_results(request):
     return render(request, 'results/add-results.html', context)
 
  
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def view_results(request, student_id):
     student = Student.objects.get(id=student_id)
 
@@ -87,7 +87,7 @@ def view_results(request, student_id):
 
 
 #------------------Fetch Student for Edit Results----------------------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def fetch_student_edit(request):
     title = 'edit_results'
     if request.user.role == 'ADMIN':
@@ -116,7 +116,7 @@ def fetch_student_edit(request):
                 return render(request, 'results/etch-student.html', context)
     return render(request, 'results/fetch-student.html')
 
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def edit_results(request):
     student_id=request.session.get('student_id')
     profile = StudentProfile.objects.get(student_id=student_id)
@@ -146,7 +146,7 @@ def edit_results(request):
     }
     return render(request, 'results/view-edit-results.html', context)
 
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def edit_result(request, result_id):
     if request.user.role != 'ADMIN':
         raise Http404("You do not have permission to access this page.")

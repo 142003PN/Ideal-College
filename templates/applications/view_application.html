@@ -221,7 +221,7 @@
         <!-- Button trigger Accept modal -->
         {% if application_status.status == 'PENDING' %}
         <div class="actions">
-            <a class="btn btn-sm btn-outline-success" href="{% url "Application:accept" application.admission_id %}"
+            <a class="btn btn-sm btn-outline-success delete-btn" href="{% url "Application:accept" application.admission_id %}"
             onclick="event.preventDefault();
                       const url = this.href;
                       Swal.fire({

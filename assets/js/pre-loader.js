@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 ".nav-link",
                 ".submenu a",
                 ".delete-btn",
-                ".sweet-alert",
             ];
 
             function isInsideSafeArea(el) {

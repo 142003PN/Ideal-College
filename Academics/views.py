@@ -21,7 +21,7 @@ from Academics.models import *
         ii. Add Year of Study   
 """
 #1. --------Semester Views-----------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def semesters(request): 
     if request.user.role == 'ADMIN':
         semesters = Semester.objects.all()
@@ -33,7 +33,7 @@ def semesters(request):
     return render(request, 'academics/semesters.html', context)
 
 #i. ---------------add semester view
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def add_semester(request):
     if request.user.role != 'ADMIN':
         return HttpResponseForbidden('<h1>Insufficient Roles</h1>') 
@@ -58,7 +58,7 @@ def add_semester(request):
     return render(request, 'academics/add-semester.html', {'form': form})
     
 #2. -----------Intake Views-----------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def intakes(request): 
     if request.user.role == 'ADMIN':
         intakes = Intake.objects.all()
@@ -70,6 +70,7 @@ def intakes(request):
     return render(request, 'academics/intakes.html', context)
 
 #add intake view
+@login_required(login_url='/')
 def add_intake(request):
     if request.user.role != 'ADMIN':
         return HttpResponseForbidden('<h1>Insufficient Roles</h1>')
@@ -96,7 +97,7 @@ def add_intake(request):
     
 #3. --------Session Year Views-----------------
 #i. ---------------List Session Years View
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def session_years(request):
     if request.user.role == 'ADMIN':
         #edit session year
@@ -109,7 +110,7 @@ def session_years(request):
     return render(request, 'academics/session-year.html', context)
 
 #---------- Add Session Year View -------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def add_session_year(request):
     if request.user.role != 'ADMIN':
         return HttpResponse('<h1>Insufficient Roles</h1>')
@@ -150,7 +151,7 @@ def add_session_year(request):
 
 
 #---------- Edit Session Year View -------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def edit_session_year(request, pk):
     if request.user.role == 'ADMIN':
         year = SessionYear.objects.get(id=pk)
@@ -184,12 +185,12 @@ def edit_session_year(request, pk):
         return HttpResponse('<h1>Insufficient Roles</h1>')
 
 #4. --------Year of Study Views-----------------   
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def years_of_study(request):
     years = YearOfStudy.objects.all()
     return render(request, 'admin/dashboard.html', {'years':years})
 #--------Add Year of Study View-----------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def add_year_of_study(request):
     if request.user.role != 'STUDENT':
         form = YearOfStudyForm()
@@ -206,7 +207,7 @@ def add_year_of_study(request):
     return render(request, 'academics/add-year-of-study.html', {'form':form})
 
 #--------View Years of Study-----------------
-@login_required(login_url='/auth/login')
+@login_required(login_url='/')
 def years_of_study(request):
     if request.user.role != 'STUDENT':
         years = YearOfStudy.objects.all()

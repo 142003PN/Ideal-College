@@ -83,7 +83,7 @@
                         </a>
                         {% if request.user.role == 'ADMIN' %}
                         <a
-                          class="btn btn-sm btn-outline-danger sweet-alert"
+                          class="btn btn-sm btn-outline-danger delete-btn"
                           href="{% url 'Courses:delete' course.id %}"
                           onclick="event.preventDefault();
                                     const url = this.href;
